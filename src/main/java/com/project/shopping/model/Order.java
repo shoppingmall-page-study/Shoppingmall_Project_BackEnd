@@ -17,14 +17,15 @@ import java.sql.Timestamp;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="Order_ID")
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "Product_ID")
     private Product productId;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "User_ID")
     private User userId;
 
     @Column(nullable = false)
