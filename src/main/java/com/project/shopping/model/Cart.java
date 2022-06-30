@@ -1,9 +1,6 @@
 package com.project.shopping.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -13,7 +10,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +25,11 @@ public class Cart {
 
     @CreationTimestamp
     private Timestamp createTime;
+
+    @Builder
+    public Cart(Product productId, User userId, Timestamp createTime) {
+        this.productId = productId;
+        UserId = userId;
+        this.createTime = createTime;
+    }
 }

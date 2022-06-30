@@ -1,9 +1,6 @@
 package com.project.shopping.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,7 +8,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +29,13 @@ public class Review {
 
     @Column(nullable = true, length=255)
     private String imageUrl;
+
+    @Builder
+    public Review(User userId, Product productId, String title, String content, String imageUrl) {
+        this.userId = userId;
+        this.productId = productId;
+        this.title = title;
+        this.content = content;
+        this.imageUrl = imageUrl;
+    }
 }

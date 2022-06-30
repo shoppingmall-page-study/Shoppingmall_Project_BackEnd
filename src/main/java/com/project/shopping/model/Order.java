@@ -1,9 +1,6 @@
 package com.project.shopping.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -13,7 +10,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +20,7 @@ public class Order {
     private Product productId;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "userId")
     private User userId;
 
     @Column(nullable = false)
@@ -35,4 +31,13 @@ public class Order {
 
     @CreationTimestamp
     private Timestamp orderTime;
+
+    @Builder
+    public Order(Product productId, User userId, int productNum, boolean orderComplete, Timestamp orderTime) {
+        this.productId = productId;
+        this.userId = userId;
+        this.productNum = productNum;
+        this.orderComplete = orderComplete;
+        this.orderTime = orderTime;
+    }
 }

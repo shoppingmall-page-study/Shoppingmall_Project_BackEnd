@@ -1,9 +1,6 @@
 package com.project.shopping.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,16 +8,19 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int userId;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String address;
 
     @Column(nullable = false)
@@ -31,4 +31,14 @@ public class User {
 
     @Column(nullable = false,length=11)
     private String phoneNumber;
+
+    @Builder
+    public User(String email, String username, String address, int age, String nickname, String phoneNumber) {
+        this.email = email;
+        this.username = username;
+        this.address = address;
+        this.age = age;
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+    }
 }
