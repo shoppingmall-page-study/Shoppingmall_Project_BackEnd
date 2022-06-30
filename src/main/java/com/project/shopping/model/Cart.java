@@ -13,14 +13,15 @@ import java.sql.Timestamp;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="Cart_ID")
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "Product_ID")
     private Product productId;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "User_ID")
     private User UserId;
 
     @CreationTimestamp
