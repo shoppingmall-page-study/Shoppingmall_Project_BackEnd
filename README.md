@@ -20,10 +20,6 @@
 
 [ToDoList](https://topaz-joke-66e.notion.site/ToDoList-87d9f99b9876420eb729ac1afd5b5c10)
 
-## 깃허브
-
-
-- Repository 추가 예정
 
 ## 페이지별 상세 설계
 
@@ -55,7 +51,7 @@
 ## 회의
 
 
-- 2022-04-02 회의 - 설계문서정리(데이터플로우 시스템 설계 문서 정리, api문서 정리)0
+- 2022-04-02 회의 - 설계문서정리(데이터플로우 시스템 설계 문서 정리, api문서 정리)
 - 2022-04-28 회의 - frontend (node : 14.17.5, 도커 이미지화예정)
 
 [2022-04-28 회의록](https://topaz-joke-66e.notion.site/2022-04-28-1356fee8fb814f31bba7a5e06c29e61b)
