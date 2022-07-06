@@ -38,7 +38,7 @@
 
 [https://www.figma.com/file/4L3pleKwzOiEQNGYBdmh8V/Untitled?node-id=10%3A408](https://www.figma.com/file/4L3pleKwzOiEQNGYBdmh8V/Untitled?node-id=10%3A408)
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/30463f4e-d5b8-42f2-bba6-dcd1e09bfb84/Untitled.png)
+![image](https://user-images.githubusercontent.com/42925746/177485476-234ed37b-6666-46a8-97e3-f5b2f64ab948.png)
 
 ## 데이터 플로우 & 시스템 설계
 
