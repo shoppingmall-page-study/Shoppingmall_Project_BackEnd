@@ -23,15 +23,18 @@ class UserRepositoryTest {
     @Test
     public void save(){
 
-        User user = new User();
-        user.setUsername("a");
-        user.setAddress("경기도부천");
-        user.setAge(24);
-        user.setNickname("kkm");
-        user.setPhoneNumber("010");
-        User saved = userRepository.save(user);
+        User user = User.builder()
+                    .email("user@example.com")
+                    .username("user")
+                    .address("address")
+                    .age(11)
+                    .nickname("nickname")
+                    .phoneNumber("01000000000")
+                    .build();
 
-        assertEquals(user.getUsername(),saved.getUsername());
+        User testUser = userRepository.save(user);
+
+        assertEquals(user.getUsername(),testUser.getUsername());
 
 
 
