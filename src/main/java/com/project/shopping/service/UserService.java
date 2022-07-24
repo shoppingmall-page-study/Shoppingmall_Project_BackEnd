@@ -19,11 +19,24 @@ public class UserService {
             throw new RuntimeException("Invalid arguments");
         }
         final String email = user.getEmail();
+        System.out.println(userRepository.existsByEmail(email)+"이메일이 존재하는지?");
+
+        //왜 여기서 안걸리지 ??
+
         if(userRepository.existsByEmail(email)){
             // 이메일이 존재할시
             log.warn("emali already exists", email);
+            throw new RuntimeException();
         }
         return userRepository.save(user);
+    }
+
+    public User SaveUser(User user){
+        return  userRepository.save(user);
+    }
+
+    public User findEmailByUser(String email){
+        return userRepository.findByEmail(email);
     }
 
     //login 인증

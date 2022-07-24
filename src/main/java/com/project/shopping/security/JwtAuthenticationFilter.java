@@ -1,57 +1,74 @@
 package com.project.shopping.security;
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.shopping.auth.PrincipalDetails;
+import com.project.shopping.dto.UserDTO;
+import com.project.shopping.model.User;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@Component
+@RequiredArgsConstructor
 @Slf4j
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    @Autowired
-    private  Tokenprovider tokenprovider;
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
+    private  final AuthenticationManager authenticationManager;
+    private  final Tokenprovider tokenprovider;
+    ObjectMapper objectMapper = new ObjectMapper();
+
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        System.out.println("인증완료");
+        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
+        User user = principalDetails.getUser();
+        String jwt = tokenprovider.create(user);
+        response.setContentType("application/json");
+
+        response.addHeader("Authorization","Bearer "+jwt);
+
+        UserDTO res = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
+                .age(user.getAge()).address(user.getAddress())
+                .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
+        ResponseEntity.ok().body(res);
+
+        String result = objectMapper.writeValueAsString(res);
+        response.getWriter().write(result);
+
+
+    }
+
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        System.out.println("로그인 시도중");
         try{
-            String token = parseBearerToken(request);
-            if(token!= null && !token.equalsIgnoreCase("null")){
-                String userId = tokenprovider.validateAndGetUserId(token);
-                AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userId,
-                        null,
-                        AuthorityUtils.NO_AUTHORITIES
-                );
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-                securityContext.setAuthentication(authentication);
-                SecurityContextHolder.setContext(securityContext);
-            }
 
-        }catch (Exception e){
-            logger.error("could not set user authentication in security context",e);
+            User user = objectMapper.readValue(request.getInputStream(),User.class);
+            System.out.println(user);
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword());
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            System.out.println(principalDetails.getUser().getUsername());
+            return authentication;
+        } catch (IOException e) {
+            return null;
         }
-        filterChain.doFilter(request,response);
+
     }
 
-    private String parseBearerToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
 }
