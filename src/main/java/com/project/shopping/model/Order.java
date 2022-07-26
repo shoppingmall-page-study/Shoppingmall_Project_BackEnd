@@ -16,6 +16,7 @@ public class Order {
     private int id;
 
     @ManyToOne
+
     @JoinColumn(name = "Product_id")
     private Product productId;
 
