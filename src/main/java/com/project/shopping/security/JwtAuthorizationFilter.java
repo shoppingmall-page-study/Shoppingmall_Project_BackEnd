@@ -37,16 +37,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         System.out.println("jwtHeader:"+ jwtHeader);
         // wjt 토큰을 검증을 해서 정상적인 사용자인지 확인 하면 됨
         // header가 있는지 확인
-        if(jwtHeader==null){
+
+        if(jwtHeader==null || jwtHeader == "Bearer null"){
             System.out.println("null이여서 들어갈수 없습니다.");
         }
-        if(jwtHeader == null || !jwtHeader.startsWith("Bearer") || jwtHeader == "Bearer null"){
+        if(jwtHeader == null || !jwtHeader.startsWith("Bearer") || jwtHeader.equals("Bearer null") ){
             chain.doFilter(request,response);
             return;
         }
 
         //헤더가 있으면
         String token = request.getHeader("Authorization").replace("Bearer ","");
+        System.out.println(token);
+
 
 
 

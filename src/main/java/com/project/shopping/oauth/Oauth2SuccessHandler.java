@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -40,11 +41,8 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         System.out.println("OAuth2login 성공");
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        System.out.println(oAuth2User.getAttributes().get("email"));
-        System.out.println(authentication);
 
         User user = userRequstMapper.user(oAuth2User); // 이메일만 담아서 생성
-        //그럼 나는
 
         String jwttoken = tokenprovider.create(user);
         System.out.println(jwttoken);
@@ -62,7 +60,6 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
 
         if(uu == false){
-
             User users = User.builder()
                     .email(email)
                     .password(password)
@@ -72,16 +69,25 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
                     .nickname("user1").phoneNumber("????").build();
             userService.create(users);
 
-            response.sendRedirect("/shopping/Oauth/join");
+            String targetUrl = makeRediretjoinUrl(jwttoken);
+            response.sendRedirect(targetUrl);
+
         }else{
-            response.sendRedirect("/");
+            String targetUrl = makeRedirectUrl(jwttoken);
+            response.sendRedirect(targetUrl);
         }
 
 
+    }
 
-        // 여기서 나머지 회원 가입 주소로 보내기
+    private String makeRediretjoinUrl(String token) {
+        return UriComponentsBuilder.fromUriString("http://localhost:3000/registration/"+token)
+                .build().toUriString();
+    }
 
-
+    private String makeRedirectUrl(String jwttoken) {
+        return UriComponentsBuilder.fromUriString("http://localhost:3000/oauth/"+jwttoken)
+                .build().toUriString();
     }
 
 

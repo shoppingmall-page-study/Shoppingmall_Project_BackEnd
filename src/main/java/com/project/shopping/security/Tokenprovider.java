@@ -25,20 +25,21 @@ public class Tokenprovider {
     // 토큰 생성 api
     public String create(User user){
         Date expiryDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
+        Date expiryDaterefresh =Date.from(Instant.now().plus(3, ChronoUnit.DAYS));
 
         Token token = new Token(Jwts.builder()
                 .signWith(SignatureAlgorithm.HS512,SECRET_KEY)
                 .setSubject(user.getEmail())
                 .setIssuer("shopping")
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(tokenPeriod+now.getTime()))
+                .setExpiration(expiryDate)
                 .compact(),
                 Jwts.builder()
                         .signWith(SignatureAlgorithm.HS512,SECRET_KEY)
                         .setSubject(user.getEmail())
                         .setIssuer("shopping")
                         .setIssuedAt(new Date())
-                        .setExpiration(new Date(refreshPeriod+now.getTime()))
+                        .setExpiration(expiryDaterefresh)
                         .compact());
         refreshTokenRepsitory.save(token);
 

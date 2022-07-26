@@ -71,26 +71,38 @@ public class UserController {
             return ResponseEntity.ok().body(response);
         }catch (Exception e){
             ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.badRequest().body(response+"이미 아이디가 있습니다");
         }
     }
 
-    @GetMapping("/test")
-    public String test(){
-        return "test";
-    }
+//    @GetMapping("/test")
+//    public String test(){
+//
+//        return "redirect:/";
+//    }
 
-    @GetMapping("/shopping/login")
-    public @ResponseBody String testOAuthLogin(Authentication authentication){ // 의존성 주입
-        PrincipalDetails userDetails =(PrincipalDetails) authentication.getPrincipal();
+//    @GetMapping("/shopping/login")
+//    public @ResponseBody String testOAuthLogin(Authentication authentication){ // 의존성 주입
+//        PrincipalDetails userDetails =(PrincipalDetails) authentication.getPrincipal();
+//
+//        System.out.println(userDetails.getUser().getEmail());
+//        System.out.println(11);
+//        return "세션 정보 확인하기 ";
+//
+//    }
 
-        System.out.println(userDetails.getUser().getEmail());
-        System.out.println(11);
-        return "세션 정보 확인하기 ";
+//    @GetMapping("/succesful")
+//    public ResponseEntity<?> oauthsuccessful(Authentication authentication){
+//        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+//        String email = userDetails.getUser().getEmail();
+//        User user = userService.findEmailByUser(email);
+//        UserDTO response = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
+//                .age(user.getAge()).address(user.getAddress())
+//                .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
+//        return ResponseEntity.ok().body(response);
+//    }
 
-    }
-
-    @PostMapping("/shopping/Oauth/join")
+    @PostMapping("/Oauth/join")
     public ResponseEntity<?> oauthsignup(@RequestBody UserDTO userDTO,Authentication authentication) {
         PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = userDetails.getUser().getEmail();
@@ -100,7 +112,6 @@ public class UserController {
         user.setNickname(userDTO.getNickname());
         user.setPhoneNumber(userDTO.getPhoneNumber());
         userService.SaveUser(user);
-
 
         UserDTO response = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
                 .age(user.getAge()).address(user.getAddress())
