@@ -11,15 +11,15 @@ import javax.persistence.*;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="Review_ID")
+    @Column(name ="id")
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "User_ID")
+    @JoinColumn(name = "User_id")
     private User userId;
 
     @ManyToOne
-    @JoinColumn(name = "Product_ID")
+    @JoinColumn(name = "Product_id")
     private Product productId;
 
     @Column(nullable = false, length=255)

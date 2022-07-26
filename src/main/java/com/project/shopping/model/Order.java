@@ -16,11 +16,12 @@ public class Order {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "Product_Id")
+
+    @JoinColumn(name = "Product_id")
     private Product productId;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "User_id")
     private User userId;
 
     @Column(nullable = false)
