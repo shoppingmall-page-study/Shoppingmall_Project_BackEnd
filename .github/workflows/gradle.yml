@@ -47,9 +47,9 @@ docker:
   - name: Retrieve built
     uses: actions/download-artifact@v3
     with:
-      name: build-artifact
+    - name: build-artifact
       path: build
-    -name: Docker Hub Sign-in
+    - name: Docker Hub Sign-in
       run: docker build -t $REPO:latest -t $REPO:${GITHUB_RUN_ID} .
-    -name: Publish Docker Image
+    - name: Publish Docker Image
       run: docker push $REPO
