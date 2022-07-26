@@ -45,19 +45,13 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
         User user = userRequstMapper.user(oAuth2User); // 이메일만 담아서 생성
 
         String jwttoken = tokenprovider.create(user);
-        System.out.println(jwttoken);
         response.addHeader("Authorization","Bearer "+jwttoken); //토큰을 생성 하고
         String email = (String) oAuth2User.getAttributes().get("email");
         String name = (String) oAuth2User.getAttributes().get("name");
         String password = passwordEncoder.encode(email);
-        System.out.println(email);
 
 
         boolean uu = userRepository.existsByEmail(email);
-        System.out.println(uu);
-        System.out.println("123");
-
-
 
         if(uu == false){
             User users = User.builder()

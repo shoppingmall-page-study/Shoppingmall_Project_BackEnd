@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private Tokenprovider tokenprovider;
+//    @Autowired
+//    private Tokenprovider tokenprovider;
 
 //    @PostMapping("join")
 //    public String join(@RequestBody User user){
@@ -37,25 +37,12 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @GetMapping("/loginendpoint")
-    public ResponseEntity<?> loginendpoint(Authentication authentication){
-        System.out.println(11);
-        System.out.println(authentication);
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        User user = principalDetails.getUser();
-        System.out.println(user.getEmail());
-        UserDTO response = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
-                .age(user.getAge()).address(user.getAddress())
-                .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
-
-        return  ResponseEntity.ok().body(response);
-    }
 
     @PostMapping("/join")
     public ResponseEntity<?> signup(@RequestBody UserDTO userDTO){
         try{
-            System.out.println(userDTO.getPassword());
-            System.out.println(passwordEncoder.encode(userDTO.getPassword()));
+            //System.out.println(userDTO.getPassword());
+            //System.out.println(passwordEncoder.encode(userDTO.getPassword()));
             User user = User.builder()
                     .email(userDTO.getEmail())
                     .password(passwordEncoder.encode((userDTO.getPassword())))
@@ -71,36 +58,10 @@ public class UserController {
             return ResponseEntity.ok().body(response);
         }catch (Exception e){
             ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
-            return ResponseEntity.badRequest().body(response+"이미 아이디가 있습니다");
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
-//    @GetMapping("/test")
-//    public String test(){
-//
-//        return "redirect:/";
-//    }
-
-//    @GetMapping("/shopping/login")
-//    public @ResponseBody String testOAuthLogin(Authentication authentication){ // 의존성 주입
-//        PrincipalDetails userDetails =(PrincipalDetails) authentication.getPrincipal();
-//
-//        System.out.println(userDetails.getUser().getEmail());
-//        System.out.println(11);
-//        return "세션 정보 확인하기 ";
-//
-//    }
-
-//    @GetMapping("/succesful")
-//    public ResponseEntity<?> oauthsuccessful(Authentication authentication){
-//        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-//        String email = userDetails.getUser().getEmail();
-//        User user = userService.findEmailByUser(email);
-//        UserDTO response = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
-//                .age(user.getAge()).address(user.getAddress())
-//                .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
-//        return ResponseEntity.ok().body(response);
-//    }
 
     @PostMapping("/Oauth/join")
     public ResponseEntity<?> oauthsignup(@RequestBody UserDTO userDTO,Authentication authentication) {

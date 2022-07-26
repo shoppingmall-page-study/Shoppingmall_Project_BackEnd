@@ -34,13 +34,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
         String jwtHeader = request.getHeader("Authorization");
-        System.out.println("jwtHeader:"+ jwtHeader);
+        //System.out.println("jwtHeader:"+ jwtHeader);
         // wjt 토큰을 검증을 해서 정상적인 사용자인지 확인 하면 됨
         // header가 있는지 확인
 
-        if(jwtHeader==null || jwtHeader == "Bearer null"){
-            System.out.println("null이여서 들어갈수 없습니다.");
-        }
         if(jwtHeader == null || !jwtHeader.startsWith("Bearer") || jwtHeader.equals("Bearer null") ){
             chain.doFilter(request,response);
             return;
@@ -61,9 +58,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         // 서명이 정상적으로 됨
         if(userEmail != null){
-            System.out.println("username정상");
             User userEntity = userRepository.findByEmail(userEmail);
-            System.out.println(userEntity.getRoles());
 
             // user 인증 객체 생성
             // 인증 객체는 서명을 통해서 만든는거 로그인 요청으로 처리한것은 아님 서명을 토큰 서명을 통한 객체
