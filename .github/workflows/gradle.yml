@@ -36,19 +36,19 @@ jobs:
         name: build-artifact
         path: build
         retention-days: 1
-docker:
-  name: Deploy Docker Image
-  runs-on: ubuntu-latest
-  needs: build
-  env:
-    REPO: ${{secrets.DOCKER_REPO}}
-  steps:
-  - uses: actions/checkout@v3
-  - name: Retrieve built
-    uses: actions/download-artifact@v3
-    with:
-    - name: build-artifact
-      path: build
+  docker:
+    name: Deploy Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      REPO: ${{secrets.DOCKER_REPO}}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Retrieve built
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifact
+        path: build
     - name: Docker Hub Sign-in
       run: docker build -t $REPO:latest -t $REPO:${GITHUB_RUN_ID} .
     - name: Publish Docker Image
