@@ -1,18 +1,28 @@
 # Shoppingmall_Project_BackEnd
 쇼핑몰 프로젝트(oauth 및 결제 공부용)
-
+<br></br>
 ## 개요
 
 
 - **스프링부트 및 리액트를 통한 OAUTH2.0 로그인, 결제시스템 공부 및 CI/CD를 공부하기 위한 웹 사이트 제작 프로젝트**
-
+<br></br>
 ## 팀원
 
 
 - **컴퓨터 공학과 3학년 이동복(백엔드)**
 - **컴퓨터 공학과 3학년 임종혁(백엔드 + 프론트엔드)**
 - **정보통신 공학과 3학년 이상민(프론트엔드)**
-
+<br></br>
+## 배포 환경
+<img src = "https://img.shields.io/badge/Ubuntu-22.04 LTS-E95420?logo=ubuntu"/> <img src = "https://img.shields.io/badge/Mysql-8.0.29-4479A1?logo=mysql"/>
+<img src = "https://img.shields.io/badge/Gradle-7.4.1-02303A?logo=gradle"/>
+<img src = "https://img.shields.io/badge/Java-1.8.0-007396?logo=java"/>
+<img src = "https://img.shields.io/badge/Spring Boot-2.6.7-6DB33F?logo=spring boot"/>
+<img src = "https://img.shields.io/badge/Spring Security-5.6.3-6DB33F?logo=spring security"/>
+<br></br>
+**사이트 주소**
+>**주소 추가 예정**
+<br></br>
 ## 전체 일정
 
 
@@ -20,34 +30,34 @@
 
 [ToDoList](https://topaz-joke-66e.notion.site/ToDoList-87d9f99b9876420eb729ac1afd5b5c10)
 
-
+<br></br>
 ## 페이지별 상세 설계
 
 
 [전체 기능](https://topaz-joke-66e.notion.site/55295792eb364b43a80091a4f6a7961d)
-
+<br></br>
 ## ERD
 
 
 [https://www.erdcloud.com/d/4WjscrT7mpXomcq66](https://www.erdcloud.com/d/4WjscrT7mpXomcq66)
 
 ![image](https://user-images.githubusercontent.com/42925746/177471926-9d74b77a-f022-43f0-b555-daf6d2e28a6d.png)
-
+<br></br>
 ## 페이지 디자인 & 와이어 프레임
 
 
 [https://www.figma.com/file/4L3pleKwzOiEQNGYBdmh8V/Untitled?node-id=10%3A408](https://www.figma.com/file/4L3pleKwzOiEQNGYBdmh8V/Untitled?node-id=10%3A408)
 
 ![image](https://user-images.githubusercontent.com/42925746/177485476-234ed37b-6666-46a8-97e3-f5b2f64ab948.png)
-
+<br></br>
 ## 데이터 플로우 & 시스템 설계
 
 ![image](https://user-images.githubusercontent.com/42925746/177472074-69ecf91d-e34c-4de0-9021-61aeabb3bbe1.png)
-
+<br></br>
 ## 사용 기술스택
 
 [사용 라이브러리, 기술 스택](https://topaz-joke-66e.notion.site/96da1159533c4ef79e29c825541967ff)
-
+<br></br>
 ## 회의
 
 
