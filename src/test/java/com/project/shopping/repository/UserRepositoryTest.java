@@ -26,10 +26,12 @@ class UserRepositoryTest {
         User user = User.builder()
                     .email("user@example.com")
                     .username("user")
+                    .password("password")
                     .address("address")
                     .age(11)
                     .nickname("nickname")
                     .phoneNumber("01000000000")
+                    .roles("ROLE_USER")
                     .build();
 
         User testUser = userRepository.save(user);
