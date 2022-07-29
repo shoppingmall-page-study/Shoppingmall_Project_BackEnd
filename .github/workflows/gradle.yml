@@ -24,13 +24,12 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
-    - name: Test
-      run: echo ls
     - name: Create Spring Properties
       run: |
         mkdir src/main/resources
         touch src/main/application.properties
-        echo "DEV_SPRING_PROPERTIES" > application.properties.b64
+        echo "DEV_SPRING_PROPERTIES"
+        echo "DEV_SPRING_PROPERTIES" > application.properties
       env:
         DEV_SPRING_PROPERTIES: ${{secrets.APPLICATION_PROPERTIES}}
     - name: Grant execute permission for gradlew
