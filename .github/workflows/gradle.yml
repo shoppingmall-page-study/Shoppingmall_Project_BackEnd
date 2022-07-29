@@ -1,5 +1,5 @@
 # This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
+# They are provided by a third-party and are governed by 
 # separate terms of service, privacy policy, and support
 # documentation.
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 8
@@ -24,21 +24,18 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
-    - name: Test
-      run: echo ls
     - name: Create Spring Properties
       run: |
         mkdir src/main/resources
         touch src/main/application.properties
-        echo "DEV_SPRING_PROPERTIES" > application.properties.b64
+        echo "$DEV_SPRING_PROPERTIES"
+        echo "$DEV_SPRING_PROPERTIES" > application.properties
       env:
         DEV_SPRING_PROPERTIES: ${{secrets.APPLICATION_PROPERTIES}}
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Test with Gradle
-      run: ./gradlew test
     - name: Build with Gradle
-      uses: ./gradlew build -x test
+      run: ./gradlew clean build
     - name: Temporarily save build artifact
       uses: actions/upload-artifact@v3
       with:
@@ -59,6 +56,8 @@ jobs:
         name: build-artifact
         path: build
     - name: Docker Hub Sign-in
+      run: docker login -u ${{secrets.DOCKER_ID}} -p ${{secrets.DOCKER_PASSWORD}}
+    - name: Building Docker Image
       run: docker build -t $REPO:latest -t $REPO:${GITHUB_RUN_ID} .
     - name: Publish Docker Image
       run: docker push $REPO
