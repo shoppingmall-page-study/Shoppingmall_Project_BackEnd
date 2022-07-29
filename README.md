@@ -87,5 +87,5 @@
 - 2022-07-05 JWT토큰 발급 로직(종혁)
 - 2022-07-24 CI/CD파이프 라인 설계(동복)
 - 2022-07-26 oauth 2.0 kakao,google 회원가입및 로그인 api (종혁)
-- 2022-07-29 develop push시 docker이미지 빌드 & push 기능 추가
+- 2022-07-29 develop push시 docker이미지 빌드 & push 기능 추가(동복)
 
