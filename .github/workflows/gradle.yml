@@ -37,7 +37,7 @@ jobs:
     - name: Test with Gradle
       run: ./gradlew test
     - name: Build with Gradle
-      uses: ./gradlew clean build
+      run: ./gradlew clean build
     - name: Temporarily save build artifact
       uses: actions/upload-artifact@v3
       with:
