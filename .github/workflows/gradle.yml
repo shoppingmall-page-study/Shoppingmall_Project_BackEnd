@@ -24,6 +24,8 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
+    - name: Test
+      run: echo ls
     - name: Create Spring Properties
       run: |
         touch src/main/resources/application.properties
