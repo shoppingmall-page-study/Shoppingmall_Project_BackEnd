@@ -34,8 +34,10 @@ jobs:
         DEV_SPRING_PROPERTIES: ${{secrets.APPLICATION_PROPERTIES}}
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+    - name: Test with Gradle
+      run: ./gradlew test
     - name: Build with Gradle
-      run: ./gradlew clean build
+      run: ./gradlew build -x test
     - name: Temporarily save build artifact
       uses: actions/upload-artifact@v3
       with:
