@@ -74,7 +74,7 @@ jobs:
           script: |
           
           
-            docker login -u ${{secrets.DOCKER_ID}} -p ${{secrets.DOCKER_PW}}
+            docker login -u ${{secrets.DOCKER_ID}} -p ${{secrets.DOCKER_PASSWORD}}
             
             docker pull ${{secrets.DOCKER_ID}}/${{secrets.DOCKER_IMAGE}}
             
