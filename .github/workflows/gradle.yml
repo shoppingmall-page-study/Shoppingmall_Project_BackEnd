@@ -50,11 +50,6 @@ jobs:
       REPO: ${{secrets.DOCKER_REPO}}
     steps:
     - uses: actions/checkout@v3
-    - name: Retrieve built
-      uses: actions/download-artifact@v3
-      with:
-        name: build-artifact
-        path: build
     - name: Create Spring Properties
       run: |
         mkdir src/main/resources
@@ -63,6 +58,11 @@ jobs:
         echo "$DEV_SPRING_PROPERTIES" > application.properties
       env:
         DEV_SPRING_PROPERTIES: ${{secrets.APPLICATION_PROPERTIES}}
+    - name: Retrieve built
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifact
+        path: build
     - name: Docker Hub Sign-in
       run: docker login -u ${{secrets.DOCKER_ID}} -p ${{secrets.DOCKER_PASSWORD}}
     - name: Building Docker Image
