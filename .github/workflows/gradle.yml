@@ -50,7 +50,8 @@ jobs:
       REPO: ${{secrets.DOCKER_REPO}}
     steps:
     - uses: actions/checkout@v3
-
+    - name: Retrieve built
+      uses: actions/download-artifact@v3
       with:
         name: build-artifact
         path: build
