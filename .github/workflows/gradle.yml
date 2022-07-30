@@ -50,16 +50,7 @@ jobs:
       REPO: ${{secrets.DOCKER_REPO}}
     steps:
     - uses: actions/checkout@v3
-    - name: Create Spring Properties
-      run: |
-        mkdir src/main/resources
-        touch src/main/application.properties
-        echo "$DEV_SPRING_PROPERTIES"
-        echo "$DEV_SPRING_PROPERTIES" > application.properties
-      env:
-        DEV_SPRING_PROPERTIES: ${{secrets.APPLICATION_PROPERTIES}}
-    - name: Retrieve built
-      uses: actions/download-artifact@v3
+
       with:
         name: build-artifact
         path: build
