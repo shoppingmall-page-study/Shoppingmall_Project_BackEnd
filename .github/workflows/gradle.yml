@@ -16,6 +16,7 @@ permissions:
 
 jobs:
   build:
+    name: Test And Build
     runs-on: ubuntu-latest 
     steps:
     - uses: actions/checkout@v3
@@ -58,3 +59,26 @@ jobs:
       run: docker build -t $REPO:latest -t $REPO:${GITHUB_RUN_ID} ./
     - name: Publish Docker Image
       run: docker push $REPO
+  deploy:
+    name: Deploy To Server
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Test ssh-action
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          password: ${{secrets.PASSWORD}}
+          port: ${{secrets.PORT}}
+          script: |
+          
+          
+            docker login -u ${{secrets.DOCKER_ID}} -p ${{secrets.DOCKER_PW}}
+            
+            docker pull ${{secrets.DOCKER_ID}}/${{secrets.DOCKER_IMAGE}}
+            
+            docker stop ${{secrets.DOCKER_IMAGE}}
+            
+            docker rm ${{secrets.DOCKER_IMAGE}}
+            
+            docker run -d -p 8080:8080 --name ${{secrets.DOCKER_IMAGE}} ${{secrets.DOCKER_ID}}/${{secrets.DOCKER_IMAGE}}
