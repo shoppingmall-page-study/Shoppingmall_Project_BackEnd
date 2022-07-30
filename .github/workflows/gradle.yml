@@ -28,10 +28,7 @@ jobs:
       run: |
         mkdir src/main/resources
         touch src/main/application.properties
-        echo "$DEV_SPRING_PROPERTIES"
-        echo "$DEV_SPRING_PROPERTIES" > application.properties
-      env:
-        DEV_SPRING_PROPERTIES: ${{secrets.APPLICATION_PROPERTIES}}
+        echo "${{secrets.APPLICATION_PROPERTIES}}" > src/main/application.properties
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Test with Gradle
