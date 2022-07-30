@@ -24,18 +24,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
+    @Autowired
+    private UserRepository userRepository;
 
-    private final UserRepository userRepository;
-    private final Tokenprovider tokenprovider;
-    private  final UserRequstMapper userRequstMapper;
-    private  final UserService userService;
+    @Autowired
+    private Tokenprovider tokenprovider;
 
+    @Autowired
+    private UserRequstMapper userRequstMapper;
 
-    private final BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private  UserService userService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
