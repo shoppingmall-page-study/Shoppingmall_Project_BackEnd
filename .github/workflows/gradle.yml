@@ -75,10 +75,6 @@ jobs:
           
             docker login -u ${{secrets.DOCKER_ID}} -p ${{secrets.DOCKER_PASSWORD}}
             
-            docker pull ${{secrets.DOCKER_ID}}/${{secrets.DOCKER_IMAGE}}
+            cd shopping
             
-            docker stop ${{secrets.DOCKER_IMAGE}}
-            
-            docker rm ${{secrets.DOCKER_IMAGE}}
-            
-            docker run -d -p 8080:8080 --name ${{secrets.DOCKER_IMAGE}} ${{secrets.DOCKER_ID}}/${{secrets.DOCKER_IMAGE}}
+            ./deploy.sh
