@@ -13,11 +13,11 @@ import java.sql.Timestamp;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="id")
+    @Column(name ="Product_ID")
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "User_id")
+    @JoinColumn(name = "User_ID")
     private User userId;
 
     @Column(nullable = false)
