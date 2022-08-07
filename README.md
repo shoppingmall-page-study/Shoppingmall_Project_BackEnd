@@ -20,8 +20,10 @@
 <img src = "https://img.shields.io/badge/Spring Boot-2.6.7-6DB33F?logo=spring boot"/>
 <img src = "https://img.shields.io/badge/Spring Security-5.6.3-6DB33F?logo=spring security"/>
 <br></br>
-**사이트 주소**
->**주소 추가 예정**
+**배포 주소**
+>**222.118.103.229(Running)**
+
+서버 접속 불가시 slack/discord로 알리기
 <br></br>
 ## 전체 일정
 
@@ -88,4 +90,4 @@
 - 2022-07-24 CI/CD파이프 라인 설계(동복)
 - 2022-07-26 oauth 2.0 kakao,google 회원가입및 로그인 api (종혁)
 - 2022-07-29 develop push시 docker이미지 빌드 & push 기능 추가(동복)
-- 2022-08-08 product crud(종혁) 
+- 2022-08-08 product crud(종혁), nginx,mysql,springboot 무중단 배포환경 구축(동복) 
