@@ -21,8 +21,8 @@ public class Cart {
     private Product productId;
 
     @ManyToOne
-    @JoinColumn(name = "User_ID")
-    private User UserId;
+    @JoinColumn(name = "user_ID")
+    private User userId;
 
     @CreationTimestamp
     private Timestamp createTime;
@@ -30,7 +30,7 @@ public class Cart {
     @Builder
     public Cart(Product productId, User userId, Timestamp createTime) {
         this.productId = productId;
-        UserId = userId;
+        this.userId = userId;
         this.createTime = createTime;
     }
 }
