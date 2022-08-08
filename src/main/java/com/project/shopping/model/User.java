@@ -69,6 +69,8 @@ public class User {
         return new ArrayList<>();
     }
 
+
+
     @Builder
     public User(String email,String password, String username, String address, int age, String nickname, String phoneNumber ,String roles) {
         this.email = email;

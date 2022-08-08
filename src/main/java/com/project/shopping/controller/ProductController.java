@@ -31,11 +31,11 @@ public class ProductController {
 
     @PostMapping("/product/create")
     public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody  ProductDTO productDTO){
-        System.out.println(productDTO.getTitle());
-        System.out.println(productDTO.getName());
-        System.out.println(productDTO.getPrice());
-        System.out.println(productDTO.getTotal());
-        System.out.println(productDTO.getImgUrl());
+//        System.out.println(productDTO.getTitle());
+//        System.out.println(productDTO.getName());
+//        System.out.println(productDTO.getPrice());
+//        System.out.println(productDTO.getTotal());
+//        System.out.println(productDTO.getImgUrl());
 
 
         try{
