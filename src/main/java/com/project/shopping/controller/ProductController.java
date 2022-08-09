@@ -80,27 +80,6 @@ public class ProductController {
 
     @DeleteMapping("/product/delete/{id}")
     public ResponseEntity<?>  productdelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
-        System.out.println(ProductId);
-        PrincipalDetails userDtails1 = (PrincipalDetails) authentication.getPrincipal();
-        String email1 = userDtails1.getUser().getEmail();
-        User user1 = userService.findEmailByUser(email1); // user 찾기
-        Product product1 = productService.findProductNameUser(ProductId,user1); // 유저와 상품명으로 상품 찾기
-        System.out.println(user1);
-        System.out.println(product1);
-        System.out.println(product1.getId());
-        System.out.println(product1.getUserId().getEmail());
-        System.out.println(product1.getUserId().getUserId());
-        System.out.println(product1.getUserId().getUsername());
-        System.out.println(product1.getUserId().getPhoneNumber());
-        System.out.println(product1.getTitle());
-        System.out.println(product1.getContent());
-        System.out.println(product1.getName());
-        System.out.println(product1.getPrice());
-        System.out.println(product1.getTotal());
-        System.out.println(product1.getImgUrl());
-        System.out.println(product1.getCreateDate());
-
-
 
 
         try{

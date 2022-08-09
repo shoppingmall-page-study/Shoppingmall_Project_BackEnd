@@ -18,7 +18,6 @@ public class CartService {
     }
 
     public  void deleteCart(Cart cart){cartRepository.delete(cart);}
-    public List<Cart> findall() {return  cartRepository.findAll();}
     public  List<Cart> findallByUserId(User user){return cartRepository.findAllByuserId(user); }
 
     public Cart findCartUserAndId(User user, int id){

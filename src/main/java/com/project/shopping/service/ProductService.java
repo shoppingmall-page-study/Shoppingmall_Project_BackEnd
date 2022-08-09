@@ -29,8 +29,7 @@ public class ProductService {
     public Product findProductNameUser(int id, User user){
         return productRepository.findByIdAndUserId(id, user);
     }
-    public void deleteProduct(Product product){
-        productRepository.delete(product);
+    public void deleteProduct(Product product){productRepository.delete(product);
     }
     public Product findproductid(int id){
         return productRepository.findById(id);
