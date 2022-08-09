@@ -117,7 +117,7 @@ public class ProductRepositoryTest {
     public void findAll(){
         String passwordd ="asdfasfdasdf";
         User user = User.builder()
-                .email("user@example.com")
+                .email("user0@example.com")
                 .username("user")
                 .password(passwordEncoder.encode((passwordd)))
                 .address("address")
@@ -138,6 +138,10 @@ public class ProductRepositoryTest {
                 .build();
         Product testProduct = productRepository.save(product1);
         List<Product> findAll = productRepository.findAll();
-        Assertions.assertThat(findAll.get(0).getId()).isEqualTo(product1.getId());
+        for(Product product : findAll){
+            if(product.getId() == product1.getId()){
+                Assertions.assertThat(product.getId()).isEqualTo(product1.getId());
+            }
+        }
     }
 }
