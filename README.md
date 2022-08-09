@@ -31,7 +31,7 @@
 
 ## 🏯아키텍처
 
-![image](https://user-images.githubusercontent.com/42925746/177472074-69ecf91d-e34c-4de0-9021-61aeabb3bbe1.png)
+![image](https://user-images.githubusercontent.com/42925746/183555715-f34a2357-a034-421b-a7c6-8994132d3c92.png)
 <br></br>
 ## ⛓사용 기술스택
 
@@ -52,7 +52,7 @@
 [백엔드 무중단 배포환경](https://topaz-joke-66e.notion.site/b030e32b927545bdb4385e81b5b388de)
 
 
-
+<br/>
 
 ## 📆현재 개발 현황
 
