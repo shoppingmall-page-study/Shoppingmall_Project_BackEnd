@@ -41,7 +41,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json");
 
         response.addHeader("Authorization","Bearer "+jwt);
-        response.addHeader("Access-Control-Allow-origin","*");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE, PATCH");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
         UserDTO res = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
                 .age(user.getAge()).address(user.getAddress())
