@@ -21,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 
+@Configuration
 @EnableWebSecurity
 @Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
