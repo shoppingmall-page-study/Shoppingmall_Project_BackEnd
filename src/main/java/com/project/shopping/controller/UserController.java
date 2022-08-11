@@ -38,6 +38,7 @@ public class UserController {
     private BCryptPasswordEncoder passwordEncoder;
 
 
+    @CrossOrigin
     @PostMapping("/join")
     public ResponseEntity<?> signup(@RequestBody UserDTO userDTO){
         try{
