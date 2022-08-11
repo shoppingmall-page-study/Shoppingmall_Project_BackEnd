@@ -1,6 +1,7 @@
 package com.project.shopping.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -17,5 +18,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .exposedHeaders("Authorization","*")
                 .maxAge(MAX_AGE_SECS)
         ;
+
     }
 }
