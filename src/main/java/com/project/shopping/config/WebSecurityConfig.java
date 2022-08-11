@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity
 @Slf4j
@@ -41,15 +42,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomOAuth2UserService oAuth2UserService;
     @Autowired
-    private CorsConfig corsConfig;
+    private CorsFilter corsFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
         http
-
-                .addFilter(corsConfig.corsFilter())
-                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and() // cors 필터 걸기
+                .addFilter(corsFilter)
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
