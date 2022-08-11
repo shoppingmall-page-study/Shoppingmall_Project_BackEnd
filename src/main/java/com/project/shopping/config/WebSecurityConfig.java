@@ -50,19 +50,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().cors();
+        http.cors();
         http
+
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and() // cors 필터 걸기
-                //.addFilter(corsFilter) // cors 필터 활성화
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()// preFlight 허횽
                 .antMatchers("/shopping/**").authenticated()
                 .anyRequest().permitAll();
-       http.addFilter(new JwtAuthenticationFilter(authenticationManager(),tokenprovider));
-       http.addFilter(new JwtAuthorizationFilter(authenticationManager(),tokenprovider,userRepository));
-       http.oauth2Login().loginPage("/login").defaultSuccessUrl("/success").successHandler(successHandler).userInfoEndpoint().userService(oAuth2UserService);
+        http.addFilter(new JwtAuthenticationFilter(authenticationManager(),tokenprovider));
+        http.addFilter(new JwtAuthorizationFilter(authenticationManager(),tokenprovider,userRepository));
+        http.cors();
+        http.oauth2Login().loginPage("/login").defaultSuccessUrl("/success").successHandler(successHandler).userInfoEndpoint().userService(oAuth2UserService);
     }
-
 }
