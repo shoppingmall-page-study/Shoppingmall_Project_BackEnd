@@ -13,7 +13,7 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true); // 내 서버가 응답을 할시 json을 자바스크립트에서 처리할 수 있게 할지 결정
-        config.addAllowedOriginPattern("*");// 모등 ip 에 응답 허용
+        config.addAllowedOrigin("http://localhost:3000");// 모등 ip 에 응답 허용
         config.addAllowedHeader("*"); // 모든 header 응답 허용
         config.addAllowedMethod("*"); // 모든 post,get,put,delet, patch요청 허용
 
