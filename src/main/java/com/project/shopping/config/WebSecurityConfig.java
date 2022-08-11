@@ -53,11 +53,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and() // cors 필터 걸기
-                .addFilter(corsFilter)
+                .addFilter(corsFilter) // cors 필터 활성화
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()// preFlight 허횽
                 .antMatchers("/shopping/**").authenticated()
                 .anyRequest().permitAll();
        http.addFilter(new JwtAuthenticationFilter(authenticationManager(),tokenprovider));
