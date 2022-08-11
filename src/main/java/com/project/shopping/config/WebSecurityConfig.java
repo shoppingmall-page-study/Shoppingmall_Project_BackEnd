@@ -40,12 +40,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomOAuth2UserService oAuth2UserService;
+    @Autowired
+    private CorsConfig corsConfig;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors();
         http
 
+                .addFilter(corsConfig.corsFilter())
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and() // cors 필터 걸기
                 .formLogin().disable()
@@ -55,7 +57,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll();
        http.addFilter(new JwtAuthenticationFilter(authenticationManager(),tokenprovider));
        http.addFilter(new JwtAuthorizationFilter(authenticationManager(),tokenprovider,userRepository));
-       http.cors();
        http.oauth2Login().loginPage("/login").defaultSuccessUrl("/success").successHandler(successHandler).userInfoEndpoint().userService(oAuth2UserService);
     }
 
