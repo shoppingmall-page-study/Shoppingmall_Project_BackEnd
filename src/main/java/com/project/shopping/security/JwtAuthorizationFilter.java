@@ -30,6 +30,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        if(request.getMethod().equals("OPTIONS")){
+            return true;
+        }
+        return super.shouldNotFilter(request);
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         // 왜 연로 들어 가지 않지 ??
 

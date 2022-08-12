@@ -58,6 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()// preFlight 허횽
                 .antMatchers("/shopping/**").authenticated()
                 .anyRequest().permitAll();
         http.addFilter(new JwtAuthenticationFilter(authenticationManager(),tokenprovider));
