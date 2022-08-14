@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 @Transactional
 public interface CartRepository extends JpaRepository<Cart,Integer> {
-    List<Cart> findAll();
+   // 유저가 등록한 상품 전체 조회 , 유저id와 카트 id로 해당 장바구니 상품 찾기 (삭제를 위해서)
 
     List<Cart> findAllByuserId(User UserId);
 
