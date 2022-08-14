@@ -63,4 +63,5 @@
 - 2022-07-26 oauth 2.0 kakao,google 회원가입및 로그인 api (종혁)
 - 2022-07-29 develop push시 docker이미지 빌드 & push 기능 추가(동복)
 - 2022-08-08 product crud, cart crud(종혁), nginx,mysql,springboot 무중단 배포환경 구축(동복) 
+- 2022-08-14 review crud(종혁)
 
