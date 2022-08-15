@@ -42,7 +42,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         // 왜 연로 들어 가지 않지 ??
 
         System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
-        System.out.println("서버 업데이트 테스트");
+        System.out.println("서버 업데이트 테스트asdf");
         System.out.println("인증 요청::::");
         String jwtHeader = request.getHeader("Authorization");
         //System.out.println("jwtHeader:"+ jwtHeader);
