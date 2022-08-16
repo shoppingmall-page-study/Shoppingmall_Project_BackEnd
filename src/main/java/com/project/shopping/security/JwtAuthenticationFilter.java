@@ -38,6 +38,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
         User user = principalDetails.getUser();
         String jwt = tokenprovider.create(user);
+        System.out.println(jwt);
         response.setContentType("application/json");
 
         response.addHeader("Authorization","Bearer "+jwt);

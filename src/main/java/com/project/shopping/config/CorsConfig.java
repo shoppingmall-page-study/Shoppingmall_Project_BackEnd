@@ -17,7 +17,8 @@ public class CorsConfig {
         config.addAllowedOrigin("http://222.118.103.229:80");
         config.addAllowedHeader("*"); // 모든 header 응답 허용
         config.addAllowedHeader("Access-Control-Allow-origin");
-        config.addAllowedMethod("*"); // 모든 post,get,put,delet, patch요청 허용
+        config.addAllowedMethod("*"); // 모든 post,get,put,delete, patch요청 허용
+        config.addExposedHeader("Authorization");
 
         source.registerCorsConfiguration("/**",config);
         return new CorsFilter(source);

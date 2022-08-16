@@ -23,7 +23,7 @@ import org.springframework.web.filter.CorsFilter;
 
 
 @Configuration
-@EnableWebSecurity(debug = true)
+//@EnableWebSecurity(debug = true)
 @Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
