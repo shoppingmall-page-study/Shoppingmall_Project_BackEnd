@@ -27,7 +27,7 @@ public class ProductRepositoryTest {
     public void save(){
         String passwordd ="asdfasfdasdf";
         User user = User.builder()
-                .email("user@example.com")
+                .email("productrepo1@example.com")
                 .username("user")
                 .password(passwordEncoder.encode((passwordd)))
                 .address("address")
@@ -58,7 +58,7 @@ public class ProductRepositoryTest {
     public void findById(){
         String passwordd ="asdfasfdasdf";
         User user = User.builder()
-                .email("user@example.com")
+                .email("productrepo2@example.com")
                 .username("user")
                 .password(passwordEncoder.encode((passwordd)))
                 .address("address")
@@ -87,7 +87,7 @@ public class ProductRepositoryTest {
     public void findByIdAndUserId(){
         String passwordd ="asdfasfdasdf";
         User user = User.builder()
-                .email("user@example.com")
+                .email("productrepo3@example.com")
                 .username("user")
                 .password(passwordEncoder.encode((passwordd)))
                 .address("address")
@@ -117,7 +117,7 @@ public class ProductRepositoryTest {
     public void findAll(){
         String passwordd ="asdfasfdasdf";
         User user = User.builder()
-                .email("user0@example.com")
+                .email("productrepo4@example.com")
                 .username("user")
                 .password(passwordEncoder.encode((passwordd)))
                 .address("address")
