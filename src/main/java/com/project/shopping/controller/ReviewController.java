@@ -146,7 +146,7 @@ public class ReviewController {
     }
 
     // 상품에 달린 리뷰 조회
-    @GetMapping("/review/list/Product/{id}")
+    @GetMapping("/review/list/product/{id}")
     public ResponseEntity<?> findProductReviewlist(@PathVariable(value = "id") int ProductId){
         try {
             // 상품 찾기

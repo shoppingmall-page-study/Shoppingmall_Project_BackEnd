@@ -16,9 +16,16 @@ public class ProductService {
     private ProductRepository productRepository;
     // 상품 생성
     public Product create(Product product){
-        if(product == null  && product.getName() == null && product.getTitle()== null
-                && product.getContent() == null && product.getPrice() == 0 && product.getTotal() == 0
-            && product.getImgUrl() == null){
+
+        System.out.println(product.getName());
+        if(product.getName()==""){
+            System.out.println("Asdf");
+        }
+        // 왜 안걸림??
+
+        if(product == null  || product.getName() == "" ||  product.getTitle()== ""
+                && product.getContent() == "" ||  product.getPrice() == 0 ||  product.getTotal() == 0
+                ||  product.getImgUrl() == ""){
             throw  new RuntimeException();
         }
 
@@ -38,4 +45,6 @@ public class ProductService {
     public List<Product> findall(){
         return productRepository.findAll();
     }
+
+    public List<Product> getProductList(String title){return productRepository.getProductList(title);}
 }

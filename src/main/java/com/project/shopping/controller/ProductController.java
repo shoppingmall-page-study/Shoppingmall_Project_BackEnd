@@ -4,6 +4,7 @@ package com.project.shopping.controller;
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.ProductDTO;
 import com.project.shopping.dto.ResponseDTO;
+import com.project.shopping.dto.SearchDTO;
 import com.project.shopping.model.Product;
 import com.project.shopping.model.User;
 import com.project.shopping.service.ProductService;
@@ -54,6 +55,9 @@ public class ProductController {
                     .total(productDTO.getTotal())
                     .imgUrl(productDTO.getImgUrl())
                     .createDate(Timestamp.valueOf(LocalDateTime.now())).build();
+            System.out.println("12313213");
+            System.out.println(productDTO.getName());
+            System.out.println(product.getName());
             Product registeredProduct = productService.create(product); // 상품 생성
 
             ProductDTO response = ProductDTO.builder()
@@ -142,4 +146,38 @@ public class ProductController {
         result.put("data", productdtos);
         return ResponseEntity.ok().body(result);
     }
+
+    @PostMapping("/product/search")
+    public ResponseEntity<?> searchProudct(@RequestBody SearchDTO searchDTO){
+        try{
+            List<Product> productList = productService.getProductList(searchDTO.getSearchparam());
+            List<ProductDTO> response  = new ArrayList<>();
+
+            for(Product product : productList){
+                ProductDTO productDTO = ProductDTO.builder()
+                        .productId(product.getId())
+                        .useremail(product.getUserId().getEmail())
+                        .userId(product.getUserId().getUserId())
+                        .userName(product.getUserId().getUsername())
+                        .userPhoneNumber(product.getUserId().getPhoneNumber())
+                        .title(product.getTitle())
+                        .content(product.getContent())
+                        .name(product.getName())
+                        .price(product.getPrice())
+                        .total(product.getTotal())
+                        .imgUrl(product.getImgUrl())
+                        .createDate(product.getCreateDate())
+                        .build();
+                response.add(productDTO);
+            }
+            Map<String , Object> result = new HashMap<>();
+            result.put("data",response);
+            return ResponseEntity.ok().body(result);
+        }catch (Exception e)
+        {
+            return  ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
 }
