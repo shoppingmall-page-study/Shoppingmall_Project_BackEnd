@@ -24,7 +24,7 @@ class UserRepositoryTest {
     public void save(){
 
         User user = User.builder()
-                    .email("user@example.com")
+                    .email("userrepo@example.com")
                     .username("user")
                     .password("password")
                     .address("address")
