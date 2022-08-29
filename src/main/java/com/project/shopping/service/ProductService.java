@@ -47,4 +47,6 @@ public class ProductService {
     }
 
     public List<Product> getProductList(String title){return productRepository.getProductList(title);}
+
+    public List<Product> findallByUserId(User user){return  productRepository.findAllByUserId(user); }
 }
