@@ -27,10 +27,13 @@ public class Cart {
     @CreationTimestamp
     private Timestamp createTime;
 
+    @Setter
+    private long totalsum;
     @Builder
-    public Cart(Product productId, User userId, Timestamp createTime) {
+    public Cart(Product productId, User userId, Timestamp createTime, long totalsum) {
         this.productId = productId;
         this.userId = userId;
         this.createTime = createTime;
+        this.totalsum = totalsum;
     }
 }

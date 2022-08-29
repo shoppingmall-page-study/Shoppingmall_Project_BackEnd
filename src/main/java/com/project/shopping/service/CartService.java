@@ -1,6 +1,7 @@
 package com.project.shopping.service;
 
 import com.project.shopping.model.Cart;
+import com.project.shopping.model.Product;
 import com.project.shopping.model.User;
 import com.project.shopping.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,4 +32,9 @@ public class CartService {
     public Cart findCartUserAndId(User user, int id){
         return cartRepository.findCartByUserIdAndId(user, id);
     }
+
+
+    public boolean existsCartByUserIdAndProductId(User user, Product product){return cartRepository.existsCartByUserIdAndProductId(user,product);}
+
+    public Cart findCartByUserIdAndProductId(User user, Product product){return  cartRepository.findCartByUserIdAndProductId(user,product);}
 }

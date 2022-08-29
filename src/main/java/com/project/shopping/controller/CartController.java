@@ -14,10 +14,7 @@ import com.project.shopping.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -39,20 +36,40 @@ public class CartController {
 
     // 상품 생성
     // product id를 받아서 해당 상품을 찾고 인증객체를 통한 user 을 받아 장바구니 생성
-    @GetMapping("/cart/create/{id}")
+    @PostMapping("/cart/create/{id}")
     // 여기서 ID는 상품 ID
-    public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "id") int ProductId){
+    public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "id") int ProductId ,@RequestBody CartDTO cartDTO){
         try{
             PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
             String email = userDetails.getUser().getEmail();
             User user = userService.findEmailByUser(email); // user 찾기
             Product product = productService.findproductid(ProductId); // 상품 찾기
-            Cart cart = Cart.builder().productId(product).userId(user).createTime(Timestamp.valueOf(LocalDateTime.now())).build();
-            cartService.create(cart); // 카트 생성
+
+            if(cartDTO.getTotalsum() > product.getTotal()){
+                throw  new Exception("상품 개수 초과 ");
+            }
+
+            // 유저가 장바구니에 담은 상품이 기존에 있을시
+            if(cartService.existsCartByUserIdAndProductId(user, product)){ // 해당 상품이 존재 할시
+                Cart findCart = cartService.findCartByUserIdAndProductId(user, product);
+                long totalsum = cartDTO.getTotalsum() + findCart.getTotalsum();
+                //System.out.println(totalsum);
+                if(cartDTO.getTotalsum() + findCart.getTotalsum() > product.getTotal()){
+                    throw  new Exception("상품 개수 초과 ");
+                }
+                findCart.setTotalsum(totalsum);
+                cartService.create(findCart);
+                return ResponseEntity.ok().body("");
+
+            }else{
+                Cart cart = Cart.builder().productId(product).userId(user).createTime(Timestamp.valueOf(LocalDateTime.now())).totalsum(cartDTO.getTotalsum()).build();
+                cartService.create(cart); // 카트 생성
 
 
 
-            return ResponseEntity.ok().body("");
+                return ResponseEntity.ok().body("");
+            }
+
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -72,6 +89,7 @@ public class CartController {
             User user = userService.findEmailByUser(userEmail);
             List<Cart> cartList = cartService.findallByUserId(user);
             List<CartDTO> cartdtos = new ArrayList<>();
+            long totalsum = 0; // 최종 합계
             for(Cart cart: cartList){
                 CartDTO cartDto = CartDTO.builder()
                         .userId(cart.getUserId().getUserId())
@@ -86,13 +104,19 @@ public class CartController {
                         .productPrice(cart.getProductId().getPrice())
                         .productTotal(cart.getProductId().getTotal())
                         .imgUrl(cart.getProductId().getImgUrl())
+                        .totalsum(cart.getTotalsum())
                         .createTime(cart.getCreateTime()).build();
 
                 cartdtos.add(cartDto);
+                totalsum  = (totalsum + (cart.getTotalsum() * cart.getProductId().getPrice()));
 
             }
             Map<String, Object> result = new HashMap<>();
             result.put("data", cartdtos);
+            result.put("totalsum", totalsum);
+            System.out.println(totalsum);
+
+
             return  ResponseEntity.ok().body(result);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
