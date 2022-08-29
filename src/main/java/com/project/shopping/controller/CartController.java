@@ -58,16 +58,19 @@ public class CartController {
                     throw  new Exception("상품 개수 초과 ");
                 }
                 findCart.setCarttotal(totalsum);
-                cartService.create(findCart);
-                return ResponseEntity.ok().body("");
+                Cart createcart = cartService.create(findCart);
+
+                CartDTO response = CartDTO.builder().cartId(createcart.getId()).build();
+                return ResponseEntity.ok().body(response);
 
             }else{
                 Cart cart = Cart.builder().productId(product).userId(user).createTime(Timestamp.valueOf(LocalDateTime.now())).carttotal(cartDTO.getCarttotal()).build();
-                cartService.create(cart); // 카트 생성
+                Cart createcart = cartService.create(cart); // 카트 생성
+                CartDTO response = CartDTO.builder().cartId(createcart.getId()).build();
 
 
 
-                return ResponseEntity.ok().body("");
+                return ResponseEntity.ok().body(response);
             }
 
         }catch (Exception e){
@@ -93,6 +96,7 @@ public class CartController {
             int totalcarttotal =0;
             for(Cart cart: cartList){
                 CartDTO cartDto = CartDTO.builder()
+                        .cartId(cart.getId())
                         .userId(cart.getUserId().getUserId())
                         .userEmail(cart.getUserId().getEmail())
                         .userNickName(cart.getUserId().getNickname())

@@ -79,6 +79,23 @@ public class UserController {
 
     }
 
+    @GetMapping("/user/info")
+    public ResponseEntity<?> userinfo(Authentication authentication){
+        try{
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            String email = principalDetails.getUser().getEmail();
+
+            User user = userService.findEmailByUser(email); // 유저 찾기
+
+            UserDTO response = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
+                    .age(user.getAge()).address(user.getAddress())
+                    .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
+            return ResponseEntity.ok().body(response);
+        }catch (Exception e){
+            return ResponseEntity.ok().body(e.getMessage());
+        }
+    }
+
 
 
 

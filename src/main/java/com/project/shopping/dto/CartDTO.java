@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 @Getter
 public class CartDTO {
 
+    private  int cartId;
    private String userId;
    private  String userEmail;
    private String userPhoneNumber;
@@ -30,7 +31,8 @@ public class CartDTO {
 
     @Builder
 
-    public CartDTO(String userId, String userEmail,String userNickName ,String userPhoneNumber, String userName, String userAddress, int userAge, String productName, int productId, long productPrice, int productTotal, String imgUrl, Timestamp createTime,long carttotal) {
+    public CartDTO(int cartId,String userId, String userEmail,String userNickName ,String userPhoneNumber, String userName, String userAddress, int userAge, String productName, int productId, long productPrice, int productTotal, String imgUrl, Timestamp createTime,long carttotal) {
+        this.cartId  = cartId;
         this.userId = userId;
         this.userEmail = userEmail;
         this.userPhoneNumber = userPhoneNumber;
