@@ -180,5 +180,47 @@ public class ProductController {
 
     }
     // 내가 올린 상품 검색
+    @GetMapping("/product/list/user")
+    public ResponseEntity<?> findresisterproductuser(Authentication authentication){
+        try{
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            String email = principalDetails.getUser().getEmail();
+            User user = userService.findEmailByUser(email); // 해당 유저 찾기
+
+            List<Product> findallproduct = productService.findallByUserId(user); // 해당 유저가 등록한 상품들 찾기
+
+            List<ProductDTO> response = new ArrayList<>();
+
+            for(Product product: findallproduct){
+                ProductDTO productDTO = ProductDTO.builder()
+                        .productId(product.getId())
+                        .useremail(product.getUserId().getEmail())
+                        .userId(product.getUserId().getUserId())
+                        .userName(product.getUserId().getUsername())
+                        .userPhoneNumber(product.getUserId().getPhoneNumber())
+                        .title(product.getTitle())
+                        .content(product.getContent())
+                        .name(product.getName())
+                        .price(product.getPrice())
+                        .total(product.getTotal())
+                        .imgUrl(product.getImgUrl())
+                        .createDate(product.getCreateDate())
+                        .build();
+                response.add(productDTO);
+            }
+            Map<String , Object> result = new HashMap<>();
+            result.put("data",response);
+            return ResponseEntity.ok().body(result);
+
+
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
+
+
+
+    }
 
 }
