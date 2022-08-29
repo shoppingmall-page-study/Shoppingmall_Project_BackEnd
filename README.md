@@ -65,4 +65,5 @@
 - 2022-08-08 product crud, cart crud(종혁), nginx,mysql,springboot 무중단 배포환경 구축(동복) 
 - 2022-08-14 review crud(종혁)
 - 2022-08-28 상품 검색(종혁)
+- 2022-08-29 자신이 등록한 상품 조회 api (종혁)
 
