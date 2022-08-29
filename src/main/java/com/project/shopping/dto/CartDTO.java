@@ -26,11 +26,11 @@ public class CartDTO {
     private  int ProductTotal;
     private  String imgUrl;
     private Timestamp createTime;
-    private long totalsum;
+    private long carttotal;
 
     @Builder
 
-    public CartDTO(String userId, String userEmail,String userNickName ,String userPhoneNumber, String userName, String userAddress, int userAge, String productName, int productId, long productPrice, int productTotal, String imgUrl, Timestamp createTime,long totalsum) {
+    public CartDTO(String userId, String userEmail,String userNickName ,String userPhoneNumber, String userName, String userAddress, int userAge, String productName, int productId, long productPrice, int productTotal, String imgUrl, Timestamp createTime,long carttotal) {
         this.userId = userId;
         this.userEmail = userEmail;
         this.userPhoneNumber = userPhoneNumber;
@@ -44,6 +44,6 @@ public class CartDTO {
         ProductTotal = productTotal;
         this.imgUrl = imgUrl;
         this.createTime = createTime;
-        this.totalsum = totalsum;
+        this.carttotal = carttotal;
     }
 }

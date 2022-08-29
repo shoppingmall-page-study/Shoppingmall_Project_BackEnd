@@ -45,24 +45,24 @@ public class CartController {
             User user = userService.findEmailByUser(email); // user 찾기
             Product product = productService.findproductid(ProductId); // 상품 찾기
 
-            if(cartDTO.getTotalsum() > product.getTotal()){
+            if(cartDTO.getCarttotal() > product.getTotal()){
                 throw  new Exception("상품 개수 초과 ");
             }
 
             // 유저가 장바구니에 담은 상품이 기존에 있을시
             if(cartService.existsCartByUserIdAndProductId(user, product)){ // 해당 상품이 존재 할시
                 Cart findCart = cartService.findCartByUserIdAndProductId(user, product);
-                long totalsum = cartDTO.getTotalsum() + findCart.getTotalsum();
+                long totalsum = cartDTO.getCarttotal() + findCart.getCarttotal();
                 //System.out.println(totalsum);
-                if(cartDTO.getTotalsum() + findCart.getTotalsum() > product.getTotal()){
+                if(cartDTO.getCarttotal() + findCart.getCarttotal()> product.getTotal()){
                     throw  new Exception("상품 개수 초과 ");
                 }
-                findCart.setTotalsum(totalsum);
+                findCart.setCarttotal(totalsum);
                 cartService.create(findCart);
                 return ResponseEntity.ok().body("");
 
             }else{
-                Cart cart = Cart.builder().productId(product).userId(user).createTime(Timestamp.valueOf(LocalDateTime.now())).totalsum(cartDTO.getTotalsum()).build();
+                Cart cart = Cart.builder().productId(product).userId(user).createTime(Timestamp.valueOf(LocalDateTime.now())).carttotal(cartDTO.getCarttotal()).build();
                 cartService.create(cart); // 카트 생성
 
 
@@ -90,6 +90,7 @@ public class CartController {
             List<Cart> cartList = cartService.findallByUserId(user);
             List<CartDTO> cartdtos = new ArrayList<>();
             long totalsum = 0; // 최종 합계
+            int totalcarttotal =0;
             for(Cart cart: cartList){
                 CartDTO cartDto = CartDTO.builder()
                         .userId(cart.getUserId().getUserId())
@@ -104,16 +105,18 @@ public class CartController {
                         .productPrice(cart.getProductId().getPrice())
                         .productTotal(cart.getProductId().getTotal())
                         .imgUrl(cart.getProductId().getImgUrl())
-                        .totalsum(cart.getTotalsum())
+                        .carttotal(cart.getCarttotal())
                         .createTime(cart.getCreateTime()).build();
 
                 cartdtos.add(cartDto);
-                totalsum  = (totalsum + (cart.getTotalsum() * cart.getProductId().getPrice()));
+                totalsum  = (totalsum + (cart.getCarttotal() * cart.getProductId().getPrice()));
+                totalcarttotal = (int) (totalcarttotal +cart.getCarttotal());
 
             }
             Map<String, Object> result = new HashMap<>();
             result.put("data", cartdtos);
             result.put("totalsum", totalsum);
+            result.put("totalcarttotal", totalcarttotal);
             System.out.println(totalsum);
 
 
