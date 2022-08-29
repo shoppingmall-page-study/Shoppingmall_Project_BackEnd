@@ -28,12 +28,12 @@ public class Cart {
     private Timestamp createTime;
 
     @Setter
-    private long totalsum;
+    private long carttotal;
     @Builder
-    public Cart(Product productId, User userId, Timestamp createTime, long totalsum) {
+    public Cart(Product productId, User userId, Timestamp createTime, long carttotal) {
         this.productId = productId;
         this.userId = userId;
         this.createTime = createTime;
-        this.totalsum = totalsum;
+        this.carttotal = carttotal;
     }
 }
