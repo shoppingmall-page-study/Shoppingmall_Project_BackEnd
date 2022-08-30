@@ -20,40 +20,32 @@ public class User {
     @Column(name ="User_ID")
     private String userId;
 
+
+    @Setter
     @Column(nullable = false)
     private String email;
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 
     @Column(nullable = false)
     private String password;
 
+    @Setter
     @Column(nullable = false)
     private String username;
 
+    @Setter
     @Column(nullable = false)
     private String address;
 
+    @Setter
     @Column(nullable = false)
     private int age;
 
+    @Setter
     @Column(nullable = false,length = 20)
     private String nickname;
 
+    @Setter
     @Column(nullable = false,length=11)
     private String phoneNumber;
 

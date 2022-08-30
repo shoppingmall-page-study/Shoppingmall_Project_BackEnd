@@ -121,6 +121,8 @@ public class CartController {
             result.put("data", cartdtos);
             result.put("totalsum", totalsum);
             result.put("totalcarttotal", totalcarttotal);
+            // list.size
+
             System.out.println(totalsum);
 
 
@@ -133,7 +135,7 @@ public class CartController {
     }
 
     // 삭제 쿼리
-    @DeleteMapping("/cart/delete/{id}")
+    @DeleteMapping("/cart/delete/{id}") // id는 cart_Id
     public ResponseEntity<?> cartdelete(Authentication authentication, @PathVariable(value = "id")int id){
         try {
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -152,6 +154,54 @@ public class CartController {
             return  ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PutMapping("/cart/update/{id}")
+    public ResponseEntity<?> cartupdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody CartDTO cartDTO){
+        try{
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            String email = principalDetails.getUser().getEmail();
+            User user = userService.findEmailByUser(email); // 유저 찾기
+
+            Cart cart = cartService.findCartUserAndId(user,cartId); // 유저랑 카트 아이디를 이용한 카트 찾기
+            int totalcount = (int) (cartDTO.getCarttotal() + cart.getCarttotal());
+            //System.out.println(cartDTO.getCarttotal());
+            //System.out.println(totalcount);
+            if(totalcount > cart.getProductId().getTotal()){
+                throw  new Exception("상품 개수 초과 ");
+            }
+
+            cart.setCarttotal(totalcount);
+            Cart updatecart = cartService.create(cart);
+
+            CartDTO response  = CartDTO.builder()
+                    .cartId(updatecart.getId())
+                    .userId(updatecart.getUserId().getUserId())
+                    .userEmail(updatecart.getUserId().getEmail())
+                    .userNickName(updatecart.getUserId().getNickname())
+                    .userName(updatecart.getUserId().getUsername())
+                    .userAddress(updatecart.getUserId().getAddress())
+                    .userAge(updatecart.getUserId().getAge())
+                    .userPhoneNumber(updatecart.getUserId().getPhoneNumber())
+                    .productName(updatecart.getProductId().getName())
+                    .productId(updatecart.getProductId().getId())
+                    .productPrice(updatecart.getProductId().getPrice())
+                    .productTotal(updatecart.getProductId().getTotal())
+                    .imgUrl(updatecart.getProductId().getImgUrl())
+                    .carttotal(updatecart.getCarttotal())
+                    .createTime(updatecart.getCreateTime()).build();
+
+            return  ResponseEntity.ok().body(response);
+
+
+        }catch (Exception e){
+           return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
+
+
+
+    }
+
 
 
 
