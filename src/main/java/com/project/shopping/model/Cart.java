@@ -27,6 +27,7 @@ public class Cart {
     @CreationTimestamp
     private Timestamp createTime;
 
+    // set builder 패턴으로 수정
     @Setter
     private long carttotal;
     @Builder
