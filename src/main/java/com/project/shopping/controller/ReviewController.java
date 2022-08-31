@@ -119,6 +119,7 @@ public class ReviewController {
             List<ReviewDTO> userReviewListDto = new ArrayList<>();
             for (Review review : userReviewlist){
                 ReviewDTO reviewDTO = ReviewDTO.builder()
+                        .reviewId(review.getId())
                         .userId(review.getUserId().getUserId())
                         .userEmail(review.getUserId().getEmail())
                         .userName(review.getUserId().getUsername())
@@ -180,6 +181,9 @@ public class ReviewController {
         }
 
     }
+
+
+
 
 
 }

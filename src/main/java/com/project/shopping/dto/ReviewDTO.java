@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class ReviewDTO {
 
     //user
+    private int reviewId;
     private String userId;
     private String userEmail;
     private  String userName;
@@ -29,7 +30,8 @@ public class ReviewDTO {
 
 
     @Builder
-    public ReviewDTO(String userId, String userEmail, String userName, int userAge, String userNickName, String productName, int productId, long productPrice, String imgUrl, String title, String content) {
+    public ReviewDTO(String userId, String userEmail, String userName, int userAge, String userNickName, String productName, int productId, long productPrice, String imgUrl, String title, String content, int reviewId) {
+        this.reviewId = reviewId;
         this.userId = userId;
         this.userEmail = userEmail;
         this.userName = userName;
