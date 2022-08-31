@@ -6,6 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.Date;
+
 @NoArgsConstructor
 @Getter
 public class ReviewDTO {
@@ -28,9 +32,11 @@ public class ReviewDTO {
     private  String title;
     private  String content;
 
+    private LocalDate reviewCreateTime;
+
 
     @Builder
-    public ReviewDTO(String userId, String userEmail, String userName, int userAge, String userNickName, String productName, int productId, long productPrice, String imgUrl, String title, String content, int reviewId) {
+    public ReviewDTO(String userId, String userEmail, String userName, int userAge, String userNickName, String productName, int productId, long productPrice, String imgUrl, String title, String content, int reviewId, LocalDate reviewCreateTime) {
         this.reviewId = reviewId;
         this.userId = userId;
         this.userEmail = userEmail;
@@ -43,5 +49,6 @@ public class ReviewDTO {
         this.imgUrl = imgUrl;
         this.title = title;
         this.content = content;
+        this.reviewCreateTime = reviewCreateTime;
     }
 }
