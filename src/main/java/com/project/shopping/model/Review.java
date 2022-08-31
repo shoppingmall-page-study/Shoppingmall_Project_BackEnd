@@ -27,12 +27,15 @@ public class Review {
     @JoinColumn(name = "Product_ID")
     private Product productId;
 
+    @Setter
     @Column(nullable = false, length=255)
     private String title;
 
+    @Setter
     @Lob
     private String content;
 
+    @Setter
     @Column(nullable = true, length=255)
     private String imageUrl;
 

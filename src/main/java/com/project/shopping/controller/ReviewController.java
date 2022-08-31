@@ -188,6 +188,52 @@ public class ReviewController {
 
     }
 
+    @PutMapping("/review/update/{id}")
+    public ResponseEntity<?> productUpdate(Authentication authentication, @PathVariable(value = "id") int reviewId, @RequestBody ReviewDTO reviewDTO){
+        try{
+            PrincipalDetails principalDetails =  (PrincipalDetails) authentication.getPrincipal();
+            String email = principalDetails.getUser().getEmail();
+            User user = userService.findEmailByUser(email); // 유저 찾기
+
+            Review findReview = reviewService.findReviewUserAndId(user,reviewId); // 유저와 해당 리뷰 아이디로 리뷰 찾기
+            if(reviewDTO.getContent() != ""){
+                findReview.setContent(reviewDTO.getContent());
+            }
+            if(reviewDTO.getTitle() != ""){
+                findReview.setTitle(reviewDTO.getTitle());
+            }
+            if(reviewDTO.getImgUrl() != ""){
+                findReview.setImageUrl(reviewDTO.getImgUrl());
+            }
+
+            findReview.builder().reviewcreateTime(LocalDate.now());
+
+
+            Review review = reviewService.create(findReview);
+
+            ReviewDTO response = ReviewDTO.builder()
+                    .reviewId(review.getId())
+                    .userEmail(review.getUserId().getEmail())
+                    .userName(review.getUserId().getUsername())
+                    .userNickName(review.getUserId().getNickname())
+                    .productName(review.getProductId().getName())
+                    .productId(review.getProductId().getId())
+                    .productPrice(review.getProductId().getPrice())
+                    .imgUrl(review.getImageUrl())
+                    .title(review.getTitle())
+                    .content(review.getContent())
+                    .reviewCreateTime(review.getReviewcreateTime())
+                    .build();
+
+            return  ResponseEntity.ok().body(response);
+
+        }catch (Exception e){
+            return  ResponseEntity.badRequest().body(e.getMessage());
+
+        }
+
+    }
+
 
 
 
