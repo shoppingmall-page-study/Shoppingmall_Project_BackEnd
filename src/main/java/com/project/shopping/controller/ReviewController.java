@@ -62,7 +62,7 @@ public class ReviewController {
 
             ReviewDTO response = ReviewDTO.builder()
                     .reviewId(review.getId())
-                    .userId(registeredReview.getUserId().getUserId())
+
                     .userEmail(registeredReview.getUserId().getEmail())
                     .userName(registeredReview.getUserId().getUsername())
                     .userNickName(registeredReview.getUserId().getNickname())
@@ -123,7 +123,7 @@ public class ReviewController {
             for (Review review : userReviewlist){
                 ReviewDTO reviewDTO = ReviewDTO.builder()
                         .reviewId(review.getId())
-                        .userId(review.getUserId().getUserId())
+
                         .userEmail(review.getUserId().getEmail())
                         .userName(review.getUserId().getUsername())
                         .userAge(review.getUserId().getAge())
@@ -164,7 +164,7 @@ public class ReviewController {
             for(Review review : ProductReviewList){
                 ReviewDTO reviewDTO = ReviewDTO.builder()
                         .reviewId(review.getId())
-                        .userId(review.getUserId().getUserId())
+
                         .userEmail(review.getUserId().getEmail())
                         .userName(review.getUserId().getUsername())
                         .userAge(review.getUserId().getAge())
