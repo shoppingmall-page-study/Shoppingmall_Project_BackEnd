@@ -15,10 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @RestController
 public class ReviewController {
@@ -51,6 +51,7 @@ public class ReviewController {
                     .title(reviewDto.getTitle())
                     .content(reviewDto.getContent())
                     .imageUrl(reviewDto.getImgUrl())
+                    .reviewcreateTime(LocalDate.now())
                     .build();
 
 
@@ -60,6 +61,7 @@ public class ReviewController {
             // Review Dto 로 응답 보내기
 
             ReviewDTO response = ReviewDTO.builder()
+                    .reviewId(review.getId())
                     .userId(registeredReview.getUserId().getUserId())
                     .userEmail(registeredReview.getUserId().getEmail())
                     .userName(registeredReview.getUserId().getUsername())
@@ -70,6 +72,7 @@ public class ReviewController {
                     .imgUrl(registeredReview.getImageUrl())
                     .title(reviewDto.getTitle())
                     .content(reviewDto.getContent())
+                    .reviewCreateTime(registeredReview.getReviewcreateTime())
                     .build();
 
             return ResponseEntity.ok().body(response);
@@ -119,6 +122,7 @@ public class ReviewController {
             List<ReviewDTO> userReviewListDto = new ArrayList<>();
             for (Review review : userReviewlist){
                 ReviewDTO reviewDTO = ReviewDTO.builder()
+                        .reviewId(review.getId())
                         .userId(review.getUserId().getUserId())
                         .userEmail(review.getUserId().getEmail())
                         .userName(review.getUserId().getUsername())
@@ -130,6 +134,7 @@ public class ReviewController {
                         .imgUrl(review.getImageUrl())
                         .title(review.getTitle())
                         .content(review.getContent())
+                        .reviewCreateTime(review.getReviewcreateTime())
                         .build();
                 userReviewListDto.add(reviewDTO);
             }
@@ -158,6 +163,7 @@ public class ReviewController {
 
             for(Review review : ProductReviewList){
                 ReviewDTO reviewDTO = ReviewDTO.builder()
+                        .reviewId(review.getId())
                         .userId(review.getUserId().getUserId())
                         .userEmail(review.getUserId().getEmail())
                         .userName(review.getUserId().getUsername())
@@ -169,6 +175,7 @@ public class ReviewController {
                         .imgUrl(review.getImageUrl())
                         .title(review.getTitle())
                         .content(review.getContent())
+                        .reviewCreateTime(review.getReviewcreateTime())
                         .build();
                 ProductReviewDto.add(reviewDTO);
             }
@@ -180,6 +187,9 @@ public class ReviewController {
         }
 
     }
+
+
+
 
 
 }
