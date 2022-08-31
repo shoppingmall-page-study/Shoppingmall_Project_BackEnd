@@ -172,6 +172,7 @@ public class ProductController {
             }
             Map<String , Object> result = new HashMap<>();
             result.put("data",response);
+            result.put("length",response.size());
             return ResponseEntity.ok().body(result);
         }catch (Exception e)
         {
