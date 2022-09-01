@@ -27,6 +27,7 @@ public class Review {
     @JoinColumn(name = "Product_ID")
     private Product productId;
 
+
     // set builder 패턴 이용해 바꾸기
     @Setter
     @Column(nullable = false, length=255)
