@@ -120,7 +120,7 @@ public class CartController {
             result.put("totalcarttotal", totalcarttotal);
             // list.size
 
-            System.out.println(totalsum);
+            //System.out.println(totalsum);
 
 
             return  ResponseEntity.ok().body(result);
@@ -155,22 +155,27 @@ public class CartController {
     @PutMapping("/cart/update/{id}")
     public ResponseEntity<?> cartupdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody CartCountDTO cartCountDTO){
         try{
+
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             String email = principalDetails.getUser().getEmail();
             User user = userService.findEmailByUser(email); // 유저 찾기
 
             Cart cart = cartService.findCartUserAndId(user,cartId); // 유저랑 카트 아이디를 이용한 카트 찾기
-            int totalcount = (int) (cartCountDTO.getCarttotal() + cart.getCarttotal());
-            //System.out.println(cartDTO.getCarttotal());
+            long totalcount =  (cartCountDTO.getCarttotal());
+
             //System.out.println(totalcount);
             if(totalcount > cart.getProductId().getTotal()){
                 throw  new Exception("상품 개수 초과 ");
             }
+            if(totalcount <1){
+                throw new Exception("마이너스.");
+            }
 
-            cart.setCarttotal(totalcount);
+            cart.setCarttotal(cartCountDTO.getCarttotal());
             Cart updatecart = cartService.create(cart);
-            System.out.println(totalcount);
-            System.out.println(updatecart.getCarttotal());
+            System.out.println(cartCountDTO.getCarttotal() + "cartcount");
+            System.out.println(totalcount+ "totalcount");
+            System.out.println(updatecart.getCarttotal() + "update");
 
             CartDTO response  = CartDTO.builder()
                     .cartId(updatecart.getId())
