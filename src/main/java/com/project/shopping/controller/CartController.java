@@ -49,7 +49,7 @@ public class CartController {
             // 유저가 장바구니에 담은 상품이 기존에 있을시
             if(cartService.existsCartByUserIdAndProductId(user, product)){ // 해당 상품이 존재 할시
                 Cart findCart = cartService.findCartByUserIdAndProductId(user, product); // 캍찾기
-                long totalsum = findCart.getCarttotal()+1;
+                long totalsum = findCart.getCarttotal()+ cartDTO.getCarttotal();
                 //System.out.println(totalsum);
                 if(totalsum> product.getTotal()){
                     throw  new Exception("상품 개수 초과 ");
