@@ -1,10 +1,7 @@
 package com.project.shopping.controller;
 
 import com.project.shopping.auth.PrincipalDetails;
-import com.project.shopping.dto.CartDTO;
-import com.project.shopping.dto.ProductDTO;
-import com.project.shopping.dto.ResponseDTO;
-import com.project.shopping.dto.UserDTO;
+import com.project.shopping.dto.*;
 import com.project.shopping.model.Cart;
 import com.project.shopping.model.Product;
 import com.project.shopping.model.User;
@@ -51,10 +48,10 @@ public class CartController {
 
             // 유저가 장바구니에 담은 상품이 기존에 있을시
             if(cartService.existsCartByUserIdAndProductId(user, product)){ // 해당 상품이 존재 할시
-                Cart findCart = cartService.findCartByUserIdAndProductId(user, product);
-                long totalsum = cartDTO.getCarttotal() + findCart.getCarttotal();
+                Cart findCart = cartService.findCartByUserIdAndProductId(user, product); // 캍찾기
+                long totalsum = findCart.getCarttotal()+1;
                 //System.out.println(totalsum);
-                if(cartDTO.getCarttotal() + findCart.getCarttotal()> product.getTotal()){
+                if(totalsum> product.getTotal()){
                     throw  new Exception("상품 개수 초과 ");
                 }
                 findCart.setCarttotal(totalsum);
@@ -156,14 +153,14 @@ public class CartController {
     }
 
     @PutMapping("/cart/update/{id}")
-    public ResponseEntity<?> cartupdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody CartDTO cartDTO){
+    public ResponseEntity<?> cartupdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody CartCountDTO cartCountDTO){
         try{
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             String email = principalDetails.getUser().getEmail();
             User user = userService.findEmailByUser(email); // 유저 찾기
 
             Cart cart = cartService.findCartUserAndId(user,cartId); // 유저랑 카트 아이디를 이용한 카트 찾기
-            int totalcount = (int) (cartDTO.getCarttotal() + cart.getCarttotal());
+            int totalcount = (int) (cartCountDTO.getCarttotal() + cart.getCarttotal());
             //System.out.println(cartDTO.getCarttotal());
             //System.out.println(totalcount);
             if(totalcount > cart.getProductId().getTotal()){
@@ -172,6 +169,8 @@ public class CartController {
 
             cart.setCarttotal(totalcount);
             Cart updatecart = cartService.create(cart);
+            System.out.println(totalcount);
+            System.out.println(updatecart.getCarttotal());
 
             CartDTO response  = CartDTO.builder()
                     .cartId(updatecart.getId())
