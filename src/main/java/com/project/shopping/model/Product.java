@@ -5,6 +5,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -40,6 +42,14 @@ public class Product {
 
     @CreationTimestamp
     private Timestamp createDate;
+
+
+    @OneToMany(mappedBy = "productId")
+    private List<Review> reviews = new ArrayList<>(); // 일대 다 review와 연관 관계 맺기
+
+
+    @OneToMany(mappedBy = "productId")
+    private  List<Cart> carts = new ArrayList<>();
 
     @Builder
     public Product(User userId, String title, String content, String name, long price, int total, String imgUrl, Timestamp createDate) {
