@@ -14,6 +14,7 @@ import com.project.shopping.service.ProductService;
 import com.project.shopping.service.ReviewService;
 import com.project.shopping.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -247,6 +248,67 @@ public class ProductController {
 
         }
 
+    }
+
+    @PutMapping("/product/update/{id}")
+    public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody ProductDTO productDTO){
+        try{
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            String email = principalDetails.getUser().getEmail();
+            User user = userService.findEmailByUser(email); // 유저 찾기
+            Product product = productService.findProductNameUser(ProductId, user); // 해당 상품 찾기
+
+            if(productDTO.getTitle() !=""){
+                product.setTitle(productDTO.getTitle());
+            }
+            if(productDTO.getContent() != ""){
+                product.setContent(productDTO.getContent());
+            }
+            if(productDTO.getName() != ""){
+                product.setName(productDTO.getName());
+
+            }
+            if(productDTO.getPrice() != 0){
+                product.setPrice(productDTO.getPrice());
+
+            }
+            if(productDTO.getTotal() !=0){
+                product.setTotal(productDTO.getTotal());
+
+            }
+            if(productDTO.getImgUrl() != ""){
+                product.setImgUrl(productDTO.getImgUrl());
+
+            }
+            product.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
+
+
+
+            productService.create(product);
+
+            ProductDTO response = ProductDTO.builder()
+                    .productId(product.getId())
+                    .useremail(product.getUserId().getEmail())
+                    .userId(product.getUserId().getUserId())
+                    .userName(product.getUserId().getUsername())
+                    .userPhoneNumber(product.getUserId().getPhoneNumber())
+                    .title(product.getTitle())
+                    .content(product.getContent())
+                    .name(product.getName())
+                    .price(product.getPrice())
+                    .total(product.getTotal())
+                    .imgUrl(product.getImgUrl())
+                    .createDate(product.getCreateDate())
+                    .build();
+
+            return ResponseEntity.ok().body(response);
+
+
+
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 

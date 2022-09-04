@@ -22,24 +22,32 @@ public class Product {
     @JoinColumn(name = "User_ID")
     private User userId;
 
+
+    @Setter
     @Column(nullable = false)
     private String title;
 
+    @Setter
     @Lob
     private String content;
 
+    @Setter
     @Column(nullable = false)
     private String name;
 
+    @Setter
     @Column(nullable = false)
     private long price;
 
+    @Setter
     @Column(nullable = false)
     private int total;
 
+    @Setter
     @Column(nullable = false)
     private String imgUrl;
 
+    @Setter
     @CreationTimestamp
     private Timestamp createDate;
 
