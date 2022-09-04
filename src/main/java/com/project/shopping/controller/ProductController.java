@@ -5,9 +5,13 @@ import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.ProductDTO;
 import com.project.shopping.dto.ResponseDTO;
 import com.project.shopping.dto.SearchDTO;
+import com.project.shopping.model.Cart;
 import com.project.shopping.model.Product;
+import com.project.shopping.model.Review;
 import com.project.shopping.model.User;
+import com.project.shopping.service.CartService;
 import com.project.shopping.service.ProductService;
+import com.project.shopping.service.ReviewService;
 import com.project.shopping.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +33,12 @@ public class ProductController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ReviewService reviewService;
+
+    @Autowired
+    private CartService cartService;
 
     @PostMapping("/product/create")
     public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody  ProductDTO productDTO){
@@ -91,8 +101,25 @@ public class ProductController {
             String email = userDtails.getUser().getEmail();
             User user = userService.findEmailByUser(email); // user 찾기
             Product product = productService.findProductNameUser(ProductId,user); // 유저와 상품명으로 상품 찾기
+            // 해당 상품을 찾았으니까
+            // 해당 상품내 있는 리뷰 리스트
+            List<Review> reviews = product.getReviews();
 
-            productService.deleteProduct(product);
+            List<Cart> carts = product.getCarts();
+
+            for(Review review : reviews){
+                reviewService.deleteReview(review);
+            } // db 해당 리뷰 삭제
+
+            for(Cart cart : carts){
+                cartService.deleteCart(cart);
+            } // db 해당 카트 삭제
+
+
+            reviews.clear(); // 리뷰 전체 초기화 후
+            carts.clear(); // 카트 전체 초기화 후
+
+            productService.deleteProduct(product); // 상품 삭제
 
             ProductDTO deleteresponse = ProductDTO.builder()
                     .productId(product.getId())
