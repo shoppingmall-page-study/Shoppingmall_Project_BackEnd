@@ -241,11 +241,8 @@ public class ProductController {
             result.put("data",response);
             return ResponseEntity.ok().body(result);
 
-
-
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
-
         }
 
     }
@@ -258,7 +255,7 @@ public class ProductController {
             User user = userService.findEmailByUser(email); // 유저 찾기
             Product product = productService.findProductNameUser(ProductId, user); // 해당 상품 찾기
 
-            if(productDTO.getTitle() !=""){
+            if(productDTO.getTitle() != ""){
                 product.setTitle(productDTO.getTitle());
             }
             if(productDTO.getContent() != ""){

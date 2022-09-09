@@ -49,6 +49,10 @@ public class User {
     @Column(nullable = false,length=11)
     private String phoneNumber;
 
+    @Setter
+    @Column(nullable = false)
+    private String postCode;
+
 
     private String roles;
 
@@ -64,7 +68,7 @@ public class User {
 
 
     @Builder
-    public User(String email,String password, String username, String address, int age, String nickname, String phoneNumber ,String roles) {
+    public User(String email,String password, String username, String address, int age, String nickname, String phoneNumber,String postCode ,String roles) {
         this.email = email;
         this.password = password;
         this.username = username;
@@ -72,6 +76,7 @@ public class User {
         this.age = age;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
+        this.postCode = postCode;
         this.roles = roles;
     }
 }

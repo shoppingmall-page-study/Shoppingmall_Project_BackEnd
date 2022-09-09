@@ -47,12 +47,14 @@ public class UserController {
                     .username(userDTO.getUsername())
                     .address(userDTO.getAddress()).age(userDTO.getAge())
                     .roles("ROLE_USER")
-                    .nickname(userDTO.getNickname()).phoneNumber(userDTO.getPhoneNumber()).build();
+                    .nickname(userDTO.getNickname()).phoneNumber(userDTO.getPhoneNumber())
+                    .postCode(userDTO.getPostCode()).build();
             User registeredUser = userService.create(user);
 
             UserDTO response = UserDTO.builder().username(registeredUser.getUsername()).email(registeredUser.getEmail())
                     .age(registeredUser.getAge()).address(user.getAddress())
-                    .nickname(registeredUser.getNickname()).phoneNumber(registeredUser.getPhoneNumber()).build();
+                    .nickname(registeredUser.getNickname()).phoneNumber(registeredUser.getPhoneNumber())
+                    .postCode(registeredUser.getPostCode()).build();
             return ResponseEntity.ok().body(response);
         }catch (Exception e){
             ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
@@ -90,7 +92,7 @@ public class UserController {
 
             UserDTO response = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
                     .age(user.getAge()).address(user.getAddress())
-                    .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
+                    .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).postCode(user.getPostCode()).build();
             return ResponseEntity.ok().body(response);
         }catch (Exception e){
             return ResponseEntity.ok().body(e.getMessage());
@@ -109,6 +111,10 @@ public class UserController {
             if(userDTO.getAddress() != ""){
                 user.setAddress(userDTO.getAddress());
             }
+
+            if(userDTO.getPostCode() != "")
+                user.setPostCode(userDTO.getPostCode());
+
             if(userDTO.getNickname() != ""){
                 user.setNickname(userDTO.getNickname());
             }
@@ -119,16 +125,10 @@ public class UserController {
             User updateUser = userService.updateUser(user);
             UserDTO response = UserDTO.builder().username(updateUser.getUsername()).email(updateUser.getEmail())
                     .age(updateUser.getAge()).address(updateUser.getAddress())
-                    .nickname(updateUser.getNickname()).phoneNumber(updateUser.getPhoneNumber()).build();
+                    .nickname(updateUser.getNickname()).phoneNumber(updateUser.getPhoneNumber()).postCode(updateUser.getPostCode()).build();
             return  ResponseEntity.ok().body(response);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-
-
-
-
-
 }

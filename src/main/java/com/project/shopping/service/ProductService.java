@@ -18,7 +18,7 @@ public class ProductService {
     public Product create(Product product){
 
         System.out.println(product.getName());
-        if(product.getName()==""){
+        if(product.getName() == ""){
             System.out.println("Asdf");
         }
         // 왜 안걸림??
@@ -28,7 +28,6 @@ public class ProductService {
                 ||  product.getImgUrl() == ""){
             throw  new RuntimeException();
         }
-
 
         return productRepository.save(product);
     }
