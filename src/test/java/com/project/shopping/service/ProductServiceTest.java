@@ -40,6 +40,7 @@ public class ProductServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("postCode")
                 .build();
         userService.create(user);
         Product product = Product.builder()
@@ -68,6 +69,7 @@ public class ProductServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("postCode")
                 .build();
         userService.create(user);
         Product product = Product.builder()
@@ -102,6 +104,7 @@ public class ProductServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("postCode")
                 .build();
         userService.create(user);
         Product product = Product.builder()
@@ -124,13 +127,14 @@ public class ProductServiceTest {
     public void deleteProduct(){
         String passwordd ="asdfasfdasdf";
         User user = User.builder()
-                .email("user6@example.com")
+                .email("user16@example.com")
                 .username("user")
                 .password(passwordEncoder.encode((passwordd)))
                 .address("address")
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("postCode")
                 .build();
         userService.create(user);
         Product product = Product.builder()
@@ -163,6 +167,7 @@ public class ProductServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("postCode")
                 .build();
         userService.create(user);
         Product product = Product.builder()

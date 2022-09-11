@@ -44,6 +44,7 @@ public class CartServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("postcode")
                 .build();
         User createUser = userService.create(user);
         Product product = Product.builder()
@@ -77,6 +78,7 @@ public class CartServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("test")
                 .build();
         User createUser = userService.create(user);
         Product product = Product.builder()
@@ -109,6 +111,7 @@ public class CartServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("test")
                 .build();
         User createUser = userService.create(user);
         Product product = Product.builder()
@@ -145,6 +148,7 @@ public class CartServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("test")
                 .build();
         User createUser = userService.create(user);
         Product product = Product.builder()

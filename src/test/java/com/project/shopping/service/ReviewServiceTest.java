@@ -44,6 +44,7 @@ public class ReviewServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("postCode")
                 .build();
         userService.create(user); // user 생성
 
@@ -81,6 +82,7 @@ public class ReviewServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("postCode")
                 .build();
         userService.create(user); // user 생성
 
@@ -119,6 +121,7 @@ public class ReviewServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("postCode")
                 .build();
         userService.create(user); // user 생성
 
@@ -157,6 +160,7 @@ public class ReviewServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("postCode")
                 .build();
         userService.create(user); // user 생성
 

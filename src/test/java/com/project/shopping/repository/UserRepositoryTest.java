@@ -32,6 +32,7 @@ class UserRepositoryTest {
                     .nickname("nickname")
                     .phoneNumber("01000000000")
                     .roles("ROLE_USER")
+                    .postCode("temp")
                     .build();
 
         User testUser = userRepository.save(user);

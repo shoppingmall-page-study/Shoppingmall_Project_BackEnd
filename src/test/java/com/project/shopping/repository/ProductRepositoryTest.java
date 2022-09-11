@@ -34,6 +34,7 @@ public class ProductRepositoryTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("postCode")
                 .build();
         userRepository.save(user);
         Product product = Product.builder()
@@ -65,6 +66,7 @@ public class ProductRepositoryTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("tst")
                 .build();
         userRepository.save(user);
         Product product1 = Product.builder()
@@ -94,6 +96,7 @@ public class ProductRepositoryTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("test")
                 .build();
         userRepository.save(user);
         Product product1 = Product.builder()
@@ -124,6 +127,7 @@ public class ProductRepositoryTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .postCode("test")
                 .build();
         userRepository.save(user);
         Product product1 = Product.builder()

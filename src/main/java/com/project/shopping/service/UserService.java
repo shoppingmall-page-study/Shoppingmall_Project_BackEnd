@@ -23,11 +23,11 @@ public class UserService {
 
         //왜 여기서 안걸리지 ??
 
-        if(userRepository.existsByEmail(email)){
+/*        if(userRepository.existsByEmail(email)){
             // 이메일이 존재할시
             log.warn("email already exists", email);
             throw new RuntimeException();
-        }
+        }*/
         return userRepository.save(user);
     }
 
