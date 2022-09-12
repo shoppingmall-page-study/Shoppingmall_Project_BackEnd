@@ -57,6 +57,8 @@ jobs:
       run: docker login -u ${{secrets.DOCKER_ID}} -p ${{secrets.DOCKER_PASSWORD}}
     - name: Building Docker Image
       run: docker build -t $REPO:latest -t $REPO:${GITHUB_RUN_ID} ./
+    - name: Publish Docker Image
+      run: docker push $REPO
   deploy:
     name: Deploy To Server
     runs-on: ubuntu-latest
