@@ -46,7 +46,7 @@ public class User {
     private String nickname;
 
     @Setter
-    @Column(nullable = false,length=11)
+    @Column(nullable = false,length=13)
     private String phoneNumber;
 
     @Setter
