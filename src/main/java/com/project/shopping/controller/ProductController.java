@@ -130,7 +130,7 @@ public class ProductController {
             User user = userService.findEmailByUser(email);
             tempFile = new File(path);
             file.transferTo(tempFile);
-            //System.out.println(path);
+            System.out.println(path);
             Product product = Product.builder().userId(user)
                     .title(requestDTO.getTitle())
                     .content(requestDTO.getContent())
