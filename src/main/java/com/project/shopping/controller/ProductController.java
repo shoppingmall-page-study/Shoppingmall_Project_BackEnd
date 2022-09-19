@@ -3,6 +3,7 @@ package com.project.shopping.controller;
 
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.ProductDTO;
+import com.project.shopping.dto.ProductRequestDTO;
 import com.project.shopping.dto.ResponseDTO;
 import com.project.shopping.dto.SearchDTO;
 import com.project.shopping.model.Cart;
@@ -14,13 +15,20 @@ import com.project.shopping.service.ProductService;
 import com.project.shopping.service.ReviewService;
 import com.project.shopping.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,35 +49,98 @@ public class ProductController {
     @Autowired
     private CartService cartService;
 
-    @PostMapping("/product/create")
-    public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody  ProductDTO productDTO){
-//        System.out.println(productDTO.getTitle());
-//        System.out.println(productDTO.getName());
-//        System.out.println(productDTO.getPrice());
-//        System.out.println(productDTO.getTotal());
-//        System.out.println(productDTO.getImgUrl());
+//    @PostMapping("/product/create")
+//    public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody  ProductDTO productDTO){
+////        System.out.println(productDTO.getTitle());
+////        System.out.println(productDTO.getName());
+////        System.out.println(productDTO.getPrice());
+////        System.out.println(productDTO.getTotal());
+////        System.out.println(productDTO.getImgUrl());
+//
+//
+//        try{
+//            PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
+//            String email = userDtails.getUser().getEmail();
+//            User user = userService.findEmailByUser(email);
+//
+//
+//            // 인증 값 기반으로 user 찾기
+//
+//            Product product = Product.builder().userId(user)
+//                    .title(productDTO.getTitle())
+//                    .content(productDTO.getContent())
+//                    .name(productDTO.getName())
+//                    .price(productDTO.getPrice())
+//                    .total(productDTO.getTotal())
+//                    .imgUrl(productDTO.getImgUrl())
+//                    .createDate(Timestamp.valueOf(LocalDateTime.now())).build();
+//            System.out.println("12313213");
+//            System.out.println(productDTO.getName());
+//            System.out.println(product.getName());
+//            Product registeredProduct = productService.create(product); // 상품 생성
+//
+//            ProductDTO response = ProductDTO.builder()
+//                    .productId(registeredProduct.getId())
+//                    .useremail(registeredProduct.getUserId().getEmail())
+//                    .userId(registeredProduct.getUserId().getUserId())
+//                    .userName(registeredProduct.getUserId().getUsername())
+//                    .userPhoneNumber(registeredProduct.getUserId().getPhoneNumber())
+//                    .title(registeredProduct.getTitle())
+//                    .content(registeredProduct.getContent())
+//                    .name(registeredProduct.getName())
+//                    .price(registeredProduct.getPrice())
+//                    .total(registeredProduct.getTotal())
+//                    .imgUrl(registeredProduct.getImgUrl())
+//                    .createDate(registeredProduct.getCreateDate())
+//                    .build();
+//            return ResponseEntity.ok().body(response);
+//        }catch (Exception e){
+//            ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
+//            return ResponseEntity.badRequest().body(response);
+//        }
+//
+//    }
+//
+//    @GetMapping("/p")
+//    public void imagepr(HttpServletRequest req){
+//        String webPath = "resources/images/imtes/";
+//        String folderPath = req.getSession().getServletContext().getRealPath(webPath);
+//
+//        System.out.println(folderPath);
+//
+//
+//    }
 
-
-        try{
+    @PostMapping(value = "/product/create", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> upload(Authentication authentication, @RequestPart MultipartFile file, @RequestPart ProductRequestDTO requestDTO, HttpServletRequest request) {
+        String originalFileName = file.getOriginalFilename();
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String current_date = now.format(dateTimeFormatter);
+        String realPath = request.getSession().getServletContext().getRealPath("/");
+        File destination = new File(realPath);
+        if(! destination.exists()){
+            destination.mkdir();
+        }
+        String path = realPath + current_date+ originalFileName ;
+        File tempFile = null;
+        try {
             PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
             String email = userDtails.getUser().getEmail();
             User user = userService.findEmailByUser(email);
-
-
-            // 인증 값 기반으로 user 찾기
-
+            tempFile = new File(path);
+            file.transferTo(tempFile);
+            //System.out.println(path);
             Product product = Product.builder().userId(user)
-                    .title(productDTO.getTitle())
-                    .content(productDTO.getContent())
-                    .name(productDTO.getName())
-                    .price(productDTO.getPrice())
-                    .total(productDTO.getTotal())
-                    .imgUrl(productDTO.getImgUrl())
+                    .title(requestDTO.getTitle())
+                    .content(requestDTO.getContent())
+                    .name(requestDTO.getName())
+                    .price(requestDTO.getPrice())
+                    .total(requestDTO.getTotal())
+                    .imgUrl(path)
                     .createDate(Timestamp.valueOf(LocalDateTime.now())).build();
-            System.out.println("12313213");
-            System.out.println(productDTO.getName());
-            System.out.println(product.getName());
             Product registeredProduct = productService.create(product); // 상품 생성
+            //System.out.println(registeredProduct.getImgUrl());
 
             ProductDTO response = ProductDTO.builder()
                     .productId(registeredProduct.getId())
@@ -86,9 +157,8 @@ public class ProductController {
                     .createDate(registeredProduct.getCreateDate())
                     .build();
             return ResponseEntity.ok().body(response);
-        }catch (Exception e){
-            ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
-            return ResponseEntity.badRequest().body(response);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(originalFileName);
         }
 
     }
@@ -166,6 +236,7 @@ public class ProductController {
                     .imgUrl(product.getImgUrl())
                     .createDate(product.getCreateDate())
                     .build();
+            //System.out.println(product.getImgUrl());
 
             productdtos.add(productDTO);
 
