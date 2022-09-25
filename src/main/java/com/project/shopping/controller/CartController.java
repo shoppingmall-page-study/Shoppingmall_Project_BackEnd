@@ -81,13 +81,14 @@ public class CartController {
 
     // 장바구니 해당 아이디
 
+    private  String ActiveStatus = "active";
     @GetMapping("/cart/list")
     public ResponseEntity<?> cartlist(Authentication authentication){
         try {
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             String userEmail = principalDetails.getUser().getEmail();
             User user = userService.findEmailByUser(userEmail);
-            List<Cart> cartList = cartService.findallByUserId(user);
+            List<Cart> cartList = cartService.getEqUserAndCart(user,ActiveStatus);
             List<CartDTO> cartdtos = new ArrayList<>();
             long totalsum = 0; // 최종 합계
             int totalcarttotal =0;
@@ -132,7 +133,7 @@ public class CartController {
     }
 
     // 삭제 쿼리
-    @DeleteMapping("/cart/delete/{id}") // id는 cart_Id
+    @PutMapping("/cart/delete/{id}") // id는 cart_Id
     public ResponseEntity<?> cartdelete(Authentication authentication, @PathVariable(value = "id")int id){
         try {
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -140,7 +141,8 @@ public class CartController {
 
             User user = userService.findEmailByUser(email);
             Cart findcart = cartService.findCartUserAndId(user, id);
-            cartService.deleteCart(findcart);
+            findcart.setStatus("Disabled");
+            cartService.update(findcart);
 
             CartDTO cartDTO = CartDTO.builder()
                     .userEmail(user.getEmail())
@@ -172,7 +174,7 @@ public class CartController {
             }
 
             cart.setProductNum(cartCountDTO.getCarttotal());
-            Cart updatecart = cartService.create(cart);
+            Cart updatecart = cartService.update(cart);
             System.out.println(cartCountDTO.getCarttotal() + "cartcount"); // 1
             System.out.println(totalcount+ "totalcount");
             System.out.println(updatecart.getProductNum() + "update");

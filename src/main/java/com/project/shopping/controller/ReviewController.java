@@ -86,7 +86,7 @@ public class ReviewController {
     }
 
     // 리뷰 삭제
-    @DeleteMapping("/review/delete/{id}")
+    @PutMapping ("/review/delete/{id}")
     public ResponseEntity<?> reviewdelete(Authentication authentication, @PathVariable(value = "id") int ReviewId){ // reviewid
         try{
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
