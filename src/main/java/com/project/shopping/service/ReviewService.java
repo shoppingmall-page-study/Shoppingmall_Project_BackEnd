@@ -24,6 +24,15 @@ public class ReviewService {
         }
         return reviewrepository.save(review);}
 
+
+    public Review update(Review review){
+        if(review.getProductId() == null){
+            throw new NoSuchElementException("해당 상품이 없습니다.");
+        }
+        return reviewrepository.save(review);}
+
+
+
     // 내 리뷰 목록 죄히
     public List<Review> findallByUserId(User user){return  reviewrepository.findAllByUserId(user);}
 
@@ -38,4 +47,11 @@ public class ReviewService {
         return reviewrepository.findByUserIdAndId(user,id);
     }
 
+    public List<Review> getEqUserAndActive(User user, String status){
+        return reviewrepository.getEqUserAndActive(user, status);
+    }
+
+    public List<Review> getEqProductAndActive(Product product, String status){
+        return  reviewrepository.getEqProductAndActive(product,status);
+    }
 }

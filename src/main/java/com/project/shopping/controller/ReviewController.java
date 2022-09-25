@@ -30,6 +30,8 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
+    private String ActiveStatus= "active";
+
     // 리뷰 생성
     @PostMapping("/review/create/{id}")
     public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody ReviewDTO reviewDto){
@@ -93,7 +95,8 @@ public class ReviewController {
             String email = principalDetails.getUser().getEmail();
             User user = userService.findEmailByUser(email);
             Review findreview = reviewService.findReviewUserAndId(user, ReviewId);
-            reviewService.deleteReview(findreview);
+            findreview.setStatus("Disabled");
+            reviewService.update(findreview);
 
             ReviewDTO response = ReviewDTO.builder()
                     .imgUrl(findreview.getImageUrl())
@@ -117,7 +120,7 @@ public class ReviewController {
             User user = userService.findEmailByUser(email);
 
             // 현재 나의 리뷰 목록 조회
-            List<Review> userReviewlist = reviewService.findallByUserId(user);
+            List<Review> userReviewlist = reviewService.getEqUserAndActive(user,ActiveStatus);
 
             //dto 만들기
             List<ReviewDTO> userReviewListDto = new ArrayList<>();
@@ -159,7 +162,7 @@ public class ReviewController {
             Product product = productService.findproductid(ProductId);
 
             // 상품에 등록된 리뷰 찾기
-            List<Review> ProductReviewList = reviewService.findallByProductId(product);
+            List<Review> ProductReviewList = reviewService.getEqProductAndActive(product, ActiveStatus);
             List<ReviewDTO> ProductReviewDto = new ArrayList<>();
 
             for(Review review : ProductReviewList){
@@ -207,10 +210,10 @@ public class ReviewController {
                 findReview.setImageUrl(reviewDTO.getImgUrl());
             }
 
-            findReview.builder().reviewcreateTime(LocalDate.now());
+            findReview.builder().modifieddate(LocalDate.now());
 
 
-            Review review = reviewService.create(findReview);
+            Review review = reviewService.update(findReview);
 
             ReviewDTO response = ReviewDTO.builder()
                     .reviewId(review.getId())
