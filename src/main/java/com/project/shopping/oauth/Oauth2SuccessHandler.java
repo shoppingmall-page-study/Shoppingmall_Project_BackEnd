@@ -9,6 +9,7 @@ import com.project.shopping.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.token.TokenService;
@@ -22,6 +23,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 @Component
 @Slf4j
@@ -41,6 +44,7 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -49,29 +53,37 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
         User user = userRequstMapper.user(oAuth2User); // 이메일만 담아서 생성
 
-        String jwttoken = tokenprovider.create(user);
-        response.addHeader("Authorization","Bearer "+jwttoken); //토큰을 생성 하고
+        //String jwttoken = tokenprovider.create(user);
+        //response.addHeader("Authorization","Bearer "+jwttoken); //토큰을 생성 하고
         String email = (String) oAuth2User.getAttributes().get("email");
         String name = (String) oAuth2User.getAttributes().get("name");
-        String password = passwordEncoder.encode(email);
+
+        System.out.println(name);
 
 
         boolean uu = userRepository.existsByEmail(email);
 
         if(uu == false){
-            User users = User.builder()
-                    .email(email)
-                    .password(password)
-                    .username(name)
-                    .address("dasdfkjl").age(100)
-                    .roles("ROLE_USER")
-                    .nickname("user1").phoneNumber("????").build();
-            userService.create(users);
+//            User users = User.builder()
+//                    .email(email)
+//                    .password(password)
+//                    .username(name)
+//                    .address("????").age(100)
+//                    .roles("ROLE_USER")
+//                    .postCode("????")
+//                    .nickname("?????").phoneNumber("????").build();
+//            userService.create(users);
 
-            String targetUrl = makeRediretjoinUrl(jwttoken);
+            String targetUrl = makeRediretjoinUrl(name,email);
+
+
+            //String result = objectMapper.writeValueAsString(users);
+            //response.getWriter().write(result);
             response.sendRedirect(targetUrl);
 
         }else{
+            User finduser = userService.findEmailByUser(email);
+            String jwttoken = tokenprovider.create(finduser);
             String targetUrl = makeRedirectUrl(jwttoken);
             response.sendRedirect(targetUrl);
         }
@@ -79,8 +91,10 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
     }
 
-    private String makeRediretjoinUrl(String token) {
-        return UriComponentsBuilder.fromUriString("http://localhost:3000/registration/"+token)
+    private String makeRediretjoinUrl(String name,String email) throws UnsupportedEncodingException {
+        System.out.println(name);
+        String encodedParam = URLEncoder.encode(name, "UTF-8");
+        return UriComponentsBuilder.fromUriString("http://localhost:3000/registration/").queryParam("name"+ encodedParam).queryParam("email",email)
                 .build().toUriString();
     }
 

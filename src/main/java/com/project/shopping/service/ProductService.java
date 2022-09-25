@@ -24,7 +24,7 @@ public class ProductService {
         // 왜 안걸림??
 
         if(product == null  || product.getName() == "" ||  product.getTitle()== ""
-                && product.getContent() == "" ||  product.getPrice() == 0 ||  product.getTotal() == 0
+                && product.getContent() == "" ||  product.getAmount() == 0 ||  product.getTotal() == 0
                 ||  product.getImgUrl() == ""){
             throw  new RuntimeException();
         }

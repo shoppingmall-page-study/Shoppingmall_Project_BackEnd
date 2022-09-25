@@ -48,20 +48,20 @@ public class CartController {
 
             // 유저가 장바구니에 담은 상품이 기존에 있을시
             if(cartService.existsCartByUserIdAndProductId(user, product)){ // 해당 상품이 존재 할시
-                Cart findCart = cartService.findCartByUserIdAndProductId(user, product); // 캍찾기
-                long totalsum = findCart.getCarttotal()+ cartDTO.getCarttotal();
+                Cart findCart = cartService.findCartByUserIdAndProductId(user, product); // 카트찾기
+                long totalsum = findCart.getProductNum()+ cartDTO.getCarttotal();
                 //System.out.println(totalsum);
                 if(totalsum> product.getTotal()){
                     throw  new Exception("상품 개수 초과 ");
                 }
-                findCart.setCarttotal(totalsum);
+                findCart.setProductNum(totalsum);
                 Cart createcart = cartService.create(findCart);
 
                 CartDTO response = CartDTO.builder().cartId(createcart.getId()).build();
                 return ResponseEntity.ok().body(response);
 
             }else{
-                Cart cart = Cart.builder().productId(product).userId(user).createTime(Timestamp.valueOf(LocalDateTime.now())).carttotal(cartDTO.getCarttotal()).build();
+                Cart cart = Cart.builder().productId(product).userId(user).createTime(Timestamp.valueOf(LocalDateTime.now())).productNum(cartDTO.getCarttotal()).status("active").build();
                 Cart createcart = cartService.create(cart); // 카트 생성
                 CartDTO response = CartDTO.builder().cartId(createcart.getId()).build();
 
@@ -103,15 +103,15 @@ public class CartController {
                         .userPhoneNumber(cart.getUserId().getPhoneNumber())
                         .productName(cart.getProductId().getName())
                         .productId(cart.getProductId().getId())
-                        .productPrice(cart.getProductId().getPrice())
+                        .productPrice(cart.getProductId().getAmount())
                         .productTotal(cart.getProductId().getTotal())
                         .imgUrl(cart.getProductId().getImgUrl())
-                        .carttotal(cart.getCarttotal())
+                        .carttotal(cart.getProductNum())
                         .createTime(cart.getCreateTime()).build();
 
                 cartdtos.add(cartDto);
-                totalsum  = (totalsum + (cart.getCarttotal() * cart.getProductId().getPrice()));
-                totalcarttotal = (int) (totalcarttotal +cart.getCarttotal());
+                totalsum  = (totalsum + (cart.getProductNum() * cart.getProductId().getAmount()));
+                totalcarttotal = (int) (totalcarttotal +cart.getProductNum());
 
             }
             Map<String, Object> result = new HashMap<>();
@@ -171,11 +171,11 @@ public class CartController {
                 throw new Exception("마이너스.");
             }
 
-            cart.setCarttotal(cartCountDTO.getCarttotal());
+            cart.setProductNum(cartCountDTO.getCarttotal());
             Cart updatecart = cartService.create(cart);
-            System.out.println(cartCountDTO.getCarttotal() + "cartcount");
+            System.out.println(cartCountDTO.getCarttotal() + "cartcount"); // 1
             System.out.println(totalcount+ "totalcount");
-            System.out.println(updatecart.getCarttotal() + "update");
+            System.out.println(updatecart.getProductNum() + "update");
 
             CartDTO response  = CartDTO.builder()
                     .cartId(updatecart.getId())
@@ -188,10 +188,10 @@ public class CartController {
                     .userPhoneNumber(updatecart.getUserId().getPhoneNumber())
                     .productName(updatecart.getProductId().getName())
                     .productId(updatecart.getProductId().getId())
-                    .productPrice(updatecart.getProductId().getPrice())
+                    .productPrice(updatecart.getProductId().getAmount())
                     .productTotal(updatecart.getProductId().getTotal())
                     .imgUrl(updatecart.getProductId().getImgUrl())
-                    .carttotal(updatecart.getCarttotal())
+                    .carttotal(updatecart.getProductNum())
                     .createTime(updatecart.getCreateTime()).build();
 
             return  ResponseEntity.ok().body(response);

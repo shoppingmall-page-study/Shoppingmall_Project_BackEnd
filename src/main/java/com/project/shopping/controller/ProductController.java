@@ -5,7 +5,9 @@ import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.ProductDTO;
 import com.project.shopping.dto.ResponseDTO;
 import com.project.shopping.dto.SearchDTO;
+import com.project.shopping.model.Cart;
 import com.project.shopping.model.Product;
+import com.project.shopping.model.Review;
 import com.project.shopping.model.User;
 import com.project.shopping.service.CartService;
 import com.project.shopping.service.ProductService;
@@ -45,48 +47,50 @@ public class ProductController {
 //        System.out.println(productDTO.getPrice());
 //        System.out.println(productDTO.getTotal());
 //        System.out.println(productDTO.getImgUrl());
+        PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
+        String email = userDtails.getUser().getEmail();
+        User user = userService.findEmailByUser(email);
 
 
-        try{
-            PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
-            String email = userDtails.getUser().getEmail();
-            User user = userService.findEmailByUser(email);
+        // 인증 값 기반으로 user 찾기
 
+        Product product = Product.builder().userId(user)
+                .title(productDTO.getTitle())
+                .content(productDTO.getContent())
+                .name(productDTO.getName())
+                .amount(productDTO.getAmount())
+                .total(productDTO.getTotal())
+                .imgUrl(productDTO.getImgUrl())
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now())).build();
+        //System.out.println("12313213");
+        // System.out.println(productDTO.getName());
+        // System.out.println(product.getName());
+        Product registeredProduct = productService.create(product); // 상품 생성
 
-            // 인증 값 기반으로 user 찾기
+        ProductDTO response = ProductDTO.builder()
+                .productId(registeredProduct.getId())
+                .useremail(registeredProduct.getUserId().getEmail())
+                .userId(registeredProduct.getUserId().getUserId())
+                .userName(registeredProduct.getUserId().getUsername())
+                .userPhoneNumber(registeredProduct.getUserId().getPhoneNumber())
+                .title(registeredProduct.getTitle())
+                .content(registeredProduct.getContent())
+                .name(registeredProduct.getName())
+                .amount(registeredProduct.getAmount())
+                .total(registeredProduct.getTotal())
+                .imgUrl(registeredProduct.getImgUrl())
+                .createDate(registeredProduct.getCreateDate())
+                .build();
+        return ResponseEntity.ok().body(response);
 
-            Product product = Product.builder().userId(user)
-                    .title(productDTO.getTitle())
-                    .content(productDTO.getContent())
-                    .name(productDTO.getName())
-                    .price(productDTO.getPrice())
-                    .total(productDTO.getTotal())
-                    .imgUrl(productDTO.getImgUrl())
-                    .createDate(Timestamp.valueOf(LocalDateTime.now())).build();
-            //System.out.println("12313213");
-           // System.out.println(productDTO.getName());
-           // System.out.println(product.getName());
-            Product registeredProduct = productService.create(product); // 상품 생성
-
-            ProductDTO response = ProductDTO.builder()
-                    .productId(registeredProduct.getId())
-                    .useremail(registeredProduct.getUserId().getEmail())
-                    .userId(registeredProduct.getUserId().getUserId())
-                    .userName(registeredProduct.getUserId().getUsername())
-                    .userPhoneNumber(registeredProduct.getUserId().getPhoneNumber())
-                    .title(registeredProduct.getTitle())
-                    .content(registeredProduct.getContent())
-                    .name(registeredProduct.getName())
-                    .price(registeredProduct.getPrice())
-                    .total(registeredProduct.getTotal())
-                    .imgUrl(registeredProduct.getImgUrl())
-                    .createDate(registeredProduct.getCreateDate())
-                    .build();
-            return ResponseEntity.ok().body(response);
-        }catch (Exception e){
-            ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
-            return ResponseEntity.badRequest().body(response);
-        }
+//        try{
+//
+//        }catch (Exception e){
+//            ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
+//            System.out.println(e.getMessage());
+//            return ResponseEntity.badRequest().body(response);
+//        }
 
     }
 
@@ -154,59 +158,59 @@ public class ProductController {
 //
 //    }
 //
-//    @DeleteMapping("/product/delete/{id}")
-//    public ResponseEntity<?>  productdelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
-//
-//
-//        try{
-//            PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
-//            String email = userDtails.getUser().getEmail();
-//            User user = userService.findEmailByUser(email); // user 찾기
-//            Product product = productService.findProductNameUser(ProductId,user); // 유저와 상품명으로 상품 찾기
-//            // 해당 상품을 찾았으니까
-//            // 해당 상품내 있는 리뷰 리스트
-//            List<Review> reviews = product.getReviews();
-//
-//            List<Cart> carts = product.getCarts();
-//
-//            for(Review review : reviews){
-//                reviewService.deleteReview(review);
-//            } // db 해당 리뷰 삭제
-//
-//            for(Cart cart : carts){
-//                cartService.deleteCart(cart);
-//            } // db 해당 카트 삭제
-//
-//
-//            reviews.clear(); // 리뷰 전체 초기화 후
-//            carts.clear(); // 카트 전체 초기화 후
-//
-//            productService.deleteProduct(product); // 상품 삭제
-//
-//            ProductDTO deleteresponse = ProductDTO.builder()
-//                    .productId(product.getId())
-//                    .useremail(product.getUserId().getEmail())
-//                    .userId(product.getUserId().getUserId())
-//                    .userName(product.getUserId().getUsername())
-//                    .userPhoneNumber(product.getUserId().getPhoneNumber())
-//                    .title(product.getTitle())
-//                    .content(product.getContent())
-//                    .name(product.getName())
-//                    .price(product.getPrice())
-//                    .total(product.getTotal())
-//                    .imgUrl(product.getImgUrl())
-//                    .createDate(product.getCreateDate())
-//                    .build();
-//
-//            return ResponseEntity.ok().body(deleteresponse);
-//        }
-//        catch (Exception e){
-//            ResponseDTO deleteresponse = ResponseDTO.builder().error(e.getMessage()).build();
-//            return ResponseEntity.badRequest().body(deleteresponse);
-//
-//        }
-//
-//    }
+    @DeleteMapping("/product/delete/{id}")
+    public ResponseEntity<?>  productdelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
+
+
+        try{
+            PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
+            String email = userDtails.getUser().getEmail();
+            User user = userService.findEmailByUser(email); // user 찾기
+            Product product = productService.findProductNameUser(ProductId,user); // 유저와 상품명으로 상품 찾기
+            // 해당 상품을 찾았으니까
+            // 해당 상품내 있는 리뷰 리스트
+            List<Review> reviews = product.getReviews();
+
+            List<Cart> carts = product.getCarts();
+
+            for(Review review : reviews){
+                reviewService.deleteReview(review);
+            } // db 해당 리뷰 삭제
+
+            for(Cart cart : carts){
+                cartService.deleteCart(cart);
+            } // db 해당 카트 삭제
+
+
+            reviews.clear(); // 리뷰 전체 초기화 후
+            carts.clear(); // 카트 전체 초기화 후
+
+            productService.deleteProduct(product); // 상품 삭제
+
+            ProductDTO deleteresponse = ProductDTO.builder()
+                    .productId(product.getId())
+                    .useremail(product.getUserId().getEmail())
+                    .userId(product.getUserId().getUserId())
+                    .userName(product.getUserId().getUsername())
+                    .userPhoneNumber(product.getUserId().getPhoneNumber())
+                    .title(product.getTitle())
+                    .content(product.getContent())
+                    .name(product.getName())
+                    .amount(product.getAmount())
+                    .total(product.getTotal())
+                    .imgUrl(product.getImgUrl())
+                    .createDate(product.getCreateDate())
+                    .build();
+
+            return ResponseEntity.ok().body(deleteresponse);
+        }
+        catch (Exception e){
+            ResponseDTO deleteresponse = ResponseDTO.builder().error(e.getMessage()).build();
+            return ResponseEntity.badRequest().body(deleteresponse);
+
+        }
+
+    }
 
     @GetMapping("/products")
     private ResponseEntity<?> findall(){
@@ -222,7 +226,7 @@ public class ProductController {
                     .title(product.getTitle())
                     .content(product.getContent())
                     .name(product.getName())
-                    .price(product.getPrice())
+                    .amount(product.getAmount())
                     .total(product.getTotal())
                     .imgUrl(product.getImgUrl())
                     .createDate(product.getCreateDate())
@@ -252,7 +256,7 @@ public class ProductController {
                         .title(product.getTitle())
                         .content(product.getContent())
                         .name(product.getName())
-                        .price(product.getPrice())
+                        .amount(product.getAmount())
                         .total(product.getTotal())
                         .imgUrl(product.getImgUrl())
                         .createDate(product.getCreateDate())
@@ -291,7 +295,7 @@ public class ProductController {
                         .title(product.getTitle())
                         .content(product.getContent())
                         .name(product.getName())
-                        .price(product.getPrice())
+                        .amount(product.getAmount())
                         .total(product.getTotal())
                         .imgUrl(product.getImgUrl())
                         .createDate(product.getCreateDate())
@@ -326,8 +330,8 @@ public class ProductController {
                 product.setName(productDTO.getName());
 
             }
-            if(productDTO.getPrice() != 0){
-                product.setPrice(productDTO.getPrice());
+            if(productDTO.getAmount() != 0){
+                product.setAmount(productDTO.getAmount());
 
             }
             if(productDTO.getTotal() !=0){
@@ -353,7 +357,7 @@ public class ProductController {
                     .title(product.getTitle())
                     .content(product.getContent())
                     .name(product.getName())
-                    .price(product.getPrice())
+                    .amount(product.getAmount())
                     .total(product.getTotal())
                     .imgUrl(product.getImgUrl())
                     .createDate(product.getCreateDate())

@@ -14,6 +14,9 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 @RestController
 @Slf4j
@@ -48,6 +51,41 @@ public class UserController {
                     .address(userDTO.getAddress()).age(userDTO.getAge())
                     .roles("ROLE_USER")
                     .nickname(userDTO.getNickname()).phoneNumber(userDTO.getPhoneNumber())
+                    .status("active")
+                    .createDate(Timestamp.valueOf(LocalDateTime.now()))
+                    .postCode(userDTO.getPostCode()).build();
+            User registeredUser = userService.create(user);
+
+            UserDTO response = UserDTO.builder().username(registeredUser.getUsername()).email(registeredUser.getEmail())
+                    .age(registeredUser.getAge()).address(user.getAddress())
+                    .nickname(registeredUser.getNickname()).phoneNumber(registeredUser.getPhoneNumber())
+                    .createDate(registeredUser.getCreateDate())
+                    .status(registeredUser.getStatus())
+                    .postCode(registeredUser.getPostCode()).build();
+            return ResponseEntity.ok().body(response);
+        }catch (Exception e){
+            ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+
+    @PostMapping("/Oauth/join")
+    public ResponseEntity<?> oauthsignup(@RequestBody UserDTO userDTO) {
+
+        try{
+            //System.out.println(userDTO.getPassword());
+            //System.out.println(passwordEncoder.encode(userDTO.getPassword()));
+            String password = passwordEncoder.encode(userDTO.getEmail());
+            User user = User.builder()
+                    .email(userDTO.getEmail())
+                    .password(password)
+                    .username(userDTO.getUsername())
+                    .address(userDTO.getAddress()).age(userDTO.getAge())
+                    .roles("ROLE_USER")
+                    .nickname(userDTO.getNickname()).phoneNumber(userDTO.getPhoneNumber())
+                    .createDate(Timestamp.valueOf(LocalDateTime.now()))
+                    .status("active")
                     .postCode(userDTO.getPostCode()).build();
             User registeredUser = userService.create(user);
 
@@ -60,24 +98,6 @@ public class UserController {
             ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
             return ResponseEntity.badRequest().body(response);
         }
-    }
-
-
-    @PostMapping("/Oauth/join")
-    public ResponseEntity<?> oauthsignup(@RequestBody UserDTO userDTO,Authentication authentication) {
-        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDetails.getUser().getEmail();
-        User user = userService.findEmailByUser(email);
-        user.setAddress(userDTO.getAddress());
-        user.setAge(userDTO.getAge());
-        user.setNickname(userDTO.getNickname());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        userService.SaveUser(user);
-
-        UserDTO response = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
-                .age(user.getAge()).address(user.getAddress())
-                .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
-        return ResponseEntity.ok().body(response);
 
 
     }
