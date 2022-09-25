@@ -44,6 +44,11 @@ public class UserController {
         try{
             //System.out.println(userDTO.getPassword());
             //System.out.println(passwordEncoder.encode(userDTO.getPassword()));
+
+            if(userService.existsByEmai(userDTO.getEmail())){
+                throw new Exception("이미 이메일이 존재합니다.");
+            }
+
             User user = User.builder()
                     .email(userDTO.getEmail())
                     .password(passwordEncoder.encode((userDTO.getPassword())))

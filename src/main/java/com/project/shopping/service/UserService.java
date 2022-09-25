@@ -48,6 +48,10 @@ public class UserService {
 //        return null;
 //    }
 
+    public Boolean existsByEmai(String email){
+        return userRepository.existsByEmail(email);
+    }
+
     public User updateUser(User user){
         return  userRepository.save(user);
     }
