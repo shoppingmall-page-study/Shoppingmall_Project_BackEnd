@@ -45,6 +45,8 @@ public class CartServiceTest {
                 .nickname("nickname")
                 .phoneNumber("01000000000")
                 .postCode("postcode")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         User createUser = userService.create(user);
         Product product = Product.builder()
@@ -55,10 +57,11 @@ public class CartServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product createProduct = productService.create(product);
-        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).build();
+        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
         Cart  creatCart = cartService.create(cart);
 
         Assertions.assertThat(cart.getId()).isEqualTo(creatCart.getId());
@@ -78,6 +81,8 @@ public class CartServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .postCode("test")
                 .build();
         User createUser = userService.create(user);
@@ -88,11 +93,12 @@ public class CartServiceTest {
                 .content("clzls")
                 .amount(10000)
                 .total(1000)
+                .status("active")
                 .imgUrl("asdfasdf")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product createProduct = productService.create(product);
-        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).build();
+        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
         Cart  creatCart = cartService.create(cart); //카트 생성
 
         Cart findcart = cartService.findCartUserAndId(user, cart.getId());
@@ -111,6 +117,8 @@ public class CartServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .postCode("test")
                 .build();
         User createUser = userService.create(user);
@@ -122,10 +130,11 @@ public class CartServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product createProduct = productService.create(product);
-        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).build();
+        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
         Cart  creatCart = cartService.create(cart); //카트 생성
 
         List<Cart> cartList = cartService.findallByUserId(createUser);
@@ -149,6 +158,8 @@ public class CartServiceTest {
                 .nickname("nickname")
                 .phoneNumber("01000000000")
                 .postCode("test")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         User createUser = userService.create(user);
         Product product = Product.builder()
@@ -159,10 +170,11 @@ public class CartServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product createProduct = productService.create(product);
-        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).build();
+        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
         Cart  creatCart = cartService.create(cart); //카트 생성
 
         Cart findcart = cartService.findCartUserAndId(createUser,creatCart.getId());

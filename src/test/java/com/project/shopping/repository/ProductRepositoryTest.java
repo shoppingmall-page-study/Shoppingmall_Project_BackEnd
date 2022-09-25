@@ -34,6 +34,8 @@ public class ProductRepositoryTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .postCode("postCode")
                 .build();
         userRepository.save(user);
@@ -45,6 +47,7 @@ public class ProductRepositoryTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product testProduct = productRepository.save(product);
@@ -66,6 +69,8 @@ public class ProductRepositoryTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .postCode("tst")
                 .build();
         userRepository.save(user);
@@ -77,6 +82,7 @@ public class ProductRepositoryTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product testProduct = productRepository.save(product1);
@@ -96,6 +102,8 @@ public class ProductRepositoryTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .postCode("test")
                 .build();
         userRepository.save(user);
@@ -107,6 +115,7 @@ public class ProductRepositoryTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product testProduct = productRepository.save(product1);
@@ -127,6 +136,8 @@ public class ProductRepositoryTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .postCode("test")
                 .build();
         userRepository.save(user);
@@ -138,6 +149,7 @@ public class ProductRepositoryTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product testProduct = productRepository.save(product1);

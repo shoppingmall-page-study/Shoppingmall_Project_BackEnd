@@ -10,6 +10,9 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -32,6 +35,8 @@ class UserRepositoryTest {
                     .nickname("nickname")
                     .phoneNumber("01000000000")
                     .roles("ROLE_USER")
+                    .status("active")
+                    .createDate(Timestamp.valueOf(LocalDateTime.now()))
                     .postCode("temp")
                     .build();
 
