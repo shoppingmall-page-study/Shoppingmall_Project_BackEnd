@@ -66,9 +66,10 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
                     .email(email)
                     .password(password)
                     .username(name)
-                    .address("dasdfkjl").age(100)
+                    .address("????").age(100)
                     .roles("ROLE_USER")
-                    .nickname("user1").phoneNumber("????").build();
+                    .postCode("????")
+                    .nickname("????").phoneNumber("????").build();
             userService.create(users);
 
             String targetUrl = makeRediretjoinUrl(jwttoken);
