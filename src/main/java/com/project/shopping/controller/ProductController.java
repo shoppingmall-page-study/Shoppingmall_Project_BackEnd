@@ -40,6 +40,8 @@ public class ProductController {
     @Autowired
     private CartService cartService;
 
+    private String ActiveStatus= "active";
+
     @PostMapping("/product/create")
     public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody  ProductDTO productDTO){
 //        System.out.println(productDTO.getTitle());
@@ -158,7 +160,7 @@ public class ProductController {
 //
 //    }
 //
-    @DeleteMapping("/product/delete/{id}")
+    @PutMapping("/product/delete/{id}")
     public ResponseEntity<?>  productdelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
 
 
@@ -169,23 +171,9 @@ public class ProductController {
             Product product = productService.findProductNameUser(ProductId,user); // 유저와 상품명으로 상품 찾기
             // 해당 상품을 찾았으니까
             // 해당 상품내 있는 리뷰 리스트
-            List<Review> reviews = product.getReviews();
 
-            List<Cart> carts = product.getCarts();
-
-            for(Review review : reviews){
-                reviewService.deleteReview(review);
-            } // db 해당 리뷰 삭제
-
-            for(Cart cart : carts){
-                cartService.deleteCart(cart);
-            } // db 해당 카트 삭제
-
-
-            reviews.clear(); // 리뷰 전체 초기화 후
-            carts.clear(); // 카트 전체 초기화 후
-
-            productService.deleteProduct(product); // 상품 삭제
+            product.setStatus("Disabled");
+            productService.update(product);
 
             ProductDTO deleteresponse = ProductDTO.builder()
                     .productId(product.getId())
@@ -214,7 +202,7 @@ public class ProductController {
 
     @GetMapping("/products")
     private ResponseEntity<?> findall(){
-        List<Product> products = productService.findall();
+        List<Product> products = productService.getActiveProdcutList(ActiveStatus);
         List<ProductDTO> productdtos = new ArrayList<>();
         for (Product product:products) {
             ProductDTO productDTO = ProductDTO.builder()
@@ -243,7 +231,7 @@ public class ProductController {
     @PostMapping("/product/search")
     public ResponseEntity<?> searchProudct(@RequestBody SearchDTO searchDTO){
         try{
-            List<Product> productList = productService.getProductList(searchDTO.getSearchparam());
+            List<Product> productList = productService.getProductList(searchDTO.getSearchparam(), ActiveStatus);
             List<ProductDTO> response  = new ArrayList<>();
 
             for(Product product : productList){
@@ -281,7 +269,7 @@ public class ProductController {
             String email = principalDetails.getUser().getEmail();
             User user = userService.findEmailByUser(email); // 해당 유저 찾기
 
-            List<Product> findallproduct = productService.findallByUserId(user); // 해당 유저가 등록한 상품들 찾기
+            List<Product> findallproduct = productService.getEqUserAndActive(user, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
 
             List<ProductDTO> response = new ArrayList<>();
 
@@ -342,11 +330,11 @@ public class ProductController {
                 product.setImgUrl(productDTO.getImgUrl());
 
             }
-            product.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
+            product.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
 
 
 
-            productService.create(product);
+            productService.update(product);
 
             ProductDTO response = ProductDTO.builder()
                     .productId(product.getId())
@@ -360,7 +348,7 @@ public class ProductController {
                     .amount(product.getAmount())
                     .total(product.getTotal())
                     .imgUrl(product.getImgUrl())
-                    .createDate(product.getCreateDate())
+                    .createDate(product.getModifiedDate())
                     .build();
 
             return ResponseEntity.ok().body(response);

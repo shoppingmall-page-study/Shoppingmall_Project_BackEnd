@@ -32,6 +32,23 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public Product update(Product product){
+        System.out.println(product.getName());
+        if(product.getName() == ""){
+            System.out.println("Asdf");
+        }
+        // 왜 안걸림??
+
+        if(product == null  || product.getName() == "" ||  product.getTitle()== ""
+                && product.getContent() == "" ||  product.getAmount() == 0 ||  product.getTotal() == 0
+                ||  product.getImgUrl() == ""){
+            throw  new RuntimeException();
+        }
+
+        return productRepository.save(product);
+
+    }
+
     public Product findProductNameUser(int id, User user){
         return productRepository.findByIdAndUserId(id, user);
     }
@@ -45,7 +62,13 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public List<Product> getProductList(String title){return productRepository.getProductList(title);}
+    public List<Product> getProductList(String title, String stauts){return productRepository.getProductList(title, stauts);}
 
     public List<Product> findallByUserId(User user){return  productRepository.findAllByUserId(user); }
+
+    public List<Product> getActiveProdcutList(String status){return  productRepository.getActiveProdcutList(status);}
+
+    public List<Product> getEqUserAndActive(User user, String status){
+        return productRepository.getEqUserAndActive(user, status);
+    }
 }
