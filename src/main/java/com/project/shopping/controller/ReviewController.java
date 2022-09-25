@@ -95,7 +95,8 @@ public class ReviewController {
             String email = principalDetails.getUser().getEmail();
             User user = userService.findEmailByUser(email);
             Review findreview = reviewService.findReviewUserAndId(user, ReviewId);
-            reviewService.deleteReview(findreview);
+            findreview.setStatus("Disabled");
+            reviewService.update(findreview);
 
             ReviewDTO response = ReviewDTO.builder()
                     .imgUrl(findreview.getImageUrl())
@@ -209,10 +210,10 @@ public class ReviewController {
                 findReview.setImageUrl(reviewDTO.getImgUrl());
             }
 
-            findReview.builder().reviewcreateTime(LocalDate.now());
+            findReview.builder().modifieddate(LocalDate.now());
 
 
-            Review review = reviewService.create(findReview);
+            Review review = reviewService.update(findReview);
 
             ReviewDTO response = ReviewDTO.builder()
                     .reviewId(review.getId())

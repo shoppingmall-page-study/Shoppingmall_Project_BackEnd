@@ -51,6 +51,7 @@ public class Review {
 
 
     @Column(nullable = false)
+    @Setter
     private  String status;
 
 
