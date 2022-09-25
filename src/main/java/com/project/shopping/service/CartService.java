@@ -23,6 +23,14 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
+    public Cart update(Cart cart){
+        if(cart.getProductId()== null){
+            throw new NoSuchElementException("해당 상품이 없습니다.");
+        }
+        return cartRepository.save(cart);
+
+    }
+
     // 삭제
     public  void deleteCart(Cart cart){cartRepository.delete(cart);}
     // user가 등록한 장바구니 목록 조회
@@ -37,4 +45,6 @@ public class CartService {
     public boolean existsCartByUserIdAndProductId(User user, Product product){return cartRepository.existsCartByUserIdAndProductId(user,product);}
 
     public Cart findCartByUserIdAndProductId(User user, Product product){return  cartRepository.findCartByUserIdAndProductId(user,product);}
+
+    public List<Cart> getEqUserAndCart(User user, String status){return cartRepository.getEqUserAndCart(user, status);}
 }
