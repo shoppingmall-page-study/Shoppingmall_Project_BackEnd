@@ -44,7 +44,6 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-    ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -53,37 +52,29 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
         User user = userRequstMapper.user(oAuth2User); // 이메일만 담아서 생성
 
-        //String jwttoken = tokenprovider.create(user);
-        //response.addHeader("Authorization","Bearer "+jwttoken); //토큰을 생성 하고
+        String jwttoken = tokenprovider.create(user);
+        response.addHeader("Authorization","Bearer "+jwttoken); //토큰을 생성 하고
         String email = (String) oAuth2User.getAttributes().get("email");
         String name = (String) oAuth2User.getAttributes().get("name");
-
-        System.out.println(name);
+        String password = passwordEncoder.encode(email);
 
 
         boolean uu = userRepository.existsByEmail(email);
 
         if(uu == false){
-//            User users = User.builder()
-//                    .email(email)
-//                    .password(password)
-//                    .username(name)
-//                    .address("????").age(100)
-//                    .roles("ROLE_USER")
-//                    .postCode("????")
-//                    .nickname("?????").phoneNumber("????").build();
-//            userService.create(users);
+            User users = User.builder()
+                    .email(email)
+                    .password(password)
+                    .username(name)
+                    .address("dasdfkjl").age(100)
+                    .roles("ROLE_USER")
+                    .nickname("user1").phoneNumber("????").build();
+            userService.create(users);
 
-            String targetUrl = makeRediretjoinUrl(name,email);
-
-
-            //String result = objectMapper.writeValueAsString(users);
-            //response.getWriter().write(result);
+            String targetUrl = makeRediretjoinUrl(jwttoken);
             response.sendRedirect(targetUrl);
 
         }else{
-            User finduser = userService.findEmailByUser(email);
-            String jwttoken = tokenprovider.create(finduser);
             String targetUrl = makeRedirectUrl(jwttoken);
             response.sendRedirect(targetUrl);
         }
@@ -91,17 +82,73 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
     }
 
-    private String makeRediretjoinUrl(String name,String email) throws UnsupportedEncodingException {
-        System.out.println(name);
-        String encodedParam = URLEncoder.encode(name, "UTF-8");
-        return UriComponentsBuilder.fromUriString("http://localhost:3000/registration/").queryParam("name"+ encodedParam).queryParam("email",email)
+    private String makeRediretjoinUrl(String token) {
+        return UriComponentsBuilder.fromUriString("http://222.118.103.229/registration/"+token)
                 .build().toUriString();
     }
 
     private String makeRedirectUrl(String jwttoken) {
-        return UriComponentsBuilder.fromUriString("http://localhost:3000/oauth/"+jwttoken)
+        return UriComponentsBuilder.fromUriString("http://222.118.103.229/oauth/"+jwttoken)
                 .build().toUriString();
     }
+
+    //ObjectMapper objectMapper = new ObjectMapper();
+//    @Override
+//    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+//        System.out.println("OAuth2login 성공");
+//        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+//
+//        User user = userRequstMapper.user(oAuth2User); // 이메일만 담아서 생성
+//
+//        //String jwttoken = tokenprovider.create(user);
+//        //response.addHeader("Authorization","Bearer "+jwttoken); //토큰을 생성 하고
+//        String email = (String) oAuth2User.getAttributes().get("email");
+//        String name = (String) oAuth2User.getAttributes().get("name");
+//
+//        System.out.println(name);
+//
+//
+//        boolean uu = userRepository.existsByEmail(email);
+//
+//        if(uu == false){
+////            User users = User.builder()
+////                    .email(email)
+////                    .password(password)
+////                    .username(name)
+////                    .address("????").age(100)
+////                    .roles("ROLE_USER")
+////                    .postCode("????")
+////                    .nickname("?????").phoneNumber("????").build();
+////            userService.create(users);
+//
+//            String targetUrl = makeRediretjoinUrl(name,email);
+//
+//
+//            //String result = objectMapper.writeValueAsString(users);
+//            //response.getWriter().write(result);
+//            response.sendRedirect(targetUrl);
+//
+//        }else{
+//            User finduser = userService.findEmailByUser(email);
+//            String jwttoken = tokenprovider.create(finduser);
+//            String targetUrl = makeRedirectUrl(jwttoken);
+//            response.sendRedirect(targetUrl);
+//        }
+//
+//
+//    }
+//
+//    private String makeRediretjoinUrl(String name,String email) throws UnsupportedEncodingException {
+//        System.out.println(name);
+//        String encodedParam = URLEncoder.encode(name, "UTF-8");
+//        return UriComponentsBuilder.fromUriString("http://localhost:3000/registration/").queryParam("name"+ encodedParam).queryParam("email",email)
+//                .build().toUriString();
+//    }
+//
+//    private String makeRedirectUrl(String jwttoken) {
+//        return UriComponentsBuilder.fromUriString("http://localhost:3000/oauth/"+jwttoken)
+//                .build().toUriString();
+//    }
 
 
 }
