@@ -74,38 +74,58 @@ public class UserController {
         }
     }
 
-
     @PostMapping("/Oauth/join")
-    public ResponseEntity<?> oauthsignup(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> oauthsignup(@RequestBody UserDTO userDTO,Authentication authentication) {
+        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = userDetails.getUser().getEmail();
+        User user = userService.findEmailByUser(email);
+        user.setAddress(userDTO.getAddress());
+        user.setAge(userDTO.getAge());
+        user.setPostCode(userDTO.getPostCode());
+        user.setNickname(userDTO.getNickname());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        userService.SaveUser(user);
 
-        try{
-            //System.out.println(userDTO.getPassword());
-            //System.out.println(passwordEncoder.encode(userDTO.getPassword()));
-            String password = passwordEncoder.encode(userDTO.getEmail());
-            User user = User.builder()
-                    .email(userDTO.getEmail())
-                    .password(password)
-                    .username(userDTO.getUsername())
-                    .address(userDTO.getAddress()).age(userDTO.getAge())
-                    .roles("ROLE_USER")
-                    .nickname(userDTO.getNickname()).phoneNumber(userDTO.getPhoneNumber())
-                    .createDate(Timestamp.valueOf(LocalDateTime.now()))
-                    .status("active")
-                    .postCode(userDTO.getPostCode()).build();
-            User registeredUser = userService.create(user);
-
-            UserDTO response = UserDTO.builder().username(registeredUser.getUsername()).email(registeredUser.getEmail())
-                    .age(registeredUser.getAge()).address(user.getAddress())
-                    .nickname(registeredUser.getNickname()).phoneNumber(registeredUser.getPhoneNumber())
-                    .postCode(registeredUser.getPostCode()).build();
-            return ResponseEntity.ok().body(response);
-        }catch (Exception e){
-            ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
-            return ResponseEntity.badRequest().body(response);
-        }
+        UserDTO response = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
+                .age(user.getAge()).address(user.getAddress())
+                .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
+        return ResponseEntity.ok().body(response);
 
 
     }
+
+
+//    @PostMapping("/Oauth/join")
+//    public ResponseEntity<?> oauthsignup(@RequestBody UserDTO userDTO) {
+//
+//        try{
+//            //System.out.println(userDTO.getPassword());
+//            //System.out.println(passwordEncoder.encode(userDTO.getPassword()));
+//            String password = passwordEncoder.encode(userDTO.getEmail());
+//            User user = User.builder()
+//                    .email(userDTO.getEmail())
+//                    .password(password)
+//                    .username(userDTO.getUsername())
+//                    .address(userDTO.getAddress()).age(userDTO.getAge())
+//                    .roles("ROLE_USER")
+//                    .nickname(userDTO.getNickname()).phoneNumber(userDTO.getPhoneNumber())
+//                    .createDate(Timestamp.valueOf(LocalDateTime.now()))
+//                    .status("active")
+//                    .postCode(userDTO.getPostCode()).build();
+//            User registeredUser = userService.create(user);
+//
+//            UserDTO response = UserDTO.builder().username(registeredUser.getUsername()).email(registeredUser.getEmail())
+//                    .age(registeredUser.getAge()).address(user.getAddress())
+//                    .nickname(registeredUser.getNickname()).phoneNumber(registeredUser.getPhoneNumber())
+//                    .postCode(registeredUser.getPostCode()).build();
+//            return ResponseEntity.ok().body(response);
+//        }catch (Exception e){
+//            ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
+//            return ResponseEntity.badRequest().body(response);
+//        }
+//
+//
+//    }
 
     @GetMapping("/user/info")
     public ResponseEntity<?> userinfo(Authentication authentication){
