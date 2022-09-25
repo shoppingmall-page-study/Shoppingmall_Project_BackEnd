@@ -38,4 +38,11 @@ public class ReviewService {
         return reviewrepository.findByUserIdAndId(user,id);
     }
 
+    public List<Review> getEqUserAndActive(User user, String status){
+        return reviewrepository.getEqUserAndActive(user, status);
+    }
+
+    public List<Review> getEqProductAndActive(Product product, String status){
+        return  reviewrepository.getEqProductAndActive(product,status);
+    }
 }

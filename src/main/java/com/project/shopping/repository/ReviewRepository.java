@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 
 @Repository
 @Transactional
-public interface ReviewRepository extends JpaRepository<Review,Integer> {
+public interface ReviewRepository extends JpaRepository<Review,Integer>, ReviewRepositoryCustom {
     // 삭제 , 내 리뷰목록 조회 , 생성 , 상품 리뷰목록  조회
 
     List<Review> findAllByUserId(User userId); // 내모든 리뷰 목록 조회
@@ -20,4 +20,9 @@ public interface ReviewRepository extends JpaRepository<Review,Integer> {
     // 삭제를 위한 user와 리뷰아이디로 리뷰 찾기
     Review findByUserIdAndId(User userId, int id);
 
+    @Override
+    List<Review> getEqUserAndActive(User user, String status);
+
+    @Override
+    List<Review> getEqProductAndActive(Product product, String status);
 }
