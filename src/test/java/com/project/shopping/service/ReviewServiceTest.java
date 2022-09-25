@@ -44,6 +44,8 @@ public class ReviewServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .postCode("postCode")
                 .build();
         userService.create(user); // user 생성
@@ -56,13 +58,14 @@ public class ReviewServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
 
         productService.create(product); // product 생성
 
 
-        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").build();
+        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
 
         Review createReview = reviewService.create(review);
 
@@ -83,6 +86,8 @@ public class ReviewServiceTest {
                 .nickname("nickname")
                 .phoneNumber("01000000000")
                 .postCode("postCode")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         userService.create(user); // user 생성
 
@@ -94,13 +99,14 @@ public class ReviewServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
 
         productService.create(product); // product 생성
 
 
-        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").build();
+        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
 
         Review createReview = reviewService.create(review);
 
@@ -121,6 +127,8 @@ public class ReviewServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .postCode("postCode")
                 .build();
         userService.create(user); // user 생성
@@ -133,13 +141,14 @@ public class ReviewServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
 
         productService.create(product); // product 생성
 
 
-        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").build();
+        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
 
         Review createReview = reviewService.create(review);
         List<Review> findReviewProductId = reviewService.findallByProductId(product);
@@ -160,6 +169,8 @@ public class ReviewServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .postCode("postCode")
                 .build();
         userService.create(user); // user 생성
@@ -172,13 +183,14 @@ public class ReviewServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
 
         productService.create(product); // product 생성
 
 
-        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").build();
+        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
 
         Review createReview = reviewService.create(review);
         Review findreview = reviewService.findReviewUserAndId(user, review.getId());

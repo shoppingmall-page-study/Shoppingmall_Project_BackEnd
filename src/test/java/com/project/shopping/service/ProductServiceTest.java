@@ -41,6 +41,8 @@ public class ProductServiceTest {
                 .nickname("nickname")
                 .phoneNumber("01000000000")
                 .postCode("postCode")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         userService.create(user);
         Product product = Product.builder()
@@ -51,6 +53,7 @@ public class ProductServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
 
@@ -70,6 +73,8 @@ public class ProductServiceTest {
                 .nickname("nickname")
                 .phoneNumber("01000000000")
                 .postCode("postCode")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         userService.create(user);
         Product product = Product.builder()
@@ -80,6 +85,7 @@ public class ProductServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product createProduct = productService.create(product);
@@ -105,6 +111,8 @@ public class ProductServiceTest {
                 .nickname("nickname")
                 .phoneNumber("01000000000")
                 .postCode("postCode")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         userService.create(user);
         Product product = Product.builder()
@@ -115,6 +123,7 @@ public class ProductServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product createProduct = productService.create(product);
@@ -134,6 +143,8 @@ public class ProductServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .postCode("postCode")
                 .build();
         userService.create(user);
@@ -145,6 +156,7 @@ public class ProductServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product createProduct = productService.create(product);
@@ -167,6 +179,8 @@ public class ProductServiceTest {
                 .age(11)
                 .nickname("nickname")
                 .phoneNumber("01000000000")
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .postCode("postCode")
                 .build();
         userService.create(user);
@@ -178,6 +192,7 @@ public class ProductServiceTest {
                 .amount(10000)
                 .total(1000)
                 .imgUrl("asdfasdf")
+                .status("active")
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
         Product createProduct = productService.create(product);
