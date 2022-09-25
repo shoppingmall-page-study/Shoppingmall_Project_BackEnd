@@ -52,6 +52,7 @@ public class ReviewController {
                     .content(reviewDto.getContent())
                     .imageUrl(reviewDto.getImgUrl())
                     .reviewcreateTime(LocalDate.now())
+                    .status("active")
                     .build();
 
 
@@ -68,11 +69,11 @@ public class ReviewController {
                     .userNickName(registeredReview.getUserId().getNickname())
                     .productName(registeredReview.getProductId().getName())
                     .productId(registeredReview.getProductId().getId())
-                    .productPrice(registeredReview.getProductId().getPrice())
+                    .productPrice(registeredReview.getProductId().getAmount())
                     .imgUrl(registeredReview.getImageUrl())
                     .title(reviewDto.getTitle())
                     .content(reviewDto.getContent())
-                    .reviewCreateTime(registeredReview.getReviewcreateTime())
+                    .reviewCreateTime(registeredReview.getCreateTime())
                     .build();
 
             return ResponseEntity.ok().body(response);
@@ -130,11 +131,11 @@ public class ReviewController {
                         .userNickName(review.getUserId().getNickname())
                         .productName(review.getProductId().getName())
                         .productId(review.getProductId().getId())
-                        .productPrice(review.getProductId().getPrice())
+                        .productPrice(review.getProductId().getAmount())
                         .imgUrl(review.getImageUrl())
                         .title(review.getTitle())
                         .content(review.getContent())
-                        .reviewCreateTime(review.getReviewcreateTime())
+                        .reviewCreateTime(review.getCreateTime())
                         .build();
                 userReviewListDto.add(reviewDTO);
             }
@@ -171,11 +172,11 @@ public class ReviewController {
                         .userNickName(review.getUserId().getNickname())
                         .productName(review.getProductId().getName())
                         .productId(review.getProductId().getId())
-                        .productPrice(review.getProductId().getPrice())
+                        .productPrice(review.getProductId().getAmount())
                         .imgUrl(review.getImageUrl())
                         .title(review.getTitle())
                         .content(review.getContent())
-                        .reviewCreateTime(review.getReviewcreateTime())
+                        .reviewCreateTime(review.getCreateTime())
                         .build();
                 ProductReviewDto.add(reviewDTO);
             }
@@ -218,11 +219,11 @@ public class ReviewController {
                     .userNickName(review.getUserId().getNickname())
                     .productName(review.getProductId().getName())
                     .productId(review.getProductId().getId())
-                    .productPrice(review.getProductId().getPrice())
+                    .productPrice(review.getProductId().getAmount())
                     .imgUrl(review.getImageUrl())
                     .title(review.getTitle())
                     .content(review.getContent())
-                    .reviewCreateTime(review.getReviewcreateTime())
+                    .reviewCreateTime(review.getCreateTime())
                     .build();
 
             return  ResponseEntity.ok().body(response);

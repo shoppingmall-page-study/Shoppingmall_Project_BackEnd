@@ -37,7 +37,7 @@ public class Product {
 
     @Setter
     @Column(nullable = false)
-    private long price;
+    private long amount;
 
     @Setter
     @Column(nullable = false)
@@ -52,6 +52,12 @@ public class Product {
     private Timestamp createDate;
 
 
+    @Setter
+    @CreationTimestamp
+    private Timestamp modifiedDate;
+
+
+
     @OneToMany(mappedBy = "productId")
     private List<Review> reviews = new ArrayList<>(); // 일대 다 review와 연관 관계 맺기
 
@@ -59,15 +65,23 @@ public class Product {
     @OneToMany(mappedBy = "productId")
     private  List<Cart> carts = new ArrayList<>();
 
+
+    @Setter
+    @Column(nullable = false)
+    private  String status;
+
+
     @Builder
-    public Product(User userId, String title, String content, String name, long price, int total, String imgUrl, Timestamp createDate) {
+    public Product(User userId, String title, String content, String name, long amount, int total, String imgUrl, Timestamp createDate,Timestamp modifiedDate, String status) {
         this.userId = userId;
         this.title = title;
         this.content = content;
         this.name = name;
-        this.price = price;
+        this.amount = amount;
         this.total = total;
         this.imgUrl = imgUrl;
         this.createDate = createDate;
+        this.modifiedDate = modifiedDate;
+        this.status = status;
     }
 }

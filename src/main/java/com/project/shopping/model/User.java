@@ -1,9 +1,11 @@
 package com.project.shopping.model;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,6 +57,16 @@ public class User {
 
 
     private String roles;
+    @CreationTimestamp
+    private Timestamp createDate;
+
+
+
+    @CreationTimestamp
+    private Timestamp modifieddate;
+
+    @Column(nullable = false)
+    private  String status;
 
 
     public List<String> getRoleList(){
@@ -68,7 +80,7 @@ public class User {
 
 
     @Builder
-    public User(String email,String password, String username, String address, int age, String nickname, String phoneNumber,String postCode ,String roles) {
+    public User(String email,String password, String username, String address, int age, String nickname, String phoneNumber,String postCode ,String roles,Timestamp createDate, Timestamp modifieddate, String status) {
         this.email = email;
         this.password = password;
         this.username = username;
@@ -78,5 +90,8 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.postCode = postCode;
         this.roles = roles;
+        this.createDate = createDate;
+        this.modifieddate = modifieddate;
+        this.status = status;
     }
 }

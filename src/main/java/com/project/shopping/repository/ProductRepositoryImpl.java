@@ -33,7 +33,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
             return null;
         }
         try{
-            return product.price.eq(Long.valueOf(price));
+            return product.amount.eq(Long.valueOf(price));
         }catch (Exception e){
             return null;
         }
