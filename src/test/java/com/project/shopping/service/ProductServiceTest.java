@@ -197,7 +197,7 @@ public class ProductServiceTest {
                 .build();
         Product createProduct = productService.create(product);
 
-        List<Product> productlist = productService.getProductList("가나다");
+        List<Product> productlist = productService.getProductList("가나다","active");
         for(Product products : productlist){
             if(products.getId() == createProduct.getId()){
                 Assertions.assertThat(products.getId()).isEqualTo(createProduct.getId());
