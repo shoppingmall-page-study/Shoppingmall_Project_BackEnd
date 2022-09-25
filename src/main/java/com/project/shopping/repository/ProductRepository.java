@@ -15,12 +15,20 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product,Integer>,ProductRepositoryCustom {
 
     @Override
-    List<Product> getProductList(String title);
+    List<Product> getProductList(String title, String status);
+
+    @Override
+    List<Product> getActiveProdcutList(String status);
+
+
+    @Override
+    List<Product> getEqUserAndActive(User user, String status);
 
     Product findById(int id);
     Product findByIdAndUserId(int id, User user);
 
     List<Product> findAll();
     List<Product> findAllByUserId(User user);
+
 
 }
