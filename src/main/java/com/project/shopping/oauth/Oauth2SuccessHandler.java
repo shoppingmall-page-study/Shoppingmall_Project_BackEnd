@@ -68,6 +68,7 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
                     .username(name)
                     .address("????").age(100)
                     .roles("ROLE_USER")
+                    .status("active")
                     .postCode("????")
                     .nickname("????").phoneNumber("????").build();
             userService.create(users);
