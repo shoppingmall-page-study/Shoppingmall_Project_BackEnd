@@ -19,7 +19,7 @@ public class PrinciplaDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         System.out.println("PrincipalDetailsService");
         User user = userRepository.findByEmail(email); //이메일을 이용하여 user객체 인증 객체  만들기
-        System.out.println(user);
+        System.out.println(user); //user  찍히고
         return  new PrincipalDetails(user);
     }
 }

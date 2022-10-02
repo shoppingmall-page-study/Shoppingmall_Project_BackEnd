@@ -70,7 +70,7 @@ public class OrderController {
                     .userId(user)
                     .productNum(orderDTO.getProductNumber())
                     .orderComplete(false)
-                    .amount(product.getAmount() * orderDTO.getProductNumber())
+                    .amount(product.getPrice() * orderDTO.getProductNumber())
                     .build();
 
             orderService.create(order);
@@ -78,7 +78,7 @@ public class OrderController {
             OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
                     .merchantUid(orderDTO.getProductId())
                     .name(product.getName())
-                    .amount(orderDTO.getProductNumber() * product.getAmount())
+                    .amount(orderDTO.getProductNumber() * product.getPrice())
                     .buyerEmail(user.getEmail())
                     .buyerTel(user.getPhoneNumber())
                     .buyerAddr(user.getAddress())

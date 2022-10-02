@@ -34,7 +34,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
             return null;
         }
         try{
-            return product.amount.eq(Long.valueOf(price)).and(product.status.eq(status));
+            return product.price.eq(Long.valueOf(price)).and(product.status.eq(status));
         }catch (Exception e){
             return null;
         }

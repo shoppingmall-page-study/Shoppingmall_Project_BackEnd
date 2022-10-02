@@ -34,23 +34,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        System.out.println("인증완료");
-        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
-        User user = principalDetails.getUser();
-        String jwt = tokenprovider.create(user);
-        System.out.println(jwt);
-        response.setContentType("application/json");
+        try{
+            System.out.println("인증완료");
+            PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
+            User user = principalDetails.getUser();
+            String jwt = tokenprovider.create(user);
+            System.out.println(jwt);
+            response.setContentType("application/json");
 
-        response.addHeader("Authorization","Bearer "+jwt);
+            response.addHeader("Authorization","Bearer "+jwt);
 
 
-        UserDTO res = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
-                .age(user.getAge()).address(user.getAddress())
-                .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
-        ResponseEntity.ok().body(res);
+            UserDTO res = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
+                    .age(user.getAge()).address(user.getAddress())
+                    .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
+            ResponseEntity.ok().body(res);
 
-        String result = objectMapper.writeValueAsString(res);
-        response.getWriter().write(result);
+            String result = objectMapper.writeValueAsString(res);
+            response.getWriter().write(result);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
 
     }

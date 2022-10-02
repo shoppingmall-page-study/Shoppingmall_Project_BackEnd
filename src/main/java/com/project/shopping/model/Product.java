@@ -37,7 +37,7 @@ public class Product {
 
     @Setter
     @Column(nullable = false)
-    private long amount;
+    private long price;
 
     @Setter
     @Column(nullable = false)
@@ -49,11 +49,13 @@ public class Product {
 
     @Setter
     @CreationTimestamp
+    @Column(nullable = false)
     private Timestamp createDate;
 
 
     @Setter
     @CreationTimestamp
+    @Column(nullable = false)
     private Timestamp modifiedDate;
 
 
@@ -72,12 +74,12 @@ public class Product {
 
 
     @Builder
-    public Product(User userId, String title, String content, String name, long amount, int total, String imgUrl, Timestamp createDate,Timestamp modifiedDate, String status) {
+    public Product(User userId, String title, String content, String name, long price, int total, String imgUrl, Timestamp createDate,Timestamp modifiedDate, String status) {
         this.userId = userId;
         this.title = title;
         this.content = content;
         this.name = name;
-        this.amount = amount;
+        this.price = price;
         this.total = total;
         this.imgUrl = imgUrl;
         this.createDate = createDate;
