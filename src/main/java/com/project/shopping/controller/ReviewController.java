@@ -3,6 +3,9 @@ package com.project.shopping.controller;
 
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.ReviewDTO;
+import com.project.shopping.dto.requestDTO.RevieRequestDTO.ReviewCreateRequestDTO;
+import com.project.shopping.dto.requestDTO.RevieRequestDTO.ReviewUpdateRequestDTO;
+import com.project.shopping.dto.responseDTO.ReviewResponseDTO.*;
 import com.project.shopping.model.Product;
 import com.project.shopping.model.Review;
 import com.project.shopping.model.User;
@@ -33,8 +36,8 @@ public class ReviewController {
     private String ActiveStatus= "active";
 
     // 리뷰 생성
-    @PostMapping("/review/create/{id}")
-    public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody ReviewDTO reviewDto){
+    @PostMapping("/api/review/create/{id}")
+    public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody ReviewCreateRequestDTO reviewCreateRequestDTO){
         try{
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             String email = principalDetails.getUser().getEmail();
@@ -50,10 +53,11 @@ public class ReviewController {
             Review review = Review.builder()
                     .userId(user)
                     .productId(product)
-                    .title(reviewDto.getTitle())
-                    .content(reviewDto.getContent())
-                    .imageUrl(reviewDto.getImgUrl())
+                    .title(reviewCreateRequestDTO.getTitle())
+                    .content(reviewCreateRequestDTO.getContent())
+                    .imageUrl(reviewCreateRequestDTO.getImgUrl())
                     .reviewcreateTime(LocalDate.now())
+                    .modifieddate(LocalDate.now())
                     .status("active")
                     .build();
 
@@ -63,22 +67,17 @@ public class ReviewController {
 
             // Review Dto 로 응답 보내기
 
-            ReviewDTO response = ReviewDTO.builder()
-                    .reviewId(review.getId())
-
-                    .userEmail(registeredReview.getUserId().getEmail())
-                    .userName(registeredReview.getUserId().getUsername())
-                    .userNickName(registeredReview.getUserId().getNickname())
-                    .productName(registeredReview.getProductId().getName())
-                    .productId(registeredReview.getProductId().getId())
-                    .productPrice(registeredReview.getProductId().getAmount())
-                    .imgUrl(registeredReview.getImageUrl())
-                    .title(reviewDto.getTitle())
-                    .content(reviewDto.getContent())
-                    .reviewCreateTime(registeredReview.getCreateTime())
+            ReviewCreateResponseDTO reviewCreateResponseDTO = ReviewCreateResponseDTO.builder()
+                    .reviewId(registeredReview.getId())
+                    .title(registeredReview.getTitle())
+                    .content(registeredReview.getContent())
                     .build();
 
-            return ResponseEntity.ok().body(response);
+            Map<String , Object> result = new HashMap<>();
+            result.put("msg","리뷰 등록에 성공했습니다.");
+            result.put("data", reviewCreateResponseDTO);
+
+           return ResponseEntity.ok().body(result);
 
 
 
@@ -88,7 +87,7 @@ public class ReviewController {
     }
 
     // 리뷰 삭제
-    @PutMapping ("/review/delete/{id}")
+    @DeleteMapping ("/api/review/delete/{id}")
     public ResponseEntity<?> reviewdelete(Authentication authentication, @PathVariable(value = "id") int ReviewId){ // reviewid
         try{
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -98,19 +97,23 @@ public class ReviewController {
             findreview.setStatus("Disabled");
             reviewService.update(findreview);
 
-            ReviewDTO response = ReviewDTO.builder()
-                    .imgUrl(findreview.getImageUrl())
+            ReviewDeleteResponseDTO reviewDeleteResponseDTO = ReviewDeleteResponseDTO.builder()
+                    .reviewId(findreview.getId())
                     .content(findreview.getContent())
                     .title(findreview.getTitle())
                     .build();
-            return  ResponseEntity.ok().body(response);
+
+            Map<String , Object> result = new HashMap<>();
+            result.put("msg","리뷰 삭제에 성공했습니다.");
+            result.put("data", reviewDeleteResponseDTO);
+            return  ResponseEntity.ok().body(result);
         }catch (Exception e){
             return  ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     // 내가 등록한 리뷰 조회
-    @GetMapping("/review/list/user")
+    @GetMapping("/api/review/user")
     public ResponseEntity<?> findUserReviewlist(Authentication authentication){
 
         try {
@@ -123,24 +126,16 @@ public class ReviewController {
             List<Review> userReviewlist = reviewService.getEqUserAndActive(user,ActiveStatus);
 
             //dto 만들기
-            List<ReviewDTO> userReviewListDto = new ArrayList<>();
+            List<ReviewUserJoinResponseDTO> userReviewListDto = new ArrayList<>();
             for (Review review : userReviewlist){
-                ReviewDTO reviewDTO = ReviewDTO.builder()
+                ReviewUserJoinResponseDTO reviewUserJoinResponseDTO = ReviewUserJoinResponseDTO.builder()
                         .reviewId(review.getId())
-
-                        .userEmail(review.getUserId().getEmail())
-                        .userName(review.getUserId().getUsername())
-                        .userAge(review.getUserId().getAge())
-                        .userNickName(review.getUserId().getNickname())
-                        .productName(review.getProductId().getName())
-                        .productId(review.getProductId().getId())
-                        .productPrice(review.getProductId().getAmount())
-                        .imgUrl(review.getImageUrl())
-                        .title(review.getTitle())
                         .content(review.getContent())
-                        .reviewCreateTime(review.getCreateTime())
+                        .title(review.getTitle())
+                        .createTime(review.getCreateTime())
+                        .modifiedTime(review.getModifieddate())
                         .build();
-                userReviewListDto.add(reviewDTO);
+                userReviewListDto.add(reviewUserJoinResponseDTO);
             }
 
             Map<String , Object> result = new HashMap<>();
@@ -155,7 +150,7 @@ public class ReviewController {
     }
 
     // 상품에 달린 리뷰 조회
-    @GetMapping("/review/list/product/{id}")
+    @GetMapping("/api/review/{id}")
     public ResponseEntity<?> findProductReviewlist(@PathVariable(value = "id") int ProductId){
         try {
             // 상품 찾기
@@ -163,25 +158,19 @@ public class ReviewController {
 
             // 상품에 등록된 리뷰 찾기
             List<Review> ProductReviewList = reviewService.getEqProductAndActive(product, ActiveStatus);
-            List<ReviewDTO> ProductReviewDto = new ArrayList<>();
+            List<ReviewProductJoinResponseDTO> ProductReviewDto = new ArrayList<>();
 
             for(Review review : ProductReviewList){
-                ReviewDTO reviewDTO = ReviewDTO.builder()
+                ReviewProductJoinResponseDTO reviewProductJoinResponseDTO = ReviewProductJoinResponseDTO.builder()
                         .reviewId(review.getId())
-
-                        .userEmail(review.getUserId().getEmail())
-                        .userName(review.getUserId().getUsername())
-                        .userAge(review.getUserId().getAge())
-                        .userNickName(review.getUserId().getNickname())
-                        .productName(review.getProductId().getName())
-                        .productId(review.getProductId().getId())
-                        .productPrice(review.getProductId().getAmount())
-                        .imgUrl(review.getImageUrl())
+                        .userNicename(review.getUserId().getNickname())
+                        .imgURL(review.getImageUrl())
                         .title(review.getTitle())
                         .content(review.getContent())
-                        .reviewCreateTime(review.getCreateTime())
+                        .createTime(review.getCreateTime())
+                        .modifiedTime(review.getModifieddate())
                         .build();
-                ProductReviewDto.add(reviewDTO);
+                ProductReviewDto.add(reviewProductJoinResponseDTO);
             }
             Map<String, Object> result = new HashMap<>();
             result.put("data",ProductReviewDto);
@@ -192,22 +181,22 @@ public class ReviewController {
 
     }
 
-    @PutMapping("/review/update/{id}")
-    public ResponseEntity<?> productUpdate(Authentication authentication, @PathVariable(value = "id") int reviewId, @RequestBody ReviewDTO reviewDTO){
+    @PutMapping("/api/review/update/{id}")
+    public ResponseEntity<?> productUpdate(Authentication authentication, @PathVariable(value = "id") int reviewId, @RequestBody ReviewUpdateRequestDTO reviewUpdateRequestDTO){
         try{
             PrincipalDetails principalDetails =  (PrincipalDetails) authentication.getPrincipal();
             String email = principalDetails.getUser().getEmail();
             User user = userService.findEmailByUser(email); // 유저 찾기
 
             Review findReview = reviewService.findReviewUserAndId(user,reviewId); // 유저와 해당 리뷰 아이디로 리뷰 찾기
-            if(reviewDTO.getContent() != ""){
-                findReview.setContent(reviewDTO.getContent());
+            if(reviewUpdateRequestDTO.getContent() != ""){
+                findReview.setContent(reviewUpdateRequestDTO.getContent());
             }
-            if(reviewDTO.getTitle() != ""){
-                findReview.setTitle(reviewDTO.getTitle());
+            if(reviewUpdateRequestDTO.getTitle() != ""){
+                findReview.setTitle(reviewUpdateRequestDTO.getTitle());
             }
-            if(reviewDTO.getImgUrl() != ""){
-                findReview.setImageUrl(reviewDTO.getImgUrl());
+            if(reviewUpdateRequestDTO.getImgUrl() != ""){
+                findReview.setImageUrl(reviewUpdateRequestDTO.getImgUrl());
             }
 
             findReview.builder().modifieddate(LocalDate.now());
@@ -215,21 +204,18 @@ public class ReviewController {
 
             Review review = reviewService.update(findReview);
 
-            ReviewDTO response = ReviewDTO.builder()
+            ReviewUpdateResponseDTO reviewUpdateResponseDTO = ReviewUpdateResponseDTO.builder()
                     .reviewId(review.getId())
-                    .userEmail(review.getUserId().getEmail())
-                    .userName(review.getUserId().getUsername())
-                    .userNickName(review.getUserId().getNickname())
-                    .productName(review.getProductId().getName())
-                    .productId(review.getProductId().getId())
-                    .productPrice(review.getProductId().getAmount())
-                    .imgUrl(review.getImageUrl())
                     .title(review.getTitle())
                     .content(review.getContent())
-                    .reviewCreateTime(review.getCreateTime())
+                    .imgUrl(review.getImageUrl())
                     .build();
 
-            return  ResponseEntity.ok().body(response);
+            Map<String, Object> result = new HashMap<>();
+            result.put("msg","리뷰수정에 성공했습니다.");
+            result.put("data", reviewUpdateResponseDTO);
+
+            return  ResponseEntity.ok().body(result);
 
         }catch (Exception e){
             return  ResponseEntity.badRequest().body(e.getMessage());

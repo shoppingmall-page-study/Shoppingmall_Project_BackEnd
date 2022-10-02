@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 @Slf4j
 public class UserService {
@@ -15,8 +17,9 @@ public class UserService {
     private UserRepository userRepository;
 
     public User create(User user){
-        if(user == null && user.getEmail()==null){
-            throw new RuntimeException("Invalid arguments");
+        System.out.println(user.getEmail());
+        if(user == null || user.getEmail().equals("")){
+            throw new NoSuchElementException("잘못된 형식의 데이터 입니다. ");
         }
         final String email = user.getEmail();
         //System.out.println(userRepository.existsByEmail(email)+"이메일이 존재하는지?");
@@ -48,10 +51,11 @@ public class UserService {
 //        return null;
 //    }
 
-    public Boolean existsByEmai(String email){
+    public Boolean existsByEmail(String email){
         return userRepository.existsByEmail(email);
     }
 
+    public Boolean existsByNickname(String nickname){return userRepository.existsByNickname(nickname);}
     public User updateUser(User user){
         return  userRepository.save(user);
     }

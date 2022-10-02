@@ -58,14 +58,17 @@ public class User {
 
     private String roles;
     @CreationTimestamp
+    @Column(nullable = false)
     private Timestamp createDate;
 
 
-
+    @Column(nullable = false)
     @CreationTimestamp
+    @Setter
     private Timestamp modifieddate;
 
     @Column(nullable = false)
+    @Setter
     private  String status;
 
 
