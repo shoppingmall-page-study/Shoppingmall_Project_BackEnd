@@ -1,32 +1,27 @@
 package com.project.shopping.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.project.shopping.auth.PrincipalDetails;
-import com.project.shopping.auth.PrinciplaDetailsService;
+
 import com.project.shopping.dto.ResponseDTO;
 import com.project.shopping.dto.UserDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.*;
-import com.project.shopping.dto.requestDTO.request;
+
 import com.project.shopping.dto.responseDTO.UserResponseDTO.*;
 import com.project.shopping.model.User;
 import com.project.shopping.service.UserService;
-import com.sun.jdi.request.DuplicateRequestException;
+
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpResponse;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -71,7 +66,7 @@ public class UserController  {
             //System.out.println(passwordEncoder.encode(userDTO.getPassword()));
 
             if(userService.existsByEmail(userJoinRequestDTO.getEmail())){
-                throw new DuplicateRequestException("이미 이메일이 존재합니다.");
+                throw new Exception("이미 이메일이 존재합니다.");
             }
             if(userJoinRequestDTO.getEmail().equals("")){
                 throw new NoSuchElementException("잘못된 형식의 데이터 입니다. ");
@@ -314,7 +309,7 @@ public class UserController  {
         try{
             // 존재할시
             if(userService.existsByEmail(userCheckEmailDTO.getEmail())){
-                throw  new DuplicateRequestException("이메일이 존재합니다.");
+                throw  new Exception("이메일이 존재합니다.");
             }
             UserCheckEmailResponseDTO userCheckEmailResponseDTO = UserCheckEmailResponseDTO.builder().email(userCheckEmailDTO.getEmail()).build();
 
@@ -331,7 +326,7 @@ public class UserController  {
     public ResponseEntity<?> checknickname(@RequestBody UserCheckNicknameRequestDTO userCheckNicknameRequestDTO){
         try{
             if(userService.existsByNickname(userCheckNicknameRequestDTO.getNickname())){
-                throw  new DuplicateRequestException("닉네임이 존재합니다.");
+                throw  new Exception("닉네임이 존재합니다.");
             }
             UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = UserCheckNicknameResponseDTO.builder().nickname(userCheckNicknameRequestDTO.getNickname()).build();
             Map<String, Object> response = new HashMap<>();
