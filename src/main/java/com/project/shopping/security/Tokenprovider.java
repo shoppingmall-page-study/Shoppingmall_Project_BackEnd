@@ -86,6 +86,7 @@ public class Tokenprovider {
     }
 
 
+
         // 토큰이 있는지 검사하고 이메일 추출하는 api
     public String validateAndGetUserEmail(String token){
         Claims claims = Jwts.parser()

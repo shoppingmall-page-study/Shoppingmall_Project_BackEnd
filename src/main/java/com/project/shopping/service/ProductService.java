@@ -48,10 +48,12 @@ public class ProductService {
         return productRepository.save(product);
 
     }
+    public Product findById(int id){return  productRepository.findById(id);}
 
     public Product findProductNameUser(int id, User user){
         return productRepository.findByIdAndUserId(id, user);
     }
+    public Boolean existsPruductIdUser(int id , User user){return  productRepository.existsByIdAndUserId(id,user);}
     public void deleteProduct(Product product){productRepository.delete(product);
     }
     public Product findproductid(int id){
