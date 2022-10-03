@@ -1,6 +1,8 @@
 package com.project.shopping.controller;
 
 
+import com.project.shopping.Error.CustomExcpetion;
+import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.ProductDTO;
 import com.project.shopping.dto.ResponseDTO;
@@ -18,6 +20,7 @@ import com.project.shopping.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -46,47 +49,47 @@ public class ProductController {
 
     @PostMapping("/api/product/create")
     public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody ProductCreateRequestDTO productCreateRequestDTO) {
-        try {
-            PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
-            String email = userDtails.getUser().getEmail();
-            User user = userService.findEmailByUser(email);
-
-
-            // 인증 값 기반으로 user 찾기
-
-            Product product = Product.builder().userId(user)
-                    .title(productCreateRequestDTO.getTitle())
-                    .content(productCreateRequestDTO.getContent())
-                    .name(productCreateRequestDTO.getName())
-                    .price(productCreateRequestDTO.getPrice())
-                    .total(productCreateRequestDTO.getTotal())
-                    .imgUrl(productCreateRequestDTO.getImgUrl())
-                    .status("active")
-                    .createDate(Timestamp.valueOf(LocalDateTime.now()))
-                    .modifiedDate(Timestamp.valueOf(LocalDateTime.now()))
-                    .build();
-            //System.out.println("12313213");
-            // System.out.println(productDTO.getName());
-            // System.out.println(product.getName());
-            Product registeredProduct = productService.create(product); // 상품 생성
-
-            ProductCreateResponseDTO productCreateResponseDTO = ProductCreateResponseDTO.builder()
-                    .title(registeredProduct.getTitle())
-                    .content(registeredProduct.getContent())
-                    .name(registeredProduct.getName())
-                    .price(registeredProduct.getPrice())
-                    .total(registeredProduct.getTotal())
-                    .imgUrl(registeredProduct.getImgUrl())
-                    .createDate(registeredProduct.getCreateDate())
-                    .modifiedDate(registeredProduct.getModifiedDate())
-                    .build();
-            Map<String, Object> result = new HashMap<>();
-            result.put("msg", "상품 등록에 성공했습니다.");
-            result.put("data", productCreateResponseDTO);
-            return ResponseEntity.ok().body(result);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        if(authentication == null){
+            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
+
+        PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
+        String email = userDtails.getUser().getEmail();
+        User user = userService.findEmailByUser(email);
+
+
+        // 인증 값 기반으로 user 찾기
+
+        Product product = Product.builder().userId(user)
+                .title(productCreateRequestDTO.getTitle())
+                .content(productCreateRequestDTO.getContent())
+                .name(productCreateRequestDTO.getName())
+                .price(productCreateRequestDTO.getPrice())
+                .total(productCreateRequestDTO.getTotal())
+                .imgUrl(productCreateRequestDTO.getImgUrl())
+                .status("active")
+                .createDate(Timestamp.valueOf(LocalDateTime.now()))
+                .modifiedDate(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
+        //System.out.println("12313213");
+        // System.out.println(productDTO.getName());
+        // System.out.println(product.getName());
+        Product registeredProduct = productService.create(product); // 상품 생성
+
+        ProductCreateResponseDTO productCreateResponseDTO = ProductCreateResponseDTO.builder()
+                .title(registeredProduct.getTitle())
+                .content(registeredProduct.getContent())
+                .name(registeredProduct.getName())
+                .price(registeredProduct.getPrice())
+                .total(registeredProduct.getTotal())
+                .imgUrl(registeredProduct.getImgUrl())
+                .createDate(registeredProduct.getCreateDate())
+                .modifiedDate(registeredProduct.getModifiedDate())
+                .build();
+        Map<String, Object> result = new HashMap<>();
+        result.put("msg", "상품 등록에 성공했습니다.");
+        result.put("data", productCreateResponseDTO);
+        return ResponseEntity.ok().body(result);
     }
 
 
@@ -156,40 +159,40 @@ public class ProductController {
     @DeleteMapping("/api/product/delete/{id}")
     public ResponseEntity<?>  productdelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
 
-
-        try{
-            PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
-            String email = userDtails.getUser().getEmail();
-            User user = userService.findEmailByUser(email); // user 찾기
-            Product product = productService.findProductNameUser(ProductId,user); // 유저와 상품명으로 상품 찾기
-            // 해당 상품을 찾았으니까
-            // 해당 상품내 있는 리뷰 리스트
-
-            product.setStatus("Disabled");
-            productService.update(product);
-
-            ProductDeleteResponseDTO productDeleteResponseDTO = ProductDeleteResponseDTO.builder()
-                    .productId(product.getId())
-                    .title(product.getTitle())
-                    .content(product.getContent())
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .total(product.getTotal())
-                    .imgUrl(product.getImgUrl())
-                    .createDate(product.getCreateDate())
-                    .modifiedDate(product.getModifiedDate())
-                    .build();
-            Map<String, Object> result = new HashMap<>();
-            result.put("msg", "상품삭제에 성공했습니다.");
-            result.put("data", productDeleteResponseDTO);
-
-            return ResponseEntity.ok().body(result);
+        if(authentication == null){
+            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
-        catch (Exception e){
-            ResponseDTO deleteresponse = ResponseDTO.builder().error(e.getMessage()).build();
-            return ResponseEntity.badRequest().body(deleteresponse);
+        PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
+        String email = userDtails.getUser().getEmail();
+
+        User user = userService.findEmailByUser(email); // user 찾기
+        if(!productService.existsPruductIdUser(ProductId,user)){
+            throw  new CustomExcpetion("상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
 
         }
+        Product product = productService.findProductNameUser(ProductId,user); // 유저와 상품명으로 상품 찾기
+        // 해당 상품을 찾았으니까
+        // 해당 상품내 있는 리뷰 리스트
+
+        product.setStatus("Disabled");
+        productService.update(product);
+
+        ProductDeleteResponseDTO productDeleteResponseDTO = ProductDeleteResponseDTO.builder()
+                .productId(product.getId())
+                .title(product.getTitle())
+                .content(product.getContent())
+                .name(product.getName())
+                .price(product.getPrice())
+                .total(product.getTotal())
+                .imgUrl(product.getImgUrl())
+                .createDate(product.getCreateDate())
+                .modifiedDate(product.getModifiedDate())
+                .build();
+        Map<String, Object> result = new HashMap<>();
+        result.put("msg", "상품삭제에 성공했습니다.");
+        result.put("data", productDeleteResponseDTO);
+
+        return ResponseEntity.ok().body(result);
 
     }
 
@@ -221,108 +224,11 @@ public class ProductController {
 
     @PostMapping("/api/product/search")
     public ResponseEntity<?> searchProudct(@RequestBody ProductSearchRequestDTO productSearchRequestDTO){
-        try{
-            List<Product> productList = productService.getProductList(productSearchRequestDTO.getKeyword(), ActiveStatus);
-            List<ProductSearchResponseDTO> response  = new ArrayList<>();
+        List<Product> productList = productService.getProductList(productSearchRequestDTO.getKeyword(), ActiveStatus);
+        List<ProductSearchResponseDTO> response  = new ArrayList<>();
 
-            for(Product product : productList){
-                ProductSearchResponseDTO productSearchResponseDTO = ProductSearchResponseDTO.builder()
-                        .productId(product.getId())
-                        .title(product.getTitle())
-                        .content(product.getContent())
-                        .name(product.getName())
-                        .price(product.getPrice())
-                        .total(product.getTotal())
-                        .imgUrl(product.getImgUrl())
-                        .createDate(product.getCreateDate())
-                        .modifiedDate(product.getModifiedDate())
-                        .build();
-                response.add(productSearchResponseDTO);
-            }
-            Map<String , Object> result = new HashMap<>();
-            result.put("msg","상품검색에 성공했습니다.");
-            result.put("data",response);
-            return ResponseEntity.ok().body(result);
-        }catch (Exception e)
-        {
-            return  ResponseEntity.badRequest().body(e.getMessage());
-        }
-
-    }
-    // 내가 올린 상품 검색
-    @GetMapping("/api/products/user")
-    public ResponseEntity<?> findresisterproductuser(Authentication authentication){
-        try{
-            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-            String email = principalDetails.getUser().getEmail();
-            User user = userService.findEmailByUser(email); // 해당 유저 찾기
-
-            List<Product> findallproduct = productService.getEqUserAndActive(user, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
-
-            List<ProductJoinResponseDTO> response = new ArrayList<>();
-
-            for(Product product: findallproduct){
-                ProductJoinResponseDTO productJoinResponseDTO = ProductJoinResponseDTO.builder()
-                        .productId(product.getId())
-                        .title(product.getTitle())
-                        .content(product.getContent())
-                        .name(product.getName())
-                        .price(product.getPrice())
-                        .total(product.getTotal())
-                        .imgUrl(product.getImgUrl())
-                        .createDate(product.getCreateDate())
-                        .modifiedDate(product.getModifiedDate())
-                        .build();
-                response.add(productJoinResponseDTO);
-            }
-            Map<String , Object> result = new HashMap<>();
-            result.put("msg","상품 조회에 성공했습니다.");
-            result.put("data",response);
-            return ResponseEntity.ok().body(result);
-
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
-    }
-
-    @PutMapping("/api/product/update/{id}")
-    public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody ProductUpdateRequestDTO productUpdateRequestDTO){
-        try{
-            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-            String email = principalDetails.getUser().getEmail();
-            User user = userService.findEmailByUser(email); // 유저 찾기
-            Product product = productService.findProductNameUser(ProductId, user); // 해당 상품 찾기
-
-            if(productUpdateRequestDTO.getTitle() != ""){
-                product.setTitle(productUpdateRequestDTO.getTitle());
-            }
-            if(productUpdateRequestDTO.getContent() != ""){
-                product.setContent(productUpdateRequestDTO.getContent());
-            }
-            if(productUpdateRequestDTO.getName() != ""){
-                product.setName(productUpdateRequestDTO.getName());
-
-            }
-            if(productUpdateRequestDTO.getPrice() != 0){
-                product.setPrice(productUpdateRequestDTO.getPrice());
-
-            }
-            if(productUpdateRequestDTO.getTotal() !=0){
-                product.setTotal(productUpdateRequestDTO.getTotal());
-
-            }
-            if(productUpdateRequestDTO.getImgUrl() != ""){
-                product.setImgUrl(productUpdateRequestDTO.getImgUrl());
-
-            }
-            product.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
-
-
-
-            productService.update(product);
-
-            ProductUpdateResponseDTO productUpdateResponseDTO = ProductUpdateResponseDTO.builder()
+        for(Product product : productList){
+            ProductSearchResponseDTO productSearchResponseDTO = ProductSearchResponseDTO.builder()
                     .productId(product.getId())
                     .title(product.getTitle())
                     .content(product.getContent())
@@ -330,22 +236,130 @@ public class ProductController {
                     .price(product.getPrice())
                     .total(product.getTotal())
                     .imgUrl(product.getImgUrl())
-                    .createDate(product.getModifiedDate())
+                    .createDate(product.getCreateDate())
                     .modifiedDate(product.getModifiedDate())
                     .build();
-
-            Map<String , Object> result = new HashMap<>();
-            result.put("msg","상품 수정에 성공했습니다.");
-            result.put("data",productUpdateResponseDTO);
-
-            return ResponseEntity.ok().body(result);
-
-
-
-
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            response.add(productSearchResponseDTO);
         }
+        Map<String , Object> result = new HashMap<>();
+        result.put("msg","상품검색에 성공했습니다.");
+        result.put("data",response);
+        return ResponseEntity.ok().body(result);
+
+    }
+    // 내가 올린 상품 검색
+    @GetMapping("/api/products/user")
+    public ResponseEntity<?> findresisterproductuser(Authentication authentication){
+        if(authentication == null){
+            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+        }
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = principalDetails.getUser().getEmail();
+        User user = userService.findEmailByUser(email); // 해당 유저 찾기
+
+        List<Product> findallproduct = productService.getEqUserAndActive(user, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
+
+        List<ProductJoinResponseDTO> response = new ArrayList<>();
+
+        for(Product product: findallproduct){
+            ProductJoinResponseDTO productJoinResponseDTO = ProductJoinResponseDTO.builder()
+                    .productId(product.getId())
+                    .title(product.getTitle())
+                    .content(product.getContent())
+                    .name(product.getName())
+                    .price(product.getPrice())
+                    .total(product.getTotal())
+                    .imgUrl(product.getImgUrl())
+                    .createDate(product.getCreateDate())
+                    .modifiedDate(product.getModifiedDate())
+                    .build();
+            response.add(productJoinResponseDTO);
+        }
+        Map<String , Object> result = new HashMap<>();
+        result.put("msg","상품 조회에 성공했습니다.");
+        result.put("data",response);
+        return ResponseEntity.ok().body(result);
+
+    }
+
+    @GetMapping("/api/product/{id}")
+    public ResponseEntity<?>  productfind(@PathVariable(value = "id") int ProductId){
+        Product findproduct = productService.findById(ProductId);
+
+        ProductJoinResponseDTO productJoinResponseDTO = ProductJoinResponseDTO.builder()
+                .productId(findproduct.getId())
+                .title(findproduct.getTitle())
+                .content(findproduct.getContent())
+                .name(findproduct.getName())
+                .price(findproduct.getPrice())
+                .total(findproduct.getTotal())
+                .imgUrl(findproduct.getImgUrl())
+                .createDate(findproduct.getCreateDate())
+                .modifiedDate(findproduct.getModifiedDate())
+                .build();
+        Map<String, Object> result = new HashMap<>();
+        result.put("msg","상품검색에 성공했습니다.");
+        result.put("data", productJoinResponseDTO);
+
+        return ResponseEntity.ok().body(result);
+
+    }
+
+    @PutMapping("/api/product/update/{id}")
+    public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody ProductUpdateRequestDTO productUpdateRequestDTO){
+        if(authentication == null){
+            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+        }
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = principalDetails.getUser().getEmail();
+        User user = userService.findEmailByUser(email); // 유저 찾기
+        Product product = productService.findProductNameUser(ProductId, user); // 해당 상품 찾기
+
+        if(productUpdateRequestDTO.getTitle() != ""){
+            product.setTitle(productUpdateRequestDTO.getTitle());
+        }
+        if(productUpdateRequestDTO.getContent() != ""){
+            product.setContent(productUpdateRequestDTO.getContent());
+        }
+        if(productUpdateRequestDTO.getName() != ""){
+            product.setName(productUpdateRequestDTO.getName());
+
+        }
+        if(productUpdateRequestDTO.getPrice() != 0){
+            product.setPrice(productUpdateRequestDTO.getPrice());
+
+        }
+        if(productUpdateRequestDTO.getTotal() !=0){
+            product.setTotal(productUpdateRequestDTO.getTotal());
+
+        }
+        if(productUpdateRequestDTO.getImgUrl() != ""){
+            product.setImgUrl(productUpdateRequestDTO.getImgUrl());
+
+        }
+        product.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
+
+
+
+        productService.update(product);
+
+        ProductUpdateResponseDTO productUpdateResponseDTO = ProductUpdateResponseDTO.builder()
+                .productId(product.getId())
+                .title(product.getTitle())
+                .content(product.getContent())
+                .name(product.getName())
+                .price(product.getPrice())
+                .total(product.getTotal())
+                .imgUrl(product.getImgUrl())
+                .createDate(product.getModifiedDate())
+                .modifiedDate(product.getModifiedDate())
+                .build();
+
+        Map<String , Object> result = new HashMap<>();
+        result.put("msg","상품 수정에 성공했습니다.");
+        result.put("data",productUpdateResponseDTO);
+
+        return ResponseEntity.ok().body(result);
     }
 
 
