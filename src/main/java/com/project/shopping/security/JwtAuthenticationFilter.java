@@ -26,7 +26,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
+public class JwtAuthenticationFilter extends JsonIdPwAuthenticationFilter{
     private  final AuthenticationManager authenticationManager;
     private  final Tokenprovider tokenprovider;
     ObjectMapper objectMapper = new ObjectMapper();

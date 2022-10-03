@@ -3,6 +3,7 @@ package com.project.shopping.config;
 import com.project.shopping.oauth.CustomOAuth2UserService;
 import com.project.shopping.oauth.Oauth2SuccessHandler;
 import com.project.shopping.repository.UserRepository;
+import com.project.shopping.security.JsonIdPwAuthenticationFilter;
 import com.project.shopping.security.JwtAuthenticationFilter;
 import com.project.shopping.security.JwtAuthorizationFilter;
 import com.project.shopping.security.Tokenprovider;
@@ -15,6 +16,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
@@ -61,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()// preFlight 허횽
                 .antMatchers("/shopping/**").authenticated()
                 .anyRequest().permitAll();
-        http.addFilter(new JwtAuthenticationFilter(authenticationManager(),tokenprovider));
+        http.addFilterBefore(new JwtAuthenticationFilter(authenticationManager(),tokenprovider), UsernamePasswordAuthenticationFilter.class);
         http.addFilter(new JwtAuthorizationFilter(authenticationManager(),tokenprovider,userRepository));
         http.cors();
         http.oauth2Login().loginPage("/login").defaultSuccessUrl("/success").successHandler(successHandler).userInfoEndpoint().userService(oAuth2UserService);
