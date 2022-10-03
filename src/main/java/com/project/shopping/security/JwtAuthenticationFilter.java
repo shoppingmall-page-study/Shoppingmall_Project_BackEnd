@@ -22,6 +22,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RequiredArgsConstructor
@@ -45,9 +47,11 @@ public class JwtAuthenticationFilter extends JsonIdPwAuthenticationFilter{
             response.addHeader("Authorization","Bearer "+jwt);
 
 
-            UserDTO res = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
-                    .age(user.getAge()).address(user.getAddress())
-                    .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
+//            UserDTO res = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
+//                    .age(user.getAge()).address(user.getAddress())
+//                    .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
+            Map<String, Object> res = new HashMap<>();
+            res.put("msg", "login success");
             ResponseEntity.ok().body(res);
 
             String result = objectMapper.writeValueAsString(res);
