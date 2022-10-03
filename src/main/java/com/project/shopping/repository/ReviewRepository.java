@@ -20,6 +20,8 @@ public interface ReviewRepository extends JpaRepository<Review,Integer>, ReviewR
     // 삭제를 위한 user와 리뷰아이디로 리뷰 찾기
     Review findByUserIdAndId(User userId, int id);
 
+    Boolean existsByUserIdAndId(User userId, int id);
+
     @Override
     List<Review> getEqUserAndActive(User user, String status);
 

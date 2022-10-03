@@ -14,6 +14,7 @@ public enum ErrorCode {
     NotFoundProductException(404,"NotFoundException","상품이 존재하지 않습니다"),
     NotFoundCartException(404,"NotFoundException","해당 장바구니가 존재하지 않습니다"),
     NotFoundCartNumException(404,"NotFoundException","상품의 구매한도를 초과했습니다"),
+    NotFoundCartNumDownException(404,"NotFoundException","상품이 1 이하 일 수 없습니다."),
     NotFoundOrderException(404,"NotFoundException","”해당 주문이 존재하지 않습니다.”"),
     NotFoundReviewException(404,"NotFoundException","”해당 리뷰가 존재하지 않습니다.”"),
     DuplicatedEmilException(409,"DuplicatedParameterException","이미 존재하는 이메일입니다."),

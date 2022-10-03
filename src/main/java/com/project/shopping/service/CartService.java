@@ -41,6 +41,8 @@ public class CartService {
         return cartRepository.findCartByUserIdAndId(user, id);
     }
 
+    public  boolean existCartUserAndId(User user, int id){return  cartRepository.existsByUserIdAndId(user, id);}
+
 
     public boolean existsCartByUserIdAndProductId(User user, Product product){return cartRepository.existsCartByUserIdAndProductId(user,product);}
 

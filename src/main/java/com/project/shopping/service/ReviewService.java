@@ -46,6 +46,7 @@ public class ReviewService {
     public Review findReviewUserAndId(User user, int id){
         return reviewrepository.findByUserIdAndId(user,id);
     }
+    public Boolean existReviewUserAndId(User user, int id){return reviewrepository.existsByUserIdAndId(user,id);}
 
     public List<Review> getEqUserAndActive(User user, String status){
         return reviewrepository.getEqUserAndActive(user, status);
