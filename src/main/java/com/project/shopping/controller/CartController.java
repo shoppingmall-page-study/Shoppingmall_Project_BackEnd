@@ -49,6 +49,7 @@ public class CartController {
         String email = userDetails.getUser().getEmail();
         User user = userService.findEmailByUser(email); // user 찾기
         Product product = productService.findproductid(ProductId); // 상품 찾기
+        System.out.println(cartCreateRequestDTO.getProductNum()); // 현재 장바구니 개수 로그 
 
         if(cartCreateRequestDTO.getProductNum() > product.getTotal()){
             throw  new CustomExcpetion("상품이 존재하지 않습니다", ErrorCode.NotFoundProductException);
