@@ -119,8 +119,6 @@ public class CartController {
             return ResponseEntity.ok().body(cartCreateResponseDTO);
         }
 
-
-
     }
     // 장바구니 삭제
 

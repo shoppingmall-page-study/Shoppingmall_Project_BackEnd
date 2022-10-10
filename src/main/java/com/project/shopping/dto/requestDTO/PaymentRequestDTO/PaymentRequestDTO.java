@@ -1,4 +1,4 @@
-package com.project.shopping.dto;
+package com.project.shopping.dto.requestDTO.PaymentRequestDTO;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,13 +7,13 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class PaymentDTO {
+public class PaymentRequestDTO {
     private String impUid;
-    private int productId;
+    private int orderId;
 
     @Builder
-    public PaymentDTO(String impUid, int productId) {
+    public PaymentRequestDTO(String impUid, int orderId) {
         this.impUid = impUid;
-        this.productId = productId;
+        this.orderId = orderId;
     }
 }

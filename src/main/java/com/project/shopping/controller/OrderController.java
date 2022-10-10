@@ -1,12 +1,14 @@
 package com.project.shopping.controller;
 
 import com.project.shopping.auth.PrincipalDetails;
-import com.project.shopping.dto.OrderDTO;
-import com.project.shopping.dto.OrderResponseDTO;
-import com.project.shopping.dto.ProductDTO;
+import com.project.shopping.dto.requestDTO.OrderRequestDTO.OrderRequestDTO;
+import com.project.shopping.dto.responseDTO.OrderResponseDTO.OrderResponseDTO;
+import com.project.shopping.dto.responseDTO.OrderResponseDTO.ProductInOrderResponseDTO;
 import com.project.shopping.model.Order;
+import com.project.shopping.model.OrderDetail;
 import com.project.shopping.model.Product;
 import com.project.shopping.model.User;
+import com.project.shopping.service.OrderDetailService;
 import com.project.shopping.service.OrderService;
 import com.project.shopping.service.ProductService;
 import com.project.shopping.service.UserService;
@@ -27,6 +29,7 @@ public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
     private final ProductService productService;
+    private final OrderDetailService orderDetailService;
 
     @GetMapping("/order")
     public ResponseEntity<?> getOrderList(Authentication authentication){
@@ -37,18 +40,31 @@ public class OrderController {
         ArrayList<OrderResponseDTO> orders = new ArrayList<>();
 
         for(Order order : orderList){
-            orders.add(
-                    OrderResponseDTO.builder()
-                            .merchantUid(order.getProductId().getId())
-                            .name(order.getProductId().getName())
-                            .amount(order.getAmount())
-                            .buyerEmail(order.getUserId().getEmail())
-                            .buyerName(order.getUserId().getUsername())
-                            .buyerTel(order.getUserId().getPhoneNumber())
-                            .buyerAddr(order.getUserId().getAddress())
-                            .buyerPostcode(order.getUserId().getPostCode())
-                            .build()
-            );
+            ArrayList<ProductInOrderResponseDTO> products = new ArrayList<>();
+
+            for(int i = 0; i < order.getProducts().size(); i++){
+                ProductInOrderResponseDTO productDTO = new ProductInOrderResponseDTO();
+                Product product = order.getProducts().get(i).getProduct();
+                int productNum = order.getProducts().get(i).getProductNum();
+
+                productDTO = ProductInOrderResponseDTO.builder()
+                        .productId(product.getId())
+                        .productName(product.getName())
+                        .productNum(productNum)
+                        .build();
+
+                products.add(productDTO);
+            }
+
+            OrderResponseDTO orderDTO = OrderResponseDTO.builder()
+                    .orderId(order.getId())
+                    .products(products)
+                    .orderComplete(order.getOrderComplete())
+                    .amount(order.getAmount())
+                    .orderTime(order.getOrderTime())
+                    .build();
+
+            orders.add(orderDTO);
         }
         Map<String , Object> result = new HashMap<>();
         result.put("data", orders);
@@ -58,35 +74,57 @@ public class OrderController {
 
 
     @PostMapping("/order/create")
-    public ResponseEntity<?> createOrder(Authentication authentication, @RequestBody OrderDTO orderDTO){
+    public ResponseEntity<?> createOrder(Authentication authentication, @RequestBody OrderRequestDTO orderDTO){
         try{
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             String email = principalDetails.getUser().getEmail();
             User user = userService.findEmailByUser(email);
-            Product product = productService.findproductid(orderDTO.getProductId());
-
+            ArrayList<OrderDetail> products = new ArrayList<>();
+            ArrayList<ProductInOrderResponseDTO>  responseProductsDTO = new ArrayList<>();
+            long totalAmount = 0;
             Order order = Order.builder()
-                    .productId(product)
-                    .userId(user)
-                    .productNum(orderDTO.getProductNumber())
-                    .orderComplete(false)
-                    .amount(product.getPrice() * orderDTO.getProductNumber())
+                    .products(products)
+                    .user(user)
+                    .orderComplete("ready")
+                    .status("active")
                     .build();
 
-            orderService.create(order);
+            for(int i = 0; i < orderDTO.getProductsId().size(); i++){
+                Product product = productService.findproductid(orderDTO.getProductsId().get(i));
+                int productNum = orderDTO.getProductsNumber().get(i);
 
+                OrderDetail orderDetail = OrderDetail.builder()
+                        .product(product)
+                        .productNum(productNum)
+                        .build();
+
+                ProductInOrderResponseDTO productDTO = ProductInOrderResponseDTO.builder()
+                        .productId(product.getId())
+                        .productName(product.getName())
+                        .productNum(productNum)
+                        .build();
+
+                order.addProduct(orderDetail);
+                responseProductsDTO.add(productDTO);
+                totalAmount += product.getPrice() * productNum;
+            }
+
+            order.setAmount(totalAmount);
+            Order savedOrder = orderService.create(order);
             OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
-                    .merchantUid(orderDTO.getProductId())
-                    .name(product.getName())
-                    .amount(orderDTO.getProductNumber() * product.getPrice())
-                    .buyerEmail(user.getEmail())
-                    .buyerTel(user.getPhoneNumber())
-                    .buyerAddr(user.getAddress())
-                    .buyerPostcode(user.getPostCode())
-                    .status(false)
+                    .orderId(savedOrder.getId())
+                    .products(responseProductsDTO)
+                    .orderComplete(savedOrder.getOrderComplete())
+                    .amount(savedOrder.getAmount())
+                    .orderTime(savedOrder.getOrderTime())
                     .build();
 
-            return ResponseEntity.ok().body(orderResponseDTO);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("msg", "주문 등록에 성공했습니다.");
+            result.put("data", orderResponseDTO);
+
+            return ResponseEntity.ok().body(result);
         }
         catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());

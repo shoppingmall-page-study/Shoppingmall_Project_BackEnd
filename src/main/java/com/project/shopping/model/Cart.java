@@ -34,6 +34,7 @@ public class Cart {
     @Setter
     @Column(nullable = false)
     private  String status;
+
     @Builder
     public Cart(Product productId, User userId, Timestamp createTime, long productNum, String status) {
         this.productId = productId;
