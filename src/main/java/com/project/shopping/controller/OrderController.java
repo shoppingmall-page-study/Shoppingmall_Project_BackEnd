@@ -31,7 +31,7 @@ public class OrderController {
     private final ProductService productService;
     private final OrderDetailService orderDetailService;
 
-    @GetMapping("/order")
+    @GetMapping("/api/order")
     public ResponseEntity<?> getOrderList(Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         User user = principalDetails.getUser();
@@ -73,7 +73,7 @@ public class OrderController {
     }
 
 
-    @PostMapping("/order/create")
+    @PostMapping("/api/order/create")
     public ResponseEntity<?> createOrder(Authentication authentication, @RequestBody OrderRequestDTO orderDTO){
         try{
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
