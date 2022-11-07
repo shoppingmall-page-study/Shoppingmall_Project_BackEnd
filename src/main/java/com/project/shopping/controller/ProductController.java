@@ -53,29 +53,7 @@ public class ProductController {
             throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
-        PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDtails.getUser().getEmail();
-        User user = userService.findEmailByUser(email);
-
-
-        // 인증 값 기반으로 user 찾기
-
-        Product product = Product.builder().userId(user)
-                .title(productCreateRequestDTO.getTitle())
-                .content(productCreateRequestDTO.getContent())
-                .name(productCreateRequestDTO.getName())
-                .price(productCreateRequestDTO.getPrice())
-                .total(productCreateRequestDTO.getTotal())
-                .imgUrl(productCreateRequestDTO.getImgUrl())
-                .status("active")
-                .createDate(Timestamp.valueOf(LocalDateTime.now()))
-                .modifiedDate(Timestamp.valueOf(LocalDateTime.now()))
-                .build();
-        //System.out.println("12313213");
-        // System.out.println(productDTO.getName());
-        // System.out.println(product.getName());
-        Product registeredProduct = productService.create(product); // 상품 생성
-
+        Product registeredProduct = productService.create(productCreateRequestDTO,authentication); // 상품 생성
         ProductCreateResponseDTO productCreateResponseDTO = ProductCreateResponseDTO.builder()
                 .title(registeredProduct.getTitle())
                 .content(registeredProduct.getContent())
@@ -162,20 +140,8 @@ public class ProductController {
         if(authentication == null){
             throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
-        PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDtails.getUser().getEmail();
 
-        User user = userService.findEmailByUser(email); // user 찾기
-        if(!productService.existsPruductIdUser(ProductId,user)){
-            throw  new CustomExcpetion("상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
-
-        }
-        Product product = productService.findProductNameUser(ProductId,user); // 유저와 상품명으로 상품 찾기
-        // 해당 상품을 찾았으니까
-        // 해당 상품내 있는 리뷰 리스트
-
-        product.setStatus("Disabled");
-        productService.update(product);
+        Product product = productService.deleteProduct(authentication, ProductId);
 
         ProductDeleteResponseDTO productDeleteResponseDTO = ProductDeleteResponseDTO.builder()
                 .productId(product.getId())
@@ -253,12 +219,10 @@ public class ProductController {
         if(authentication == null){
             throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
-        User user = userService.findEmailByUser(email); // 해당 유저 찾기
 
-        List<Product> findallproduct = productService.getEqUserAndActive(user, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
+        List<Product> findallproduct = productService.getEqUserAndActive(authentication, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
 
+        // dto 등록
         List<ProductJoinResponseDTO> response = new ArrayList<>();
 
         for(Product product: findallproduct){
@@ -284,8 +248,10 @@ public class ProductController {
 
     @GetMapping("/api/product/{id}")
     public ResponseEntity<?>  productfind(@PathVariable(value = "id") int ProductId){
+        //service
         Product findproduct = productService.findById(ProductId);
 
+        // dto
         ProductJoinResponseDTO productJoinResponseDTO = ProductJoinResponseDTO.builder()
                 .productId(findproduct.getId())
                 .title(findproduct.getTitle())
@@ -310,38 +276,8 @@ public class ProductController {
         if(authentication == null){
             throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
-        User user = userService.findEmailByUser(email); // 유저 찾기
-        Product product = productService.findProductNameUser(ProductId, user); // 해당 상품 찾기
 
-        if(productUpdateRequestDTO.getTitle() != ""){
-            product.setTitle(productUpdateRequestDTO.getTitle());
-        }
-        if(productUpdateRequestDTO.getContent() != ""){
-            product.setContent(productUpdateRequestDTO.getContent());
-        }
-        if(productUpdateRequestDTO.getName() != ""){
-            product.setName(productUpdateRequestDTO.getName());
-
-        }
-        if(productUpdateRequestDTO.getPrice() != 0){
-            product.setPrice(productUpdateRequestDTO.getPrice());
-
-        }
-        if(productUpdateRequestDTO.getTotal() !=0){
-            product.setTotal(productUpdateRequestDTO.getTotal());
-
-        }
-        if(productUpdateRequestDTO.getImgUrl() != ""){
-            product.setImgUrl(productUpdateRequestDTO.getImgUrl());
-
-        }
-        product.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
-
-
-
-        productService.update(product);
+        Product product = productService.update(authentication, productUpdateRequestDTO, ProductId);
 
         ProductUpdateResponseDTO productUpdateResponseDTO = ProductUpdateResponseDTO.builder()
                 .productId(product.getId())
