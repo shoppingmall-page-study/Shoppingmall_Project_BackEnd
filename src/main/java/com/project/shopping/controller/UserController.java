@@ -292,13 +292,14 @@ public class UserController  {
     }
 
 
-    @GetMapping("/api/join/email-check")
-    public ResponseEntity<?> checkemail(@RequestBody UserCheckEmailRequestDTO userCheckEmailDTO) throws Exception {
+    @GetMapping("/api/join/email-check/{value}")
+    public ResponseEntity<?> checkemail(@PathVariable(value = "value") String value) throws Exception {
         // 존재할시
-        if(userService.existsByEmail(userCheckEmailDTO.getEmail())){
+        if(userService.existsByEmail(value)){
             throw  new CustomExcpetion("이메일이 존재합니다.", ErrorCode.DuplicatedEmilException);
         }
-        UserCheckEmailResponseDTO userCheckEmailResponseDTO = UserCheckEmailResponseDTO.builder().email(userCheckEmailDTO.getEmail()).build();
+        System.out.println(value);
+        UserCheckEmailResponseDTO userCheckEmailResponseDTO = UserCheckEmailResponseDTO.builder().email(value).build();
 
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "사용가능한 이메일 입니다..");
