@@ -71,7 +71,7 @@ public class ProductController {
     }
 
 
-    // 이미지
+    // 이미지//
 //    @GetMapping("/p")
 //    public void imagepr(HttpServletRequest req){
 //        String webPath = "resources/images/imtes/";
