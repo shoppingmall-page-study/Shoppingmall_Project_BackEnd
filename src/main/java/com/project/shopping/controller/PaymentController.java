@@ -42,9 +42,9 @@ public class PaymentController {
         Map<String, Object> result = new HashMap<String, Object>();
 
         if(paymentCompleteResponseDTO.getOrderComplete().equals("complete"))
-            result.put("msg", "가상계좌 서비스는 준비중입니다.");
-        else
             result.put("msg", "결제가 완료되었습니다.");
+        else
+            result.put("msg", "가상계좌 서비스는 준비중입니다.");
 
         result.put("data", paymentCompleteResponseDTO);
         return ResponseEntity.ok().body(result);
