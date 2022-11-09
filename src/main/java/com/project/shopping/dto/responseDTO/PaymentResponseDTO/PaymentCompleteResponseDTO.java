@@ -12,7 +12,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @Getter
 public class PaymentCompleteResponseDTO {
-    private  int orderId;
+    private String orderId;
     @Setter
     private  String orderComplete;
     private  ArrayList<ProductInOrderResponseDTO> products;
@@ -21,7 +21,7 @@ public class PaymentCompleteResponseDTO {
     private LocalDateTime paymentCompleteDate;
 
     @Builder
-    public PaymentCompleteResponseDTO(int orderId, String orderComplete, ArrayList<ProductInOrderResponseDTO> products, Long amount, LocalDateTime paymentCompleteDate) {
+    public PaymentCompleteResponseDTO(String orderId, String orderComplete, ArrayList<ProductInOrderResponseDTO> products, Long amount, LocalDateTime paymentCompleteDate) {
         this.orderId = orderId;
         this.orderComplete = orderComplete;
         this.products = products;

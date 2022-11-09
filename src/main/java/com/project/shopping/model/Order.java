@@ -9,6 +9,7 @@ import java.sql.Array;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +20,12 @@ import java.util.Map;
 @Getter
 @Table(name = "`order`")
 public class Order {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="orderID")
-    private int id;
+    private String id;
+
+    private static int count = 0;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderDetail> products = new ArrayList<>();
@@ -56,6 +59,9 @@ public class Order {
 
     @Builder
     public Order(ArrayList<OrderDetail> products, User user, String orderComplete, long amount, LocalDateTime paymentCompleteDate, String status) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+        this.id = "oid" + dtf.format(LocalDateTime.now()) + count++;
         this.products = products;
         this.user = user;
         this.orderComplete = orderComplete;
