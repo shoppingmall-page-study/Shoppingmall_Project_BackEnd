@@ -8,6 +8,7 @@ import com.project.shopping.dto.requestDTO.PaymentRequestDTO.PaymentRequestDTO;
 import com.project.shopping.dto.responseDTO.OrderResponseDTO.ProductInOrderResponseDTO;
 import com.project.shopping.dto.responseDTO.PaymentResponseDTO.PaymentCompleteResponseDTO;
 import com.project.shopping.model.Order;
+import com.project.shopping.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ public class PaymentService {
 
     private final ProductService productService;
     private final UserService userService;
+    private final OrderRepository orderRepository;
     private final OrderService orderService;
 
     @Value("${imp-key}")
@@ -65,7 +67,9 @@ public class PaymentService {
             //가격비교하고, order에 결제상태 저장
             root = mapper.readTree(response.getBody());
             String orderId = root.path("response").path("merchant_uid").asText();
-            Order order = orderService.findById(Integer.parseInt(orderId));
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(()->new
+                    IllegalArgumentException("order Not Found."));
             ArrayList<ProductInOrderResponseDTO> productInOrderResponseDTOList = new ArrayList<ProductInOrderResponseDTO>();
             ProductInOrderResponseDTO productInOrderResponseDTO;
             for (int i = 0; i < order.getProducts().size(); i++) {

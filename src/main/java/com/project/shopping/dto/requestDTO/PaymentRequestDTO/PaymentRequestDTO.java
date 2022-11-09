@@ -9,10 +9,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class PaymentRequestDTO {
     private String impUid;
-    private int orderId;
+    private String orderId;
 
     @Builder
-    public PaymentRequestDTO(String impUid, int orderId) {
+    public PaymentRequestDTO(String impUid, String orderId) {
         this.impUid = impUid;
         this.orderId = orderId;
     }
