@@ -17,6 +17,7 @@ import com.project.shopping.service.CartService;
 import com.project.shopping.service.ProductService;
 import com.project.shopping.service.ReviewService;
 import com.project.shopping.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -31,19 +32,14 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
 
-    @Autowired
-    private UserService userService;
+    private final  ProductService productService;
 
-    @Autowired
-    private ReviewService reviewService;
 
-    @Autowired
-    private CartService cartService;
+
 
     private String ActiveStatus= "active";
 
@@ -53,20 +49,11 @@ public class ProductController {
             throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
-        Product registeredProduct = productService.create(productCreateRequestDTO,authentication); // 상품 생성
-        ProductCreateResponseDTO productCreateResponseDTO = ProductCreateResponseDTO.builder()
-                .title(registeredProduct.getTitle())
-                .content(registeredProduct.getContent())
-                .name(registeredProduct.getName())
-                .price(registeredProduct.getPrice())
-                .total(registeredProduct.getTotal())
-                .imgUrl(registeredProduct.getImgUrl())
-                .createDate(registeredProduct.getCreateDate())
-                .modifiedDate(registeredProduct.getModifiedDate())
-                .build();
+        ProductCreateResponseDTO registeredProduct = productService.create(productCreateRequestDTO,authentication); // 상품 생성
+
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "상품 등록에 성공했습니다.");
-        result.put("data", productCreateResponseDTO);
+        result.put("data", registeredProduct);
         return ResponseEntity.ok().body(result);
     }
 
@@ -141,22 +128,12 @@ public class ProductController {
             throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
-        Product product = productService.deleteProduct(authentication, ProductId);
+        ProductDeleteResponseDTO product = productService.deleteProduct(authentication, ProductId);
 
-        ProductDeleteResponseDTO productDeleteResponseDTO = ProductDeleteResponseDTO.builder()
-                .productId(product.getId())
-                .title(product.getTitle())
-                .content(product.getContent())
-                .name(product.getName())
-                .price(product.getPrice())
-                .total(product.getTotal())
-                .imgUrl(product.getImgUrl())
-                .createDate(product.getCreateDate())
-                .modifiedDate(product.getModifiedDate())
-                .build();
+
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "상품삭제에 성공했습니다.");
-        result.put("data", productDeleteResponseDTO);
+        result.put("data", product);
 
         return ResponseEntity.ok().body(result);
 
@@ -164,24 +141,8 @@ public class ProductController {
 
     @GetMapping("/api/products")
     private ResponseEntity<?> findall(){
-        List<Product> products = productService.getActiveProdcutList(ActiveStatus);
-        List<ProductJoinResponseDTO> productdtos = new ArrayList<>();
-        for (Product product:products) {
-            ProductJoinResponseDTO productProductsResponseDTO = ProductJoinResponseDTO.builder()
-                    .productId(product.getId())
-                    .title(product.getTitle())
-                    .content(product.getContent())
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .total(product.getTotal())
-                    .imgUrl(product.getImgUrl())
-                    .createDate(product.getCreateDate())
-                    .modifiedDate(product.getModifiedDate())
-                    .build();
+        List<ProductJoinResponseDTO> productdtos = productService.getActiveProdcutList(ActiveStatus);
 
-            productdtos.add(productProductsResponseDTO);
-
-        }
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품 조회에 성공했습니다.");
         result.put("data", productdtos);
@@ -190,23 +151,8 @@ public class ProductController {
 
     @PostMapping("/api/product/search")
     public ResponseEntity<?> searchProudct(@RequestBody ProductSearchRequestDTO productSearchRequestDTO){
-        List<Product> productList = productService.getProductList(productSearchRequestDTO.getKeyword(), ActiveStatus);
-        List<ProductSearchResponseDTO> response  = new ArrayList<>();
+        List<ProductSearchResponseDTO> response = productService.getProductList(productSearchRequestDTO.getKeyword(), ActiveStatus);
 
-        for(Product product : productList){
-            ProductSearchResponseDTO productSearchResponseDTO = ProductSearchResponseDTO.builder()
-                    .productId(product.getId())
-                    .title(product.getTitle())
-                    .content(product.getContent())
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .total(product.getTotal())
-                    .imgUrl(product.getImgUrl())
-                    .createDate(product.getCreateDate())
-                    .modifiedDate(product.getModifiedDate())
-                    .build();
-            response.add(productSearchResponseDTO);
-        }
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품검색에 성공했습니다.");
         result.put("data",response);
@@ -220,25 +166,9 @@ public class ProductController {
             throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
-        List<Product> findallproduct = productService.getEqUserAndActive(authentication, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
+        List<ProductJoinResponseDTO> response = productService.getEqUserAndActive(authentication, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
 
-        // dto 등록
-        List<ProductJoinResponseDTO> response = new ArrayList<>();
 
-        for(Product product: findallproduct){
-            ProductJoinResponseDTO productJoinResponseDTO = ProductJoinResponseDTO.builder()
-                    .productId(product.getId())
-                    .title(product.getTitle())
-                    .content(product.getContent())
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .total(product.getTotal())
-                    .imgUrl(product.getImgUrl())
-                    .createDate(product.getCreateDate())
-                    .modifiedDate(product.getModifiedDate())
-                    .build();
-            response.add(productJoinResponseDTO);
-        }
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품 조회에 성공했습니다.");
         result.put("data",response);
@@ -249,20 +179,9 @@ public class ProductController {
     @GetMapping("/api/product/{id}")
     public ResponseEntity<?>  productfind(@PathVariable(value = "id") int ProductId){
         //service
-        Product findproduct = productService.findById(ProductId);
+        ProductJoinResponseDTO productJoinResponseDTO = productService.findById(ProductId);
 
-        // dto
-        ProductJoinResponseDTO productJoinResponseDTO = ProductJoinResponseDTO.builder()
-                .productId(findproduct.getId())
-                .title(findproduct.getTitle())
-                .content(findproduct.getContent())
-                .name(findproduct.getName())
-                .price(findproduct.getPrice())
-                .total(findproduct.getTotal())
-                .imgUrl(findproduct.getImgUrl())
-                .createDate(findproduct.getCreateDate())
-                .modifiedDate(findproduct.getModifiedDate())
-                .build();
+
         Map<String, Object> result = new HashMap<>();
         result.put("msg","상품검색에 성공했습니다.");
         result.put("data", productJoinResponseDTO);

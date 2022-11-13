@@ -14,6 +14,7 @@ import com.project.shopping.model.User;
 import com.project.shopping.service.UserService;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,11 +34,12 @@ import java.util.NoSuchElementException;
 
 @RestController
 @Slf4j
+
+@RequiredArgsConstructor
 public class UserController  {
 
 
-    @Autowired
-    private UserService userService;
+    private final  UserService userService;
 //    @Autowired
 //    private Tokenprovider tokenprovider;
 
@@ -49,8 +51,8 @@ public class UserController  {
 
 
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+
+
 
 
 //    @PostMapping("/api/login")
@@ -63,59 +65,10 @@ public class UserController  {
 
     @PostMapping("/api/join")
     public ResponseEntity<?> signup(@RequestBody userJoinRequestDTO userJoinRequestDTO){
-        if(userService.existsByEmail(userJoinRequestDTO.getEmail())){
-            throw new CustomExcpetion("해당 이메일이 존재 합니다.",ErrorCode.DuplicatedEmilException);
-        }
-        if(userJoinRequestDTO.getEmail().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getAddress().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getAge() == 0){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getPassword().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getUsername().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getPhoneNumber().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getNickname().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getPostCode().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
+
+        UserJoinResponseDTO userJoinResponseDTO = userService.create(userJoinRequestDTO);
 
 
-        User user = User.builder()
-                .email(userJoinRequestDTO.getEmail())
-                .password(passwordEncoder.encode((userJoinRequestDTO.getPassword())))
-                .username(userJoinRequestDTO.getUsername())
-                .address(userJoinRequestDTO.getAddress()).age(userJoinRequestDTO.getAge())
-                .roles("ROLE_USER")
-                .nickname(userJoinRequestDTO.getNickname()).phoneNumber(userJoinRequestDTO.getPhoneNumber())
-                .status("active")
-                .createDate(Timestamp.valueOf(LocalDateTime.now()))
-                .modifieddate(Timestamp.valueOf(LocalDateTime.now()))
-                .postCode(userJoinRequestDTO.getPostCode()).build();
-        User registeredUser = userService.create(user);
-
-        UserJoinResponseDTO userJoinResponseDTO = UserJoinResponseDTO.builder()
-                .email(registeredUser.getEmail())
-                .username(registeredUser.getUsername())
-                .address(registeredUser.getAddress())
-                .postCode(registeredUser.getPostCode())
-                .age(registeredUser.getAge())
-                .nickname(registeredUser.getNickname())
-                .phoneNumber(registeredUser.getPhoneNumber())
-                .createDate(registeredUser.getCreateDate())
-                .modifiedDate(registeredUser.getModifieddate())
-                .build();
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "회원가입에 성공했습니다.");
         response.put("data", userJoinResponseDTO);
@@ -128,28 +81,10 @@ public class UserController  {
         if (authentication == null){
             throw  new CustomExcpetion("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
         }
-        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDetails.getUser().getEmail();
-        User user = userService.findEmailByUser(email);
-        System.out.println(user.getPassword());
-        System.out.println(userDeleteRequestDTO.getPassword());
-        System.out.println(passwordEncoder.encode(userDetails.getPassword()));
-        System.out.println(passwordEncoder.encode("abc"));
-        System.out.println(passwordEncoder.encode("abc"));
 
-        if(passwordEncoder.matches(userDeleteRequestDTO.getPassword(), userDetails.getPassword() )){
+        UserDeleteResponseDTO userDeleteResponseDTO  = userService.delete(userDeleteRequestDTO,authentication);
 
-            user.setStatus("Disable");
-            userService.updateUser(user);
-        }else{
-            throw  new CustomExcpetion("잘못된 password 입니다.",ErrorCode.BadPasswordException);
-        }
-        UserDeleteResponseDTO userDeleteResponseDTO = UserDeleteResponseDTO.
-                builder().
-                email(user.getEmail())
-                .username(user.getUsername())
-                .nickname(user.getNickname())
-                .build();
+
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "회원탈퇴에 성공했습니다.");
         response.put("data", userDeleteResponseDTO);
@@ -161,19 +96,10 @@ public class UserController  {
 
     @PostMapping("/Oauth/join")
     public ResponseEntity<?> oauthsignup(@RequestBody UserDTO userDTO,Authentication authentication) {
-        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDetails.getUser().getEmail();
-        User user = userService.findEmailByUser(email);
-        user.setAddress(userDTO.getAddress());
-        user.setAge(userDTO.getAge());
-        user.setPostCode(userDTO.getPostCode());
-        user.setNickname(userDTO.getNickname());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        userService.SaveUser(user);
 
-        UserDTO response = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
-                .age(user.getAge()).address(user.getAddress())
-                .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
+        UserDTO response = userService.SaveUser(userDTO, authentication);
+
+
         return ResponseEntity.ok().body(response);
 
 
@@ -217,22 +143,11 @@ public class UserController  {
         if(authentication == null){
             throw  new CustomExcpetion("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
         }
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
 
-        User user = userService.findEmailByUser(email); // 유저 찾기
 
-        UserInfoResponseDTO userInfoResponseDTO = UserInfoResponseDTO.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .age(user.getAge())
-                .address(user.getAddress())
-                .nickname(user.getNickname())
-                .phoneNumber(user.getPhoneNumber())
-                .postCode(user.getPostCode())
-                .createDate(user.getCreateDate())
-                .modifiedDate(user.getModifieddate())
-                .build();
+        UserInfoResponseDTO userInfoResponseDTO = userService.findEmailByUser(authentication); // 유저 찾기
+
+
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "유저조회에 성공했습니다.");
         response.put("data", userInfoResponseDTO);
@@ -244,47 +159,9 @@ public class UserController  {
         if(authentication == null){
             throw  new CustomExcpetion("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
         }
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
-        User user = userService.findEmailByUser(email); // 해당 user찾기
 
-        if(userUpdateRequestDTO.getUsername()!= ""){
-            user.setUsername(userUpdateRequestDTO.getUsername());
-        }
-        if(userUpdateRequestDTO.getAddress() != ""){
-            user.setAddress(userUpdateRequestDTO.getAddress());
-        }
-        if (userUpdateRequestDTO.getAge() != 0){
-            user.setAge(userUpdateRequestDTO.getAge());
-        }
+        UserUpdateResponseDTO userUpdateResponseDTO = userService.updateUser(authentication, userUpdateRequestDTO);
 
-        if(userUpdateRequestDTO.getPostCode() != "")
-            user.setPostCode(userUpdateRequestDTO.getPostCode());
-
-        if(userUpdateRequestDTO.getNickname() != ""){
-            if(userService.existsByNickname(userUpdateRequestDTO.getNickname())){
-                throw  new CustomExcpetion("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
-            }
-            user.setNickname(userUpdateRequestDTO.getNickname());
-        }
-        if(userUpdateRequestDTO.getPhoneNumber()!= ""){
-            user.setPhoneNumber(userUpdateRequestDTO.getPhoneNumber());
-        }
-
-        user.setModifieddate(Timestamp.valueOf(LocalDateTime.now()));
-
-        User updateUser = userService.updateUser(user);
-        UserUpdateResponseDTO userUpdateResponseDTO = UserUpdateResponseDTO.builder()
-                .username(updateUser.getUsername())
-                .email(updateUser.getEmail())
-                .age(updateUser.getAge())
-                .address(updateUser.getAddress())
-                .nickname(updateUser.getNickname())
-                .phoneNumber(updateUser.getPhoneNumber())
-                .postCode(updateUser.getPostCode())
-                .createDate(updateUser.getCreateDate())
-                .modifiedDate(updateUser.getModifieddate())
-                .build();
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "유저수정에 성공했습니다.");
         response.put("data", userUpdateResponseDTO);
@@ -311,12 +188,12 @@ public class UserController  {
 
     }
 
-    @GetMapping("/api/join/nickname-check")
-    public ResponseEntity<?> checknickname(@RequestBody UserCheckNicknameRequestDTO userCheckNicknameRequestDTO){
-        if(userService.existsByNickname(userCheckNicknameRequestDTO.getNickname())){
+    @GetMapping("/api/join/nickname-check/{value}")
+    public ResponseEntity<?> checknickname(@PathVariable(value = "value") String value){
+        if(userService.existsByNickname(value)){
             throw  new CustomExcpetion("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
         }
-        UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = UserCheckNicknameResponseDTO.builder().nickname(userCheckNicknameRequestDTO.getNickname()).build();
+        UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = UserCheckNicknameResponseDTO.builder().nickname(value).build();
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "사용가능한 닉네임 입니다..");
         response.put("data", userCheckNicknameResponseDTO);
