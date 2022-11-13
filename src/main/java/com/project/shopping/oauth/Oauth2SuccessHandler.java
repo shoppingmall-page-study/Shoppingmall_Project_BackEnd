@@ -71,7 +71,7 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
                     .status("active")
                     .postCode("????")
                     .nickname("????").phoneNumber("????").build();
-            userService.create(users);
+            userRepository.save(users);
 
             String targetUrl = makeRediretjoinUrl(jwttoken);
             response.sendRedirect(targetUrl);

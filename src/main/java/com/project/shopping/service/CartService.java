@@ -1,37 +1,178 @@
 package com.project.shopping.service;
 
+import com.project.shopping.Error.CustomExcpetion;
+import com.project.shopping.Error.ErrorCode;
+import com.project.shopping.auth.PrincipalDetails;
+import com.project.shopping.dto.requestDTO.CartRequestDTO.CartCreateRequestDTO;
+import com.project.shopping.dto.requestDTO.CartRequestDTO.CartUpdateRequestDTO;
+import com.project.shopping.dto.responseDTO.CartResponseDTO.*;
 import com.project.shopping.model.Cart;
 import com.project.shopping.model.Product;
 import com.project.shopping.model.User;
 import com.project.shopping.repository.CartRepository;
+import com.project.shopping.repository.ProductRepository;
+import com.project.shopping.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class CartService {
-    @Autowired
-    private CartRepository cartRepository;
+
+    private  final CartRepository cartRepository;
+    private  final ProductRepository productRepository;
+    private  final UserRepository userRepository;
 
     //생성
-    public Cart create(Cart cart){
-        if(cart.getProductId()== null){
-            throw new NoSuchElementException("해당 상품이 없습니다.");
+    public  CartCreateResponseDTO create(Authentication authentication, int ProductId, CartCreateRequestDTO cartCreateRequestDTO){
+        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = userDetails.getUser().getEmail();
+        User user = userRepository.findByEmail(email); // user 찾기
+        Product product = productRepository.findById(ProductId); // 상품 찾기
+        System.out.println(cartCreateRequestDTO.getProductNum()); // 현재 장바구니 개수 로그
+
+        if(cartRepository.existsCartByUserIdAndProductId(user, product)){ // 해당 상품이 존재 할시
+            Cart findCart = cartRepository.findCartByUserIdAndProductId(user, product); // 카트찾기
+            long totalsum = findCart.getProductNum()+ cartCreateRequestDTO.getProductNum();
+            //System.out.println(totalsum);
+            if(totalsum> product.getTotal()){
+                throw  new CustomExcpetion("상품개수가 초과하였습니다.",ErrorCode.NotFoundCartNumException);
+            }
+            findCart.setProductNum(totalsum);
+            Cart createcart = cartRepository.save(findCart); // 카트 생성
+            ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
+                    .productId(createcart.getProductId().getId())
+                    .title(createcart.getProductId().getTitle())
+                    .name(createcart.getProductId().getName())
+                    .content(createcart.getProductId().getContent())
+                    .imgUrl(createcart.getProductId().getImgUrl())
+                    .price(createcart.getProductId().getPrice())
+                    .build();
+
+            CartCreateResponseDTO cartCreateResponseDTO = CartCreateResponseDTO
+                    .builder()
+                    .cartId(createcart.getId())
+                    .product(productReponseDTO)
+                    .productNum(createcart.getProductNum())
+                    .createDate(createcart.getCreateTime())
+                    .build();
+
+            return cartCreateResponseDTO;
+
+        }else{
+            Cart cart = Cart.builder()
+                    .productId(product)
+                    .userId(user)
+                    .createTime(Timestamp.valueOf(LocalDateTime.now()))
+                    .productNum(cartCreateRequestDTO.getProductNum())
+                    .status("active")
+                    .build();
+            Cart createcart = cartRepository.save(cart); // 카트 생성
+            ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
+                    .productId(createcart.getProductId().getId())
+                    .title(createcart.getProductId().getTitle())
+                    .name(createcart.getProductId().getName())
+                    .content(createcart.getProductId().getContent())
+                    .imgUrl(createcart.getProductId().getImgUrl())
+                    .price(createcart.getProductId().getPrice())
+                    .build();
+            CartCreateResponseDTO cartCreateResponseDTO = CartCreateResponseDTO
+                    .builder()
+                    .cartId(createcart.getId())
+                    .product(productReponseDTO)
+                    .productNum(createcart.getProductNum())
+                    .createDate(createcart.getCreateTime())
+                    .build();
+
+
+            return cartCreateResponseDTO;
         }
-        return cartRepository.save(cart);
+
     }
 
-    public Cart update(Cart cart){
+    public CartUpdateResosneDTO update(Authentication authentication, int cartId, CartUpdateRequestDTO cartUpdateRequestDTO){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = principalDetails.getUser().getEmail();
+        User user = userRepository.findByEmail(email); // 유저 찾기
+
+        Cart cart = cartRepository.findCartByUserIdAndId(user,cartId); // 유저랑 카트 아이디를 이용한 카트 찾기
+        long totalcount =  (cartUpdateRequestDTO.getProductNum());
+
+        //System.out.println(totalcount);
+        if(totalcount > cart.getProductId().getTotal()){
+            throw new CustomExcpetion("상품의 구매한도를 초과했습니다.", ErrorCode.NotFoundCartNumException);
+        }
+        if(totalcount <1){
+            throw new CustomExcpetion("상품의 구매한도를 초과했습니다.", ErrorCode.NotFoundCartNumDownException);
+        }
+
+        cart.setProductNum(cartUpdateRequestDTO.getProductNum());
         if(cart.getProductId()== null){
             throw new NoSuchElementException("해당 상품이 없습니다.");
         }
-        return cartRepository.save(cart);
+        cartRepository.save(cart);
+
+
+        ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
+                .productId(cart.getProductId().getId())
+                .title(cart.getProductId().getTitle())
+                .name(cart.getProductId().getName())
+                .content(cart.getProductId().getContent())
+                .imgUrl(cart.getProductId().getImgUrl())
+                .price(cart.getProductId().getPrice())
+                .build();
+
+        CartUpdateResosneDTO cartUpdateResosneDTO  = CartUpdateResosneDTO.builder()
+                .cartId(cart.getId())
+                .product(productReponseDTO)
+                .productNum(cart.getProductNum())
+                .createDate(cart.getCreateTime())
+                .build();
+        return cartUpdateResosneDTO;
     }
 
     // 삭제
-    public  void deleteCart(Cart cart){cartRepository.delete(cart);}
+    public  CartDeleteResponseDTO deleteCart(Authentication authentication, int id){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = principalDetails.getUser().getEmail();
+
+        User user = userRepository.findByEmail(email);
+        if(!cartRepository.existsByUserIdAndId(user, id)){
+            throw  new CustomExcpetion("해당 상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
+        }
+        Cart findcart = cartRepository.findCartByUserIdAndId(user, id);
+        findcart.setStatus("Disabled");
+
+        cartRepository.save(findcart);
+        ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
+                .productId(findcart.getProductId().getId())
+                .title(findcart.getProductId().getTitle())
+                .name(findcart.getProductId().getName())
+                .content(findcart.getProductId().getContent())
+                .imgUrl(findcart.getProductId().getImgUrl())
+                .price(findcart.getProductId().getPrice())
+                .build();
+
+        CartDeleteResponseDTO cartDeleteResponseDTO = CartDeleteResponseDTO.builder()
+                .cartId(findcart.getId())
+                .product(productReponseDTO)
+                .productNum(findcart.getProductNum())
+                .createDate(findcart.getCreateTime())
+                .build();
+
+
+
+        return cartDeleteResponseDTO;
+
+
+    }
     // user가 등록한 장바구니 목록 조회
     public  List<Cart> findallByUserId(User user){return cartRepository.findAllByuserId(user); }
 
@@ -47,5 +188,38 @@ public class CartService {
 
     public Cart findCartByUserIdAndProductId(User user, Product product){return  cartRepository.findCartByUserIdAndProductId(user,product);}
 
-    public List<Cart> getEqUserAndCart(User user, String status){return cartRepository.getEqUserAndCart(user, status);}
+    public List<CartUserListJoinResponseDTO>  getEqUserAndCart(Authentication authentication, String status){
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String userEmail = principalDetails.getUser().getEmail();
+        User user = userRepository.findByEmail(userEmail);
+        List<Cart> cartList =  cartRepository.getEqUserAndCart(user, status);
+        List<CartUserListJoinResponseDTO> cartdtos = new ArrayList<>();
+        //long totalsum = 0; // 최종 합계
+        //int totalcarttotal =0;
+        for(Cart cart: cartList){
+            ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
+                    .productId(cart.getProductId().getId())
+                    .title(cart.getProductId().getTitle())
+                    .name(cart.getProductId().getName())
+                    .content(cart.getProductId().getContent())
+                    .imgUrl(cart.getProductId().getImgUrl())
+                    .price(cart.getProductId().getPrice())
+                    .build();
+            CartUserListJoinResponseDTO cartUserListJoinResponseDTO = CartUserListJoinResponseDTO.builder()
+                    .cartId(cart.getId())
+                    .product(productReponseDTO)
+                    .productNum(cart.getProductNum())
+                    .createDate(cart.getCreateTime())
+                    .build();
+
+            cartdtos.add(cartUserListJoinResponseDTO);
+            // totalsum  = (totalsum + (cart.getProductNum() * cart.getProductId().getPrice()));
+            // totalcarttotal = (int) (totalcarttotal +cart.getProductNum());
+
+        }
+
+        return cartdtos;
+
+    }
 }
