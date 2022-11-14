@@ -262,6 +262,10 @@ public class ProductService {
     public  List<ProductJoinResponseDTO> getActiveProdcutList(String status){
         System.out.println(status);
         List<Product> products = productRepository.getActiveProdcutList(status);
+        if(products.size() == 0){
+            System.out.println("상품 이 없습니다.");
+            throw  new CustomExcpetion("상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
+        }
         List<ProductJoinResponseDTO> productdtos = new ArrayList<>();
         for (Product product:products) {
             ProductJoinResponseDTO productProductsResponseDTO = ProductJoinResponseDTO.builder()
