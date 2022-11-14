@@ -130,15 +130,17 @@ public class ProductController {
     }
 
 
-    private  final ProductRepository productRepository;
+
 
     @GetMapping("/api/products")
-    private ResponseEntity<?> findall(){
-        //List<ProductJoinResponseDTO> productdtos = productService.getActiveProdcutList(ActiveStatus);
-        // repository 에서 값을 못 꺼네온다
+    public ResponseEntity<?> findall(){
         List<Product> products = productService.findall();
 
-        return ResponseEntity.ok().body(products.size());
+        Map<String , Object> result = new HashMap<>();
+        result.put("msg","상품검색에 성공했습니다.");
+        result.put("data",products);
+        return ResponseEntity.ok().body(result);
+
     }
 
     @PostMapping("/api/product/search")
