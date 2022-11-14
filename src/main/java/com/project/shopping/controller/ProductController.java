@@ -135,7 +135,8 @@ public class ProductController {
     @GetMapping("/api/products")
     private ResponseEntity<?> findall(){
         //List<ProductJoinResponseDTO> productdtos = productService.getActiveProdcutList(ActiveStatus);
-        List<Product> products = productRepository.getActiveProdcutList(ActiveStatus);
+        // repository 에서 값을 못 꺼네온다
+        List<Product> products = productRepository.findAll();
         if(products.size() == 0){
             System.out.println("상품 이 없습니다.");
             throw  new CustomExcpetion("상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
