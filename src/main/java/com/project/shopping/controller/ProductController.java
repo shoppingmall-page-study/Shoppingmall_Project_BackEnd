@@ -136,19 +136,9 @@ public class ProductController {
     private ResponseEntity<?> findall(){
         //List<ProductJoinResponseDTO> productdtos = productService.getActiveProdcutList(ActiveStatus);
         // repository 에서 값을 못 꺼네온다
-        List<Product> products = productRepository.findAll();
-        if(products.size() == 0){
-            System.out.println("상품 이 없습니다.");
-            throw  new CustomExcpetion("상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
-        }
-        List<ProductJoinResponseDTO> response = productService.getEqUserAndActive(authentication, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
+        List<Product> products = productService.findall();
 
-
-        Map<String , Object> result = new HashMap<>();
-        result.put("msg","상품 조회에 성공했습니다.");
-        result.put("data",response);
-
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().body(products.size());
     }
 
     @PostMapping("/api/product/search")
