@@ -132,7 +132,7 @@ public class ProductController {
 
     private  final ProductRepository productRepository;
 
-    @GetMapping("/api/products")
+    @GetMapping("/api/product/list")
     private ResponseEntity<?> findall(){
         //List<ProductJoinResponseDTO> productdtos = productService.getActiveProdcutList(ActiveStatus);
         // repository 에서 값을 못 꺼네온다
