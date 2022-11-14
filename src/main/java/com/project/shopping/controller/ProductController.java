@@ -160,7 +160,7 @@ public class ProductController {
 
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품 조회에 성공했습니다.");
-        result.put("data", productproductdtoss);
+        result.put("data", productdtoss);
         return ResponseEntity.ok().body(result);
     }
 
