@@ -132,7 +132,7 @@ public class ProductController {
 
     private  final ProductRepository productRepository;
 
-    @GetMapping("/api/product/list")
+    @GetMapping("/api/products")
     private ResponseEntity<?> findall(){
         //List<ProductJoinResponseDTO> productdtos = productService.getActiveProdcutList(ActiveStatus);
         // repository 에서 값을 못 꺼네온다
@@ -141,27 +141,13 @@ public class ProductController {
             System.out.println("상품 이 없습니다.");
             throw  new CustomExcpetion("상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
         }
-        List<ProductJoinResponseDTO> productdtoss = new ArrayList<>();
-        for (Product product:products) {
-            ProductJoinResponseDTO productProductsResponseDTO = ProductJoinResponseDTO.builder()
-                    .productId(product.getId())
-                    .title(product.getTitle())
-                    .content(product.getContent())
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .total(product.getTotal())
-                    .imgUrl(product.getImgUrl())
-                    .createDate(product.getCreateDate())
-                    .modifiedDate(product.getModifiedDate())
-                    .build();
+        List<ProductJoinResponseDTO> response = productService.getEqUserAndActive(authentication, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
 
-            productdtoss.add(productProductsResponseDTO);
-
-        }
 
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품 조회에 성공했습니다.");
-        result.put("data", productdtoss);
+        result.put("data",response);
+
         return ResponseEntity.ok().body(result);
     }
 
