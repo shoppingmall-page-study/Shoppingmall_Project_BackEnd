@@ -260,6 +260,7 @@ public class ProductService {
     public List<Product> findallByUserId(User user){return  productRepository.findAllByUserId(user); }
 
     public  List<ProductJoinResponseDTO> getActiveProdcutList(String status){
+        System.out.println(status);
         List<Product> products = productRepository.getActiveProdcutList(status);
         List<ProductJoinResponseDTO> productdtos = new ArrayList<>();
         for (Product product:products) {
