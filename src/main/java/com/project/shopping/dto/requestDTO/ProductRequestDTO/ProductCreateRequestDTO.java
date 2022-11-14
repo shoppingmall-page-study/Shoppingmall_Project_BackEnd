@@ -14,15 +14,16 @@ public class ProductCreateRequestDTO {
     private  String name;
     private  long price;
     private  int total;
-   // private String imgUrl;
+    private String imgUrl;
 
     @Builder
 
-    public ProductCreateRequestDTO(String title, String content, String name, long price, int total) {
+    public ProductCreateRequestDTO(String title, String content, String name, long price, int total, String imgUrl) {
         this.title = title;
         this.content = content;
         this.name = name;
         this.price = price;
         this.total = total;
+        this.imgUrl = imgUrl;
     }
 }
