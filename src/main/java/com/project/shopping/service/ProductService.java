@@ -52,6 +52,7 @@ public class ProductService {
                 .price(productCreateRequestDTO.getPrice())
                 .total(productCreateRequestDTO.getTotal())
                 .status("active")
+                .imgUrl(productCreateRequestDTO.getImgUrl())
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .modifiedDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build(); // 상품 생성
