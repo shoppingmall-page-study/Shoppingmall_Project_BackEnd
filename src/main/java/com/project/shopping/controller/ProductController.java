@@ -134,7 +134,7 @@ public class ProductController {
 
     @GetMapping("/api/products")
     public ResponseEntity<?> findall(){
-        List<Product> products = productService.findall();
+        List<ProductJoinResponseDTO> products = productService.getActiveProdcutList(ActiveStatus);
 
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품검색에 성공했습니다.");
@@ -142,7 +142,6 @@ public class ProductController {
         return ResponseEntity.ok().body(result);
 
     }
-
     @PostMapping("/api/product/search")
     public ResponseEntity<?> searchProudct(@RequestBody ProductSearchRequestDTO productSearchRequestDTO){
         List<ProductSearchResponseDTO> response = productService.getProductList(productSearchRequestDTO.getKeyword(), ActiveStatus);
