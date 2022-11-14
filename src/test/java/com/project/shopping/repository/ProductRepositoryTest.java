@@ -20,45 +20,44 @@ import java.util.List;
 public class ProductRepositoryTest {
 
 
-    @Autowired ProductRepository productRepository;
-    @Autowired UserRepository userRepository;
-    @Autowired   PasswordEncoder passwordEncoder;
+//    @Autowired ProductRepository productRepository;
+//    @Autowired UserRepository userRepository;
+//    @Autowired   PasswordEncoder passwordEncoder;
+////
+//    @Test
+//    public void save(){
+//        String passwordd ="asdfasfdasdf";
+//        User user = User.builder()
+//                .email("productrepo1@example.com")
+//                .username("user")
+//                .password(passwordEncoder.encode((passwordd)))
+//                .address("address")
+//                .age(11)
+//                .nickname("nickname")
+//                .phoneNumber("01000000000")
+//                .status("active")
+//                .createDate(Timestamp.valueOf(LocalDateTime.now()))
+//                .postCode("postCode")
+//                .build();
+//        userRepository.save(user);
+//        Product product = Product.builder()
+//                .userId(user)
+//                .title("가나다")
+//                .name("치킨")
+//                .content("clzls")
+//                .price(10000)
+//                .total(1000)
+//                .status("active")
+//                .createDate(Timestamp.valueOf(LocalDateTime.now()))
+//                .build();
+//        Product testProduct = productRepository.save(product);
 //
-    @Test
-    public void save(){
-        String passwordd ="asdfasfdasdf";
-        User user = User.builder()
-                .email("productrepo1@example.com")
-                .username("user")
-                .password(passwordEncoder.encode((passwordd)))
-                .address("address")
-                .age(11)
-                .nickname("nickname")
-                .phoneNumber("01000000000")
-                .status("active")
-                .createDate(Timestamp.valueOf(LocalDateTime.now()))
-                .postCode("postCode")
-                .build();
-        userRepository.save(user);
-        Product product = Product.builder()
-                .userId(user)
-                .title("가나다")
-                .name("치킨")
-                .content("clzls")
-                .price(10000)
-                .total(1000)
-                .imgUrl("asdfasdf")
-                .status("active")
-                .createDate(Timestamp.valueOf(LocalDateTime.now()))
-                .build();
-        Product testProduct = productRepository.save(product);
-
-
-        Assertions.assertThat(product.getUserId()).isEqualTo(testProduct.getUserId());
-
-    }
-
 //
+//        Assertions.assertThat(product.getUserId()).isEqualTo(testProduct.getUserId());
+//
+//    }
+//
+////
 //    @Test
 //    public void findById(){
 //        String passwordd ="asdfasfdasdf";
