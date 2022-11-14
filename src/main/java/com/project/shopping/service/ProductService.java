@@ -91,7 +91,9 @@ public class ProductService {
         File Folder = new File(fileDir);
         if(!Folder.exists()){
             try{
+                System.out.println("폴더가 존재하지 않습니다.");
                 Folder.mkdir();
+                System.out.println("폴더 생성 완료");
             }catch (Exception e){
                 e.getStackTrace();
             }

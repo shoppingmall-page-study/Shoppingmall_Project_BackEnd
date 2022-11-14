@@ -131,7 +131,6 @@ public class ProductController {
     @GetMapping("/api/products")
     private ResponseEntity<?> findall(){
         List<ProductJoinResponseDTO> productdtos = productService.getActiveProdcutList(ActiveStatus);
-
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품 조회에 성공했습니다.");
         result.put("data", productdtos);
