@@ -38,33 +38,33 @@ public class ProductController {
     private String fileDir;
 
 
-//    @PostMapping("/api/product/create")
-//    public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody ProductCreateRequestDTO productCreateRequestDTO) {
-//        if(authentication == null){
-//            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-//        }
-//
-//        ProductCreateResponseDTO registeredProduct = productService.create(productCreateRequestDTO,authentication); // 상품 생성
-//
-//        Map<String, Object> result = new HashMap<>();
-//        result.put("msg", "상품 등록에 성공했습니다.");
-//        result.put("data", registeredProduct);
-//        return ResponseEntity.ok().body(result);
-//    }
-
     @PostMapping("/api/product/create")
-    public ResponseEntity<?> createProduct(Authentication authentication, @RequestPart(required = false) MultipartFile img, @RequestPart ProductCreateRequestDTO productCreateRequestDTO) throws IOException {
+    public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody ProductCreateRequestDTO productCreateRequestDTO) {
         if(authentication == null){
             throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
-        System.out.println(productCreateRequestDTO.getContent());
-        ProductCreateResponseDTO responseDTO = productService.create(authentication, img, productCreateRequestDTO);
+
+        ProductCreateResponseDTO registeredProduct = productService.create(productCreateRequestDTO,authentication); // 상품 생성
+
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "상품 등록에 성공했습니다.");
-        result.put("data", responseDTO);
+        result.put("data", registeredProduct);
         return ResponseEntity.ok().body(result);
-
     }
+
+//    @PostMapping("/api/product/create")
+//    public ResponseEntity<?> createProduct(Authentication authentication, @RequestPart(required = false) MultipartFile img, @RequestPart ProductCreateRequestDTO productCreateRequestDTO) throws IOException {
+//        if(authentication == null){
+//            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+//        }
+//        System.out.println(productCreateRequestDTO.getContent());
+//        ProductCreateResponseDTO responseDTO = productService.create(authentication, img, productCreateRequestDTO);
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("msg", "상품 등록에 성공했습니다.");
+//        result.put("data", responseDTO);
+//        return ResponseEntity.ok().body(result);
+//
+//    }
 
 
 //    private  final FileRepository fileRepository;
@@ -97,37 +97,37 @@ public class ProductController {
 //
 //    }
 
-    @GetMapping(
-            value = "/api/view/{fileId}",
-            produces = MediaType.IMAGE_JPEG_VALUE
-    )
-    public Resource downloadImage(@PathVariable("fileId") int id) throws IOException{
-
-        Product product = productService.findproduct(id);
-        //FileEntity file = fileRepository.findById(id).orElse(null);
-        return new UrlResource("file:" + product.getImgUrl());
-    }
-
-
-
-    //
-    @DeleteMapping("/api/product/delete/{id}")
-    public ResponseEntity<?>  productdelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
-
-        if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
-
-        ProductDeleteResponseDTO product = productService.deleteProduct(authentication, ProductId);
-
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("msg", "상품삭제에 성공했습니다.");
-        result.put("data", product);
-
-        return ResponseEntity.ok().body(result);
-
-    }
+//    @GetMapping(
+//            value = "/api/view/{fileId}",
+//            produces = MediaType.IMAGE_JPEG_VALUE
+//    )
+//    public Resource downloadImage(@PathVariable("fileId") int id) throws IOException{
+//
+//        Product product = productService.findproduct(id);
+//        //FileEntity file = fileRepository.findById(id).orElse(null);
+//        return new UrlResource("file:" + product.getImgUrl());
+//    }
+//
+//
+//
+//    //
+//    @DeleteMapping("/api/product/delete/{id}")
+//    public ResponseEntity<?>  productdelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
+//
+//        if(authentication == null){
+//            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+//        }
+//
+//        ProductDeleteResponseDTO product = productService.deleteProduct(authentication, ProductId);
+//
+//
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("msg", "상품삭제에 성공했습니다.");
+//        result.put("data", product);
+//
+//        return ResponseEntity.ok().body(result);
+//
+//    }
 
 
 
