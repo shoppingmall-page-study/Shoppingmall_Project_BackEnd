@@ -84,6 +84,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
 
     @Override
     public List<Product> getActiveProdcutList(String status) {
+        System.out.println(status + "reipmle");
         return (List<Product>) queryFactory.from(product).where(eqProductStatus(status)).fetch();
     }
 
