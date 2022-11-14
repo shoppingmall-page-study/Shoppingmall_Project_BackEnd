@@ -21,14 +21,14 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class ProductServiceTest {
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+//    @Autowired
+//    private ProductService productService;
+//
+//    @Autowired
+//    private UserService userService;
+//
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
 
 //    @Test
 //    public void Create(){

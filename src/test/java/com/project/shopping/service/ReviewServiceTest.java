@@ -20,18 +20,18 @@ import java.util.Optional;
 @SpringBootTest
 public class ReviewServiceTest {
 
-
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private  ReviewService reviewService;
+//
+//    @Autowired
+//    private ProductService productService;
+//
+//    @Autowired
+//    private UserService userService;
+//
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
+//
+//    @Autowired
+//    private  ReviewService reviewService;
 
 //    @Test
 //    public void createReview(){
