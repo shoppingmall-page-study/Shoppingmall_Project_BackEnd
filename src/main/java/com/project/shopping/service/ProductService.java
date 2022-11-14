@@ -16,13 +16,18 @@ import com.project.shopping.repository.ProductRepository;
 import com.project.shopping.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +39,71 @@ public class ProductService {
 
     private final  UserRepository userRepository;
     // 상품 생성
-    public ProductCreateResponseDTO create(ProductCreateRequestDTO productCreateRequestDTO, Authentication authentication){
+//    public ProductCreateResponseDTO create(ProductCreateRequestDTO productCreateRequestDTO, Authentication authentication){
+//
+//        PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
+//        String email = userDtails.getUser().getEmail();
+//        User user = userRepository.findByEmail(email); // 유저 찾기
+//
+//        Product product = Product.builder().userId(user)
+//                .title(productCreateRequestDTO.getTitle())
+//                .content(productCreateRequestDTO.getContent())
+//                .name(productCreateRequestDTO.getName())
+//                .price(productCreateRequestDTO.getPrice())
+//                .total(productCreateRequestDTO.getTotal())
+//                .status("active")
+//                .createDate(Timestamp.valueOf(LocalDateTime.now()))
+//                .modifiedDate(Timestamp.valueOf(LocalDateTime.now()))
+//                .build(); // 상품 생성
+//
+//        System.out.println(product.getName());
+//
+//        if(product == null  || product.getName() == "" ||  product.getTitle()== ""
+//                && product.getContent() == "" ||  product.getPrice() == 0 ||  product.getTotal() == 0
+//                ||  product.getImgUrl() == ""){
+//            throw  new CustomExcpetion("잘못된 형식의 데이터 입니다." , ErrorCode.BadParameterException);
+//        }
+//        productRepository.save(product);
+//        ProductCreateResponseDTO productCreateResponseDTO = ProductCreateResponseDTO.builder()
+//                .title(product.getTitle())
+//                .content(product.getContent())
+//                .name(product.getName())
+//                .price(product.getPrice())
+//                .total(product.getTotal())
+//                .imgUrl(product.getImgUrl())
+//                .createDate(product.getCreateDate())
+//                .modifiedDate(product.getModifiedDate())
+//                .build();
+//
+//        return productCreateResponseDTO;
+//    }
+    @Value("${file.dir}")
+    private String fileDir;
+
+
+    public ProductCreateResponseDTO create(Authentication authentication, MultipartFile img, ProductCreateRequestDTO productCreateRequestDTO) throws IOException {
 
         PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
         String email = userDtails.getUser().getEmail();
         User user = userRepository.findByEmail(email); // 유저 찾기
+        System.out.println(productCreateRequestDTO.getContent());
+
+        File Folder = new File(fileDir);
+        if(!Folder.exists()){
+            try{
+                Folder.mkdir();
+            }catch (Exception e){
+                e.getStackTrace();
+            }
+        }
+
+        // 파일 생성 및 저장
+        String origName = img.getOriginalFilename();
+        String uuid = UUID.randomUUID().toString();
+        String extension = origName.substring(origName.lastIndexOf("."));
+        String savedName  = uuid +extension;
+        String savedPath =fileDir + savedName;
+        img.transferTo(new File(savedPath));
 
         Product product = Product.builder().userId(user)
                 .title(productCreateRequestDTO.getTitle())
@@ -46,8 +111,8 @@ public class ProductService {
                 .name(productCreateRequestDTO.getName())
                 .price(productCreateRequestDTO.getPrice())
                 .total(productCreateRequestDTO.getTotal())
-                .imgUrl(productCreateRequestDTO.getImgUrl())
                 .status("active")
+                .imgUrl(savedPath)
                 .createDate(Timestamp.valueOf(LocalDateTime.now()))
                 .modifiedDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build(); // 상품 생성
@@ -124,6 +189,11 @@ public class ProductService {
                 .build();
         return  productJoinResponseDTO;
 
+    }
+    public Product findproduct(int id){
+        Product findProduct = productRepository.findById(id);
+
+        return findProduct;
     }
 
     public Product findProductNameUser(int id, User user){

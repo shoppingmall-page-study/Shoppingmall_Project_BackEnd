@@ -3,124 +3,113 @@ package com.project.shopping.controller;
 
 import com.project.shopping.Error.CustomExcpetion;
 import com.project.shopping.Error.ErrorCode;
-import com.project.shopping.auth.PrincipalDetails;
-import com.project.shopping.dto.ProductDTO;
-import com.project.shopping.dto.ResponseDTO;
-import com.project.shopping.dto.SearchDTO;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductCreateRequestDTO;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductSearchRequestDTO;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductUpdateRequestDTO;
 import com.project.shopping.dto.responseDTO.ProductResponseDTO.*;
 import com.project.shopping.model.Product;
-import com.project.shopping.model.User;
-import com.project.shopping.service.CartService;
 import com.project.shopping.service.ProductService;
-import com.project.shopping.service.ReviewService;
-import com.project.shopping.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class ProductController {
 
 
     private final  ProductService productService;
 
-
-
-
     private String ActiveStatus= "active";
 
+    @Value("${file.dir}")
+    private String fileDir;
+
+
+//    @PostMapping("/api/product/create")
+//    public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody ProductCreateRequestDTO productCreateRequestDTO) {
+//        if(authentication == null){
+//            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+//        }
+//
+//        ProductCreateResponseDTO registeredProduct = productService.create(productCreateRequestDTO,authentication); // 상품 생성
+//
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("msg", "상품 등록에 성공했습니다.");
+//        result.put("data", registeredProduct);
+//        return ResponseEntity.ok().body(result);
+//    }
+
     @PostMapping("/api/product/create")
-    public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody ProductCreateRequestDTO productCreateRequestDTO) {
+    public ResponseEntity<?> createProduct(Authentication authentication, @RequestPart(required = false) MultipartFile img, @RequestPart ProductCreateRequestDTO productCreateRequestDTO) throws IOException {
         if(authentication == null){
             throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
-
-        ProductCreateResponseDTO registeredProduct = productService.create(productCreateRequestDTO,authentication); // 상품 생성
-
+        System.out.println(productCreateRequestDTO.getContent());
+        ProductCreateResponseDTO responseDTO = productService.create(authentication, img, productCreateRequestDTO);
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "상품 등록에 성공했습니다.");
-        result.put("data", registeredProduct);
+        result.put("data", responseDTO);
         return ResponseEntity.ok().body(result);
+
     }
 
 
-    // 이미지//
-//    @GetMapping("/p")
-//    public void imagepr(HttpServletRequest req){
-//        String webPath = "resources/images/imtes/";
-//        String folderPath = req.getSession().getServletContext().getRealPath(webPath);
+//    private  final FileRepository fileRepository;
+//    @PostMapping(value = "/info")
+//    public Resource bookshelfInfo(@RequestPart(required = false) MultipartFile thumbnail,
+//                                  @RequestPart request request) throws IOException {
 //
-//        System.out.println(folderPath);
+//
+//            log.info("file name = "+thumbnail.getOriginalFilename());
+//            log.info("dto info = "+request.getInfo());
+//
+//            String origName = thumbnail.getOriginalFilename();
+//            String uuid = UUID.randomUUID().toString();
+//            String extension = origName.substring(origName.lastIndexOf("."));
+//
+//            String savedName  = uuid +extension;
+//            String savedPath =fileDir + savedName;
+//
+//            FileEntity file = FileEntity.builder()
+//                    .orgNm(origName)
+//                    .savedNm(savedName)
+//                    .savedPath(savedPath)
+//                    .build();
+//            thumbnail.transferTo(new File(savedPath));
+//            fileRepository.save(file);
+//
+//
+//            return new UrlResource("file:" + file.getSavedPath());
 //
 //
 //    }
 
-//    @PostMapping(value = "/product/create", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
-//    public ResponseEntity<?> upload(Authentication authentication, @RequestPart MultipartFile file, @RequestPart ProductRequestDTO requestDTO, HttpServletRequest request) {
-//        String originalFileName = file.getOriginalFilename();
-//        LocalDateTime now = LocalDateTime.now();
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-//        String current_date = now.format(dateTimeFormatter);
-//        String realPath = request.getSession().getServletContext().getRealPath("/");
-//        File destination = new File(realPath);
-//        if(! destination.exists()){
-//            destination.mkdir();
-//        }
-//        String path = realPath + current_date+ originalFileName ;
-//        File tempFile = null;
-//        try {
-//            PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
-//            String email = userDtails.getUser().getEmail();
-//            User user = userService.findEmailByUser(email);
-//            tempFile = new File(path);
-//            file.transferTo(tempFile);
-//            System.out.println(path);
-//            Product product = Product.builder().userId(user)
-//                    .title(requestDTO.getTitle())
-//                    .content(requestDTO.getContent())
-//                    .name(requestDTO.getName())
-//                    .price(requestDTO.getPrice())
-//                    .total(requestDTO.getTotal())
-//                    .imgUrl(path)
-//                    .createDate(Timestamp.valueOf(LocalDateTime.now())).build();
-//            Product registeredProduct = productService.create(product); // 상품 생성
-//            //System.out.println(registeredProduct.getImgUrl());
-//
-//            ProductDTO response = ProductDTO.builder()
-//                    .productId(registeredProduct.getId())
-//                    .useremail(registeredProduct.getUserId().getEmail())
-//                    .userId(registeredProduct.getUserId().getUserId())
-//                    .userName(registeredProduct.getUserId().getUsername())
-//                    .userPhoneNumber(registeredProduct.getUserId().getPhoneNumber())
-//                    .title(registeredProduct.getTitle())
-//                    .content(registeredProduct.getContent())
-//                    .name(registeredProduct.getName())
-//                    .price(registeredProduct.getPrice())
-//                    .total(registeredProduct.getTotal())
-//                    .imgUrl(registeredProduct.getImgUrl())
-//                    .createDate(registeredProduct.getCreateDate())
-//                    .build();
-//            return ResponseEntity.ok().body(response);
-//        } catch (IOException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(originalFileName);
-//        }
-//
-//    }
-//
+    @GetMapping(
+            value = "/api/view/{fileId}",
+            produces = MediaType.IMAGE_JPEG_VALUE
+    )
+    public Resource downloadImage(@PathVariable("fileId") int id) throws IOException{
+
+        Product product = productService.findproduct(id);
+        //FileEntity file = fileRepository.findById(id).orElse(null);
+        return new UrlResource("file:" + product.getImgUrl());
+    }
+
+
+
+    //
     @DeleteMapping("/api/product/delete/{id}")
     public ResponseEntity<?>  productdelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
 
