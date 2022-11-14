@@ -8,6 +8,7 @@ import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductSearchReques
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductUpdateRequestDTO;
 import com.project.shopping.dto.responseDTO.ProductResponseDTO.*;
 import com.project.shopping.model.Product;
+import com.project.shopping.repository.ProductRepository;
 import com.project.shopping.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -128,12 +129,38 @@ public class ProductController {
 
     }
 
+
+    private  final ProductRepository productRepository;
+
     @GetMapping("/api/products")
     private ResponseEntity<?> findall(){
-        List<ProductJoinResponseDTO> productdtos = productService.getActiveProdcutList(ActiveStatus);
+        //List<ProductJoinResponseDTO> productdtos = productService.getActiveProdcutList(ActiveStatus);
+        List<Product> products = productRepository.getActiveProdcutList(ActiveStatus);
+        if(products.size() == 0){
+            System.out.println("상품 이 없습니다.");
+            throw  new CustomExcpetion("상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
+        }
+        List<ProductJoinResponseDTO> productdtoss = new ArrayList<>();
+        for (Product product:products) {
+            ProductJoinResponseDTO productProductsResponseDTO = ProductJoinResponseDTO.builder()
+                    .productId(product.getId())
+                    .title(product.getTitle())
+                    .content(product.getContent())
+                    .name(product.getName())
+                    .price(product.getPrice())
+                    .total(product.getTotal())
+                    .imgUrl(product.getImgUrl())
+                    .createDate(product.getCreateDate())
+                    .modifiedDate(product.getModifiedDate())
+                    .build();
+
+            productdtoss.add(productProductsResponseDTO);
+
+        }
+
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품 조회에 성공했습니다.");
-        result.put("data", productdtos);
+        result.put("data", productproductdtoss);
         return ResponseEntity.ok().body(result);
     }
 
