@@ -4,6 +4,8 @@ import com.project.shopping.model.Product;
 import com.project.shopping.model.Review;
 import com.project.shopping.model.User;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +20,7 @@ public interface ReviewRepository extends JpaRepository<Review,Integer>, ReviewR
     List<Review> findAllByProductId(Product product); // 상품 모든 리뷰 목록 조회
 
     // 삭제를 위한 user와 리뷰아이디로 리뷰 찾기
-    Review findByUserIdAndId(User userId, int id);
+    Optional<Review> findByUserIdAndId(User userId, int id);
 
     Boolean existsByUserIdAndId(User userId, int id);
 

@@ -1,7 +1,7 @@
 package com.project.shopping.service;
 
 
-import com.project.shopping.Error.CustomExcpetion;
+import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.UserDTO;
@@ -36,31 +36,31 @@ public class UserService {
 
     public UserJoinResponseDTO create(userJoinRequestDTO userJoinRequestDTO){
         if(userRepository.existsByEmail(userJoinRequestDTO.getEmail())){
-            throw new CustomExcpetion("해당 이메일이 존재 합니다.", ErrorCode.DuplicatedEmilException);
+            throw new CustomException("해당 이메일이 존재 합니다.", ErrorCode.DuplicatedEmilException);
         }
         if(userJoinRequestDTO.getEmail().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
+            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
         }
         if(userJoinRequestDTO.getAddress().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
+            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
         }
         if(userJoinRequestDTO.getAge() == 0){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
+            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
         }
         if(userJoinRequestDTO.getPassword().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
+            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
         }
         if(userJoinRequestDTO.getUsername().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
+            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
         }
         if(userJoinRequestDTO.getPhoneNumber().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
+            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
         }
         if(userJoinRequestDTO.getNickname().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
+            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
         }
         if(userJoinRequestDTO.getPostCode().equals("")){
-            throw new CustomExcpetion("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
+            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
         }
 
         User user = User.builder()
@@ -103,7 +103,8 @@ public class UserService {
 
         PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = userDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                        .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));
         user.setAddress(userDTO.getAddress());
         user.setAge(userDTO.getAge());
         user.setPostCode(userDTO.getPostCode());
@@ -122,7 +123,8 @@ public class UserService {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = principalDetails.getUser().getEmail();
 
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));
 
         UserInfoResponseDTO userInfoResponseDTO = UserInfoResponseDTO.builder()
                 .username(user.getUsername())
@@ -151,7 +153,8 @@ public class UserService {
     public UserDeleteResponseDTO delete(UserDeleteRequestDTO userDeleteRequestDTO, Authentication authentication){
         PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = userDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));
         System.out.println(user.getPassword());
         System.out.println(userDeleteRequestDTO.getPassword());
         System.out.println(passwordEncoder.encode(userDetails.getPassword()));
@@ -163,7 +166,7 @@ public class UserService {
             user.setStatus("Disable");
             userRepository.save(user);
         }else{
-            throw  new CustomExcpetion("잘못된 password 입니다.",ErrorCode.BadPasswordException);
+            throw  new CustomException("잘못된 password 입니다.",ErrorCode.BadPasswordException);
         }
         UserDeleteResponseDTO userDeleteResponseDTO = UserDeleteResponseDTO.
                 builder().
@@ -183,7 +186,8 @@ public class UserService {
     public UserUpdateResponseDTO updateUser(Authentication authentication, UserUpdateRequestDTO userUpdateRequestDTO){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = principalDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email); // 해당 user찾기
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));// 해당 user찾기
 
         if(userUpdateRequestDTO.getUsername()!= ""){
             user.setUsername(userUpdateRequestDTO.getUsername());
@@ -200,7 +204,7 @@ public class UserService {
 
         if(userUpdateRequestDTO.getNickname() != ""){
             if(userRepository.existsByNickname(userUpdateRequestDTO.getNickname())){
-                throw  new CustomExcpetion("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
+                throw  new CustomException("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
             }
             user.setNickname(userUpdateRequestDTO.getNickname());
         }

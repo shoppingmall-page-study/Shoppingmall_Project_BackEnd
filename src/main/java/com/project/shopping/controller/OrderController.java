@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,12 +44,11 @@ public class OrderController {
 
 
     @PostMapping("/api/order/create")
-    public ResponseEntity<?> createOrder(Authentication authentication, @RequestBody OrderRequestDTO orderRequestDTO){
+    public ResponseEntity<?> createOrder(Authentication authentication,@Valid @RequestBody OrderRequestDTO orderRequestDTO){
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             String email = principalDetails.getUser().getEmail();
 
             OrderResponseDTO orderResponseDTO = orderService.create(email, orderRequestDTO);
-
             Map<String, Object> result = new HashMap<>();
             result.put("msg", "주문 등록에 성공했습니다.");
             result.put("data", orderResponseDTO);

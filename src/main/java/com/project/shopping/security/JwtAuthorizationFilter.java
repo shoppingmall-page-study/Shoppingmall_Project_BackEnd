@@ -1,6 +1,6 @@
 package com.project.shopping.security;
 
-import com.project.shopping.Error.CustomExcpetion;
+import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.model.User;
@@ -71,7 +71,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         // 서명이 정상적으로 됨
         if(userEmail != null){
-            User userEntity = userRepository.findByEmail(userEmail);
+            User userEntity = userRepository.findByEmail(userEmail)
+                    .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));
 
             // user 인증 객체 생성
             // 인증 객체는 서명을 통해서 만든는거 로그인 요청으로 처리한것은 아님 서명을 토큰 서명을 통한 객체

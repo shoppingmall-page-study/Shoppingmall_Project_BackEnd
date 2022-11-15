@@ -1,7 +1,7 @@
 package com.project.shopping.controller;
 
 
-import com.project.shopping.Error.CustomExcpetion;
+import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductCreateRequestDTO;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductSearchRequestDTO;
@@ -54,7 +54,7 @@ public class ProductController {
     @PostMapping("/api/product/create")
     public ResponseEntity<?> createProduct(Authentication authentication, @RequestPart(required = false) MultipartFile img, @RequestPart ProductCreateRequestDTO productCreateRequestDTO) throws IOException {
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
         System.out.println(productCreateRequestDTO.getContent());
         ProductCreateResponseDTO responseDTO = productService.create(authentication, img, productCreateRequestDTO);
@@ -114,7 +114,7 @@ public class ProductController {
     public ResponseEntity<?>  productdelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
 
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
         ProductDeleteResponseDTO product = productService.deleteProduct(authentication, ProductId);
@@ -152,7 +152,7 @@ public class ProductController {
     @GetMapping("/api/products/user")
     public ResponseEntity<?> findresisterproductuser(Authentication authentication){
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
         List<ProductJoinResponseDTO> response = productService.getEqUserAndActive(authentication, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
@@ -182,7 +182,7 @@ public class ProductController {
     @PutMapping("/api/product/update/{id}")
     public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody ProductUpdateRequestDTO productUpdateRequestDTO){
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
         Product product = productService.update(authentication, productUpdateRequestDTO, ProductId);

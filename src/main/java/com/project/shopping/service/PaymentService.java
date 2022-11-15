@@ -2,7 +2,7 @@ package com.project.shopping.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.shopping.Error.CustomExcpetion;
+import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.dto.requestDTO.PaymentRequestDTO.PaymentRequestDTO;
 import com.project.shopping.dto.responseDTO.OrderResponseDTO.ProductInOrderResponseDTO;
@@ -69,7 +69,7 @@ public class PaymentService {
             String orderId = root.path("response").path("merchant_uid").asText();
             Order order = orderRepository.findById(orderId)
                     .orElseThrow(()->new
-                    IllegalArgumentException("order Not Found."));
+                            CustomException("order Not Found.",ErrorCode.NotFoundOrderException));
             ArrayList<ProductInOrderResponseDTO> productInOrderResponseDTOList = new ArrayList<ProductInOrderResponseDTO>();
             ProductInOrderResponseDTO productInOrderResponseDTO;
             for (int i = 0; i < order.getProducts().size(); i++) {
@@ -107,7 +107,7 @@ public class PaymentService {
 
                 return paymentCompleteResponseDTO;
 
-            } else throw new CustomExcpetion("위조된 결제 시도 입니다.", ErrorCode.BadParameterException);
+            } else throw new CustomException("위조된 결제 시도 입니다.", ErrorCode.BadParameterException);
 
         } catch (Exception e) {
             //convert error code unicode to korean
@@ -120,7 +120,7 @@ public class PaymentService {
             }
             str.append(uni);
             String msg = str.toString();
-            throw new CustomExcpetion(msg, ErrorCode.INTER_SERVER_ERROR);
+            throw new CustomException(msg, ErrorCode.INTER_SERVER_ERROR);
         }
     }
 }

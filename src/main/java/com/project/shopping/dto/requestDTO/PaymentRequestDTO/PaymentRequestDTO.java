@@ -5,10 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 @RequiredArgsConstructor
 @Getter
 public class PaymentRequestDTO {
+
+    @NotBlank
     private String impUid;
+
+    @NotBlank
     private String orderId;
 
     @Builder

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -16,11 +17,11 @@ public interface CartRepository extends JpaRepository<Cart,Integer>,CartReposito
 
     List<Cart> findAllByuserId(User UserId);
 
-    Cart findCartByUserIdAndId(User userId, int id);
+    Optional<Cart> findCartByUserIdAndId(User userId, int id);
 
     boolean existsCartByUserIdAndProductId(User user, Product product);
 
-    Cart findCartByUserIdAndProductId(User user, Product product);
+    Optional<Cart> findCartByUserIdAndProductId(User user, Product product);
     Boolean existsByUserIdAndId(User user, int id);
 
     @Override

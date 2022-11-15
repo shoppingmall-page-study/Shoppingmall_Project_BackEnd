@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(CustomExcpetion.class)
-    public ResponseEntity<ErrorResponse> handleCusomException(CustomExcpetion e){
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponse> handleCusomException(CustomException e){
         ErrorResponse response = new ErrorResponse(e.getErrorCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getErrorCode().getStatus()));
     }

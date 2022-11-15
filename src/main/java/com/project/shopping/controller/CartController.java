@@ -1,6 +1,6 @@
 package com.project.shopping.controller;
 
-import com.project.shopping.Error.CustomExcpetion;
+import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.*;
@@ -47,7 +47,7 @@ public class CartController {
     // 여기서 ID는 상품 ID
     public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "id") int ProductId ,@RequestBody CartCreateRequestDTO cartCreateRequestDTO){
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
         CartCreateResponseDTO createcart = cartService.create(authentication, ProductId, cartCreateRequestDTO); // 카트 생성
         Map<String, Object> result = new HashMap<>();
@@ -68,7 +68,7 @@ public class CartController {
     @GetMapping("/api/cart/user")
     public ResponseEntity<?> cartlist(Authentication authentication){
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
         List<CartUserListJoinResponseDTO> cartList = cartService.getEqUserAndCart(authentication,ActiveStatus);
@@ -90,7 +90,7 @@ public class CartController {
     @DeleteMapping("/api/cart/delete/{id}") // id는 cart_Id
     public ResponseEntity<?> cartdelete(Authentication authentication, @PathVariable(value = "id")int id){
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
         CartDeleteResponseDTO cartDeleteResponseDTO = cartService.deleteCart(authentication, id);
@@ -106,7 +106,7 @@ public class CartController {
     public ResponseEntity<?> cartupdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody CartUpdateRequestDTO cartUpdateRequestDTO){
 
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
         CartUpdateResosneDTO updatecart = cartService.update(authentication, cartId, cartUpdateRequestDTO);
