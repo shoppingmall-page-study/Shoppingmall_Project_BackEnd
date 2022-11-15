@@ -2,7 +2,7 @@ package com.project.shopping.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.shopping.Error.CustomExcpetion;
+import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.dto.requestDTO.PaymentRequestDTO.PaymentRequestDTO;
 import com.project.shopping.dto.responseDTO.OrderResponseDTO.ProductInOrderResponseDTO;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class PaymentController {
 
 
     @PostMapping("/api/payments/complete")
-    public ResponseEntity<?> verifyPayment(@RequestBody PaymentRequestDTO paymentRequestDTO) throws Exception{
+    public ResponseEntity<?> verifyPayment(@Valid @RequestBody PaymentRequestDTO paymentRequestDTO) throws Exception{
         PaymentCompleteResponseDTO paymentCompleteResponseDTO = paymentService.verifyPayment(paymentRequestDTO);
 
         Map<String, Object> result = new HashMap<String, Object>();

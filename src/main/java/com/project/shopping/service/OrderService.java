@@ -1,5 +1,7 @@
 package com.project.shopping.service;
 
+import com.project.shopping.Error.CustomException;
+import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.dto.requestDTO.OrderRequestDTO.OrderRequestDTO;
 import com.project.shopping.dto.responseDTO.OrderResponseDTO.OrderResponseDTO;
 import com.project.shopping.dto.responseDTO.OrderResponseDTO.ProductInOrderResponseDTO;
@@ -24,9 +26,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
-    public OrderResponseDTO create(String email, OrderRequestDTO orderRequestDTO){
-
-        User user = userRepository.findByEmail(email);
+    public OrderResponseDTO create(String email, OrderRequestDTO orderRequestDTO)throws CustomException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()->new CustomException("User Not Found.", ErrorCode.NotFoundUserException));
         ArrayList<OrderDetail> products = new ArrayList<>();
         ArrayList<ProductInOrderResponseDTO>  responseProductsDTO = new ArrayList<>();
         long totalAmount = 0;
@@ -38,7 +40,8 @@ public class OrderService {
                 .build();
 
         for(int i = 0; i < orderRequestDTO.getProductsId().size(); i++){
-            Product product = productRepository.findById((int)orderRequestDTO.getProductsId().get(i));
+            Product product = productRepository.findById((int)orderRequestDTO.getProductsId().get(i))
+                    .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));
             int productNum = orderRequestDTO.getProductsNumber().get(i);
 
             OrderDetail orderDetail = OrderDetail.builder()
@@ -93,7 +96,8 @@ public class OrderService {
 
     public List<OrderResponseDTO> getOrderList(String email){
 
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new CustomException("",ErrorCode.NotFoundUserException));
         List<Order> orderList = orderRepository.findAllByUser(user);
         List<OrderResponseDTO> orders = new ArrayList<>();
 

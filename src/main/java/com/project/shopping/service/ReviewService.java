@@ -1,6 +1,6 @@
 package com.project.shopping.service;
 
-import com.project.shopping.Error.CustomExcpetion;
+import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.requestDTO.RevieRequestDTO.ReviewCreateRequestDTO;
@@ -39,10 +39,12 @@ public class ReviewService {
         String email = principalDetails.getUser().getEmail();
 
         // 로그인 정보로 user 찾기
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new CustomException("User Not Fount", ErrorCode.NotFoundUserException));
 
         // 파라미터로 받은 값으로 상품 찾기
-        Product product = productRepository.findById(ProductId);
+        Product product = productRepository.findById(ProductId)
+                .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));
 
 
         // 리뷰 생성
@@ -75,9 +77,11 @@ public class ReviewService {
     public ReviewUpdateResponseDTO update(Authentication authentication, int reviewId, ReviewUpdateRequestDTO reviewUpdateRequestDTO){
         PrincipalDetails principalDetails =  (PrincipalDetails) authentication.getPrincipal();
         String email = principalDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email); // 유저 찾기
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new CustomException("User Not Fount", ErrorCode.NotFoundUserException));// 유저 찾기
 
-        Review findReview = reviewrepository.findByUserIdAndId(user,reviewId); // 유저와 해당 리뷰 아이디로 리뷰 찾기
+        Review findReview = reviewrepository.findByUserIdAndId(user,reviewId)
+                .orElseThrow(()-> new CustomException("Review Not Found", ErrorCode.NotFoundReviewException));// 유저와 해당 리뷰 아이디로 리뷰 찾기
         if(reviewUpdateRequestDTO.getContent() != ""){
             findReview.setContent(reviewUpdateRequestDTO.getContent());
         }
@@ -118,11 +122,13 @@ public class ReviewService {
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = principalDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new CustomException("User Not Fount", ErrorCode.NotFoundUserException));
         if(!reviewrepository.existsByUserIdAndId(user,ReviewId)){
-            throw new CustomExcpetion("해당 리뷰가 존재하지 않습니다", ErrorCode.NotFoundReviewException);
+            throw new CustomException("해당 리뷰가 존재하지 않습니다", ErrorCode.NotFoundReviewException);
         }
-        Review findreview = reviewrepository.findByUserIdAndId(user, ReviewId);
+        Review findreview = reviewrepository.findByUserIdAndId(user, ReviewId)
+                .orElseThrow(()-> new CustomException("Review Not Found", ErrorCode.NotFoundReviewException));
         findreview.setStatus("Disabled");
 
         reviewrepository.save(findreview);
@@ -139,7 +145,8 @@ public class ReviewService {
 
 
     public Review findReviewUserAndId(User user, int id){
-        return reviewrepository.findByUserIdAndId(user,id);
+        return reviewrepository.findByUserIdAndId(user,id)
+                .orElseThrow(()-> new CustomException("Review Not Found", ErrorCode.NotFoundReviewException));
     }
     public Boolean existReviewUserAndId(User user, int id){return reviewrepository.existsByUserIdAndId(user,id);}
 
@@ -147,7 +154,8 @@ public class ReviewService {
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = principalDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new CustomException("User Not Fount", ErrorCode.NotFoundUserException));
         List<Review> userReviewlist = reviewrepository.getEqUserAndActive(user, status);
         //dto 만들기
         List<ReviewUserJoinResponseDTO> userReviewListDto = new ArrayList<>();
@@ -165,7 +173,8 @@ public class ReviewService {
     }
 
     public List<ReviewProductJoinResponseDTO> getEqProductAndActive(int ProductId, String status){
-        Product product = productRepository.findById(ProductId);
+        Product product = productRepository.findById(ProductId)
+                .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));
         List<Review> ProductReviewList = reviewrepository.getEqProductAndActive(product,status);
 
         List<ReviewProductJoinResponseDTO> ProductReviewDto = new ArrayList<>();

@@ -1,7 +1,7 @@
 package com.project.shopping.controller;
 
 
-import com.project.shopping.Error.CustomExcpetion;
+import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.ReviewDTO;
@@ -43,7 +43,7 @@ public class ReviewController {
     @PostMapping("/api/review/create/{id}")
     public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody ReviewCreateRequestDTO reviewCreateRequestDTO){
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
 
@@ -64,7 +64,7 @@ public class ReviewController {
     @DeleteMapping ("/api/review/delete/{id}")
     public ResponseEntity<?> reviewdelete(Authentication authentication, @PathVariable(value = "id") int ReviewId){ // reviewid
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
         ReviewDeleteResponseDTO reviewDeleteResponseDTO = reviewService.deleteReview(authentication, ReviewId);
@@ -81,7 +81,7 @@ public class ReviewController {
     @GetMapping("/api/review/user")
     public ResponseEntity<?> findUserReviewlist(Authentication authentication){
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
         // 현재 로그인한 유저 찾기
 
@@ -117,7 +117,7 @@ public class ReviewController {
     @PutMapping("/api/review/update/{id}")
     public ResponseEntity<?> productUpdate(Authentication authentication, @PathVariable(value = "id") int reviewId, @RequestBody ReviewUpdateRequestDTO reviewUpdateRequestDTO){
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
 
 

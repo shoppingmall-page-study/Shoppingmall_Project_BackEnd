@@ -1,7 +1,7 @@
 package com.project.shopping.controller;
 
 
-import com.project.shopping.Error.CustomExcpetion;
+import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
 
@@ -79,7 +79,7 @@ public class UserController  {
     @DeleteMapping("/api/user/delete")
     public ResponseEntity<?> deleteUser(@RequestBody UserDeleteRequestDTO userDeleteRequestDTO, Authentication authentication ){
         if (authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
         }
 
         UserDeleteResponseDTO userDeleteResponseDTO  = userService.delete(userDeleteRequestDTO,authentication);
@@ -141,7 +141,7 @@ public class UserController  {
     @GetMapping("/api/user/info")
     public ResponseEntity<?> userinfo(Authentication authentication){
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
         }
 
 
@@ -157,7 +157,7 @@ public class UserController  {
     @PutMapping("/api/user/update")
     public ResponseEntity<?> userupdate(Authentication authentication, @RequestBody UserUpdateRequestDTO userUpdateRequestDTO){
         if(authentication == null){
-            throw  new CustomExcpetion("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
+            throw  new CustomException("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
         }
 
         UserUpdateResponseDTO userUpdateResponseDTO = userService.updateUser(authentication, userUpdateRequestDTO);
@@ -173,7 +173,7 @@ public class UserController  {
     public ResponseEntity<?> checkemail(@PathVariable(value = "value") String value) throws Exception {
         // 존재할시
         if(userService.existsByEmail(value)){
-            throw  new CustomExcpetion("이메일이 존재합니다.", ErrorCode.DuplicatedEmilException);
+            throw  new CustomException("이메일이 존재합니다.", ErrorCode.DuplicatedEmilException);
         }
         System.out.println(value);
         UserCheckEmailResponseDTO userCheckEmailResponseDTO = UserCheckEmailResponseDTO.builder().email(value).build();
@@ -191,7 +191,7 @@ public class UserController  {
     @GetMapping("/api/join/nickname-check/{value}")
     public ResponseEntity<?> checknickname(@PathVariable(value = "value") String value){
         if(userService.existsByNickname(value)){
-            throw  new CustomExcpetion("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
+            throw  new CustomException("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
         }
         UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = UserCheckNicknameResponseDTO.builder().nickname(value).build();
         Map<String, Object> response = new HashMap<>();
