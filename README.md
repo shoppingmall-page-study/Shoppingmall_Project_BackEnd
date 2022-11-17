@@ -19,7 +19,7 @@
 <img src = "https://img.shields.io/badge/Spring Security-5.6.3-6DB33F?logo=spring security"/>
 <br></br>
 **배포 주소**
->**222.118.103.229** 
+>**https://hannam.shop** 
 
 <br/>
 
@@ -30,8 +30,7 @@
 <br></br>
 
 ## 🏯아키텍처
-
-![image](https://user-images.githubusercontent.com/42925746/183555715-f34a2357-a034-421b-a7c6-8994132d3c92.png)
+![shopping_architecture](https://user-images.githubusercontent.com/42925746/202386070-81562647-5dcf-4e17-a9a1-56cbb764e6ad.png)
 <br></br>
 ## ⛓사용 기술스택
 
@@ -71,4 +70,3 @@
 - 2022-08-30 유저 업데이트 및, 장바구니 업데이트 (종혁)
 - 2022-08-30 리뷰 리스트 조회시 responseDTO 수정 / review update (종혁) 
 - 2022-09-04 상품, 리뷰, 장바구니 양방향 연관관계 수정 , 상품 수정 쿼리 
-
