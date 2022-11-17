@@ -85,16 +85,16 @@ public class ProductController {
         return ResponseEntity.ok().body(result);
 
     }
-    @GetMapping("/api/product/search/{keyword}")
-    public ResponseEntity<?> searchProudct(@PathVariable(value = "keyword") String Keword){
-        List<ProductSearchResponseDTO> response = productService.getProductList(Keword, ActiveStatus);
-
+    @PostMapping("/api/product/search")
+    public ResponseEntity<?> searchProudct(@RequestBody ProductSearchRequestDTO productSearchRequestDTO){
+        List<ProductSearchResponseDTO> response = productService.getProductList(productSearchRequestDTO.getKeyword(), ActiveStatus);
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품검색에 성공했습니다.");
         result.put("data",response);
         return ResponseEntity.ok().body(result);
 
     }
+
     // 내가 올린 상품 검색
     @GetMapping("/api/products/user")
     public ResponseEntity<?> findresisterproductuser(Authentication authentication){
