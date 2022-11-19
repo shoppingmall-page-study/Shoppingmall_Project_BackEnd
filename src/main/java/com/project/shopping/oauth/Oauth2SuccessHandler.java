@@ -85,12 +85,12 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private String makeRediretjoinUrl(String token) {
-        return UriComponentsBuilder.fromUriString("http://222.118.103.229/registration/"+token)
+        return UriComponentsBuilder.fromUriString("https://hannam.shop/registration/"+token)
                 .build().toUriString();
     }
 
     private String makeRedirectUrl(String jwttoken) {
-        return UriComponentsBuilder.fromUriString("http://222.118.103.229/oauth/"+jwttoken)
+        return UriComponentsBuilder.fromUriString("https://hannam.shop/oauth/"+jwttoken)
                 .build().toUriString();
     }
 
