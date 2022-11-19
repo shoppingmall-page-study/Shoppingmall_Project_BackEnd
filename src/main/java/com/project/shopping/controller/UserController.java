@@ -94,7 +94,7 @@ public class UserController  {
 
     }
 
-    @PostMapping("/Oauth/join")
+    @PostMapping("/api/Oauth/join")
     public ResponseEntity<?> oauthsignup(@RequestBody UserDTO userDTO,Authentication authentication) {
 
         UserDTO response = userService.SaveUser(userDTO, authentication);
