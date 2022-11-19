@@ -71,6 +71,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizationEndpoint()
                 .baseUri("/api/oauth2/authorization")
                 .and()
+                .redirectionEndpoint()
+                .baseUri("/api/login/oauth2/code/")
+                .and()
                 .loginPage("/login").defaultSuccessUrl("/success").successHandler(successHandler).userInfoEndpoint().userService(oAuth2UserService);
     }
 }
