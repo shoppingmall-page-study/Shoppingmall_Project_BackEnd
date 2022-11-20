@@ -52,6 +52,7 @@ public class OrderService {
             ProductInOrderResponseDTO productDTO = ProductInOrderResponseDTO.builder()
                     .productId(product.getId())
                     .productName(product.getName())
+                    .imgUrl(product.getImgUrl())
                     .productNum(productNum)
                     .build();
 
@@ -113,6 +114,7 @@ public class OrderService {
                         .productId(product.getId())
                         .productName(product.getName())
                         .productNum(productNum)
+                        .imgUrl(product.getImgUrl())
                         .build();
 
                 products.add(productDTO);
