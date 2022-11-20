@@ -166,6 +166,7 @@ public class ReviewService {
                     .title(review.getTitle())
                     .createTime(review.getCreateTime())
                     .modifiedTime(review.getModifieddate())
+                    .imgUrl(review.getImageUrl())
                     .build();
             userReviewListDto.add(reviewUserJoinResponseDTO);
         }

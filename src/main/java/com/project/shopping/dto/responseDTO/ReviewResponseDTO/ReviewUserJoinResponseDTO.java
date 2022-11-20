@@ -18,14 +18,16 @@ public class ReviewUserJoinResponseDTO {
 
     private LocalDate createTime;
     private LocalDate modifiedTime;
+    private  String ImgUrl;
 
     @Builder
 
-    public ReviewUserJoinResponseDTO(int reviewId, String title, String content, LocalDate createTime, LocalDate modifiedTime) {
+    public ReviewUserJoinResponseDTO(int reviewId, String title, String content, LocalDate createTime, LocalDate modifiedTime, String imgUrl) {
         this.reviewId = reviewId;
         this.title = title;
         this.content = content;
         this.createTime = createTime;
         this.modifiedTime = modifiedTime;
+        this.ImgUrl = imgUrl;
     }
 }
