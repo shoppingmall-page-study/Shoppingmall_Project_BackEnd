@@ -40,7 +40,7 @@ public class CartService {
                 .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));// 상품 찾기
         System.out.println(cartCreateRequestDTO.getProductNum()); // 현재 장바구니 개수 로그
 
-        if(cartRepository.existsCartByUserIdAndProductId(user, product)){ // 해당 상품이 존재 할시
+        if(cartRepository.existsCartByUserIdAndProductIdAndStatus(user, product,"active")){ // 해당 상품이 존재 할시
             Cart findCart = cartRepository.findCartByUserIdAndProductId(user, product)
                     .orElseThrow(()-> new CustomException("Cart Not Found", ErrorCode.NotFoundCartException));// 카트찾기
             long totalsum = findCart.getProductNum()+ cartCreateRequestDTO.getProductNum();
@@ -192,7 +192,7 @@ public class CartService {
     public  boolean existCartUserAndId(User user, int id){return  cartRepository.existsByUserIdAndId(user, id);}
 
 
-    public boolean existsCartByUserIdAndProductId(User user, Product product){return cartRepository.existsCartByUserIdAndProductId(user,product);}
+    public boolean existsCartByUserIdAndProductId(User user, Product product){return cartRepository.existsCartByUserIdAndProductIdAndStatus(user,product,"active");}
 
     public Cart findCartByUserIdAndProductId(User user, Product product){return  cartRepository.findCartByUserIdAndProductId(user,product)
             .orElseThrow(()->new CustomException("Cart Not Found", ErrorCode.NotFoundCartException));

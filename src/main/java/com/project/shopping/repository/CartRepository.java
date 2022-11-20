@@ -19,7 +19,7 @@ public interface CartRepository extends JpaRepository<Cart,Integer>,CartReposito
 
     Optional<Cart> findCartByUserIdAndId(User userId, int id);
 
-    boolean existsCartByUserIdAndProductId(User user, Product product);
+    boolean existsCartByUserIdAndProductIdAndStatus(User user, Product product, String status);
 
     Optional<Cart> findCartByUserIdAndProductId(User user, Product product);
     Boolean existsByUserIdAndId(User user, int id);
