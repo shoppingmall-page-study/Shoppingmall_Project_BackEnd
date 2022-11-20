@@ -53,9 +53,12 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
         User user = userRequstMapper.user(oAuth2User); // 이메일만 담아서 생성
 
         String jwttoken = tokenprovider.create(user);
+        System.out.println(jwttoken);
         response.addHeader("Authorization","Bearer "+jwttoken); //토큰을 생성 하고
         String email = (String) oAuth2User.getAttributes().get("email");
         String name = (String) oAuth2User.getAttributes().get("name");
+        System.out.println(email);
+        System.out.println(name);
         String password = passwordEncoder.encode(email);
 
 
@@ -85,12 +88,12 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private String makeRediretjoinUrl(String token) {
-        return UriComponentsBuilder.fromUriString("http://localhost:3000/registration/"+token)
+        return UriComponentsBuilder.fromUriString("https://hannam.shop/registration/"+token)
                 .build().toUriString();
     }
 
     private String makeRedirectUrl(String jwttoken) {
-        return UriComponentsBuilder.fromUriString("http://localhost:3000/oauth/"+jwttoken)
+        return UriComponentsBuilder.fromUriString("https://hannam.shop/oauth/"+jwttoken)
                 .build().toUriString();
     }
 
