@@ -67,6 +67,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(new JwtAuthenticationFilter(authenticationManager(),tokenprovider), UsernamePasswordAuthenticationFilter.class);
         http.addFilter(new JwtAuthorizationFilter(authenticationManager(),tokenprovider,userRepository));
         http.cors();
-        http.oauth2Login().loginPage("/login").defaultSuccessUrl("/success").successHandler(successHandler).userInfoEndpoint().userService(oAuth2UserService);
+        http.oauth2Login()
+                .authorizationEndpoint()
+                .baseUri("/api/oauth2/authorization")
+                .and()
+                .redirectionEndpoint()
+                .baseUri("/api/login/oauth2/code/")
+                .and()
+                .loginPage("/login").defaultSuccessUrl("/success").successHandler(successHandler).userInfoEndpoint().userService(oAuth2UserService);
     }
 }
