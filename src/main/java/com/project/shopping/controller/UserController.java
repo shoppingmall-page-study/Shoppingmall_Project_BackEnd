@@ -96,6 +96,9 @@ public class UserController  {
 
     @PostMapping("/api/Oauth/join")
     public ResponseEntity<?> oauthsignup(@RequestBody UserDTO userDTO,Authentication authentication) {
+        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = userDetails.getUser().getEmail();
+        System.out.println(email);
 
         UserDTO response = userService.SaveUser(userDTO, authentication);
 
