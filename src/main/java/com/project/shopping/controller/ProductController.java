@@ -34,8 +34,7 @@ public class ProductController {
 
     private String ActiveStatus= "active";
 
-    @Value("${file.dir}")
-    private String fileDir;
+
 
 
     @PostMapping("/api/product/create")

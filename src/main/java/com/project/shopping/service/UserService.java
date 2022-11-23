@@ -183,6 +183,11 @@ public class UserService {
     }
 
     public Boolean existsByNickname(String nickname){return userRepository.existsByNickname(nickname);}
+
+
+
+
+
     public UserUpdateResponseDTO updateUser(Authentication authentication, UserUpdateRequestDTO userUpdateRequestDTO){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = principalDetails.getUser().getEmail();
@@ -203,10 +208,16 @@ public class UserService {
             user.setPostCode(userUpdateRequestDTO.getPostCode());
 
         if(userUpdateRequestDTO.getNickname() != ""){
-            if(userRepository.existsByNickname(userUpdateRequestDTO.getNickname())){
-                throw  new CustomException("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
+
+            if(!user.getNickname().equals(userUpdateRequestDTO.getNickname())){
+                // 만약 현제 유저 닉네임이  들어온 유저 닉네임과 동일하지 않다면
+                if(userRepository.existsByNickname(userUpdateRequestDTO.getNickname())){
+                    // 들어온 값이 db에 있을시 에러
+                    throw  new CustomException("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
+                }
+                user.setNickname(userUpdateRequestDTO.getNickname());
             }
-            user.setNickname(userUpdateRequestDTO.getNickname());
+
         }
         if(userUpdateRequestDTO.getPhoneNumber()!= ""){
             user.setPhoneNumber(userUpdateRequestDTO.getPhoneNumber());
