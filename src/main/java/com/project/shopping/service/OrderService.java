@@ -51,7 +51,7 @@ public class OrderService {
 
             ProductInOrderResponseDTO productDTO = ProductInOrderResponseDTO.builder()
                     .productId(product.getId())
-                    .productName(product.getName())
+                    .productName(product.getTitle())
                     .imgUrl(product.getImgUrl())
                     .productNum(productNum)
                     .build();
