@@ -10,6 +10,9 @@ import lombok.Setter;
 public enum ErrorCode {
     BadPasswordException(400,"BadParameterException","잘못된 password 입니다"),
     BadParameterException(400,"BadParameterException","잘못된 형식의 데이터 입니다."),
+
+    BadEmailException(400,"BadEmailException","잘못된 형식의 이메일 입니다"),
+    BadPhoneNumberException(400,"BadPhoneNumberException","잘못된 형식의 번호입니다"),
     UnauthorizedException(401,"UnauthorizedException","허용되지 않는 접근입니다."),
     NotFoundUserException(404,"NotFoundException","계정이 존재하지 않습니다"),
     NotFoundProductException(404,"NotFoundException","상품이 존재하지 않습니다"),

@@ -1,9 +1,12 @@
 package com.project.shopping.Error;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -20,5 +23,38 @@ public class GlobalExceptionHandler {
         log.error("handleException",ex);
         ErrorResponse response = new ErrorResponse(ErrorCode.BadParameterException);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleNotValidException(MethodArgumentNotValidException e){
+        log.warn("MethodArgumentNotValidException",e);
+        ErrorResponse errorResponse = makeErrorResponse(e.getBindingResult());
+
+        return  new ResponseEntity<>(errorResponse, HttpStatus.valueOf(errorResponse.getStatus()));
+
+    }
+
+
+    private ErrorResponse makeErrorResponse(BindingResult bindingResult) {
+        ErrorResponse response = null;
+
+        if(bindingResult.hasErrors()){
+            String bindResultCode = bindingResult.getFieldError().getCode();
+            switch (bindResultCode){
+                case "NotNull":
+                case "NotBlank":
+                    response = new ErrorResponse(ErrorCode.BadParameterException);
+                    break;
+                case "Email":
+                    response = new ErrorResponse(ErrorCode.BadEmailException);
+                    break;
+                case "Pattern":
+                    response = new ErrorResponse(ErrorCode.BadPhoneNumberException);
+                    break;
+
+            }
+
+        }
+        return response;
     }
 }

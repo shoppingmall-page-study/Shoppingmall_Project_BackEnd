@@ -10,7 +10,6 @@ public class ErrorResponse {
     private  String code;
 
     @Builder
-
     public ErrorResponse(ErrorCode errorCode) {
         this.status = errorCode.getStatus();
         this.message = errorCode.getMessage();

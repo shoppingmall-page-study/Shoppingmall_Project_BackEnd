@@ -35,32 +35,14 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     public UserJoinResponseDTO create(userJoinRequestDTO userJoinRequestDTO){
+
+        //이메일 중복 체크
         if(userRepository.existsByEmail(userJoinRequestDTO.getEmail())){
             throw new CustomException("해당 이메일이 존재 합니다.", ErrorCode.DuplicatedEmilException);
         }
-        if(userJoinRequestDTO.getEmail().equals("")){
-            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getAddress().equals("")){
-            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getAge() == 0){
-            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getPassword().equals("")){
-            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getUsername().equals("")){
-            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getPhoneNumber().equals("")){
-            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getNickname().equals("")){
-            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
-        }
-        if(userJoinRequestDTO.getPostCode().equals("")){
-            throw new CustomException("잘못된 형식의 데이터 입니다.",ErrorCode.BadParameterException);
+        // 닉네임 중복 체크
+        if(userRepository.existsByNickname(userJoinRequestDTO.getNickname())){
+            throw  new CustomException("해당 닉네임이 존재 합니다", ErrorCode.DuplicatedNickNameException);
         }
 
         User user = User.builder()
@@ -76,10 +58,6 @@ public class UserService {
                 .postCode(userJoinRequestDTO.getPostCode()).build();
 
 
-        System.out.println(user.getEmail());
-        if(user == null || user.getEmail().equals("")){
-            throw new NoSuchElementException("잘못된 형식의 데이터 입니다. ");
-        }
         userRepository.save(user);
         UserJoinResponseDTO userJoinResponseDTO = UserJoinResponseDTO.builder()
                 .email(user.getEmail())
@@ -92,7 +70,6 @@ public class UserService {
                 .createDate(user.getCreateDate())
                 .modifiedDate(user.getModifieddate())
                 .build();
-
 
 
         return userJoinResponseDTO;
@@ -155,11 +132,7 @@ public class UserService {
         String email = userDetails.getUser().getEmail();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));
-        System.out.println(user.getPassword());
-        System.out.println(userDeleteRequestDTO.getPassword());
-        System.out.println(passwordEncoder.encode(userDetails.getPassword()));
-        System.out.println(passwordEncoder.encode("abc"));
-        System.out.println(passwordEncoder.encode("abc"));
+
 
         if(passwordEncoder.matches(userDeleteRequestDTO.getPassword(), userDetails.getPassword() )){
 
@@ -179,10 +152,17 @@ public class UserService {
     }
 
     public Boolean existsByEmail(String email){
+        if(userRepository.existsByEmail(email)){
+            throw  new CustomException("이메일이 존재합니다.", ErrorCode.DuplicatedEmilException);
+        }
         return userRepository.existsByEmail(email);
     }
 
-    public Boolean existsByNickname(String nickname){return userRepository.existsByNickname(nickname);}
+    public Boolean existsByNickname(String nickname){
+        if(userRepository.existsByNickname(nickname)){
+            throw  new CustomException("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
+        }
+        return userRepository.existsByNickname(nickname);}
 
 
 
@@ -194,34 +174,24 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));// 해당 user찾기
 
-        if(userUpdateRequestDTO.getUsername()!= ""){
-            user.setUsername(userUpdateRequestDTO.getUsername());
-        }
-        if(userUpdateRequestDTO.getAddress() != ""){
-            user.setAddress(userUpdateRequestDTO.getAddress());
-        }
-        if (userUpdateRequestDTO.getAge() != 0){
-            user.setAge(userUpdateRequestDTO.getAge());
-        }
-
-        if(userUpdateRequestDTO.getPostCode() != "")
-            user.setPostCode(userUpdateRequestDTO.getPostCode());
-
-        if(userUpdateRequestDTO.getNickname() != ""){
-
-            if(!user.getNickname().equals(userUpdateRequestDTO.getNickname())){
-                // 만약 현제 유저 닉네임이  들어온 유저 닉네임과 동일하지 않다면
-                if(userRepository.existsByNickname(userUpdateRequestDTO.getNickname())){
-                    // 들어온 값이 db에 있을시 에러
-                    throw  new CustomException("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
-                }
-                user.setNickname(userUpdateRequestDTO.getNickname());
+        if(!user.getNickname().equals(userUpdateRequestDTO.getNickname())){
+            // 만약 현제 유저 닉네임이  들어온 유저 닉네임과 동일하지 않다면
+            if(userRepository.existsByNickname(userUpdateRequestDTO.getNickname())){
+                // 들어온 값이 db에 있을시 에러
+                throw  new CustomException("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
             }
+            user.setNickname(userUpdateRequestDTO.getNickname());
+        }
 
+        if(!user.getEmail().equals(userUpdateRequestDTO.getEmail())){
+            if(userRepository.existsByEmail(userUpdateRequestDTO.getEmail())){
+                throw  new CustomException("이메일이 존재합니다.", ErrorCode.DuplicatedEmilException);
+            }
         }
-        if(userUpdateRequestDTO.getPhoneNumber()!= ""){
-            user.setPhoneNumber(userUpdateRequestDTO.getPhoneNumber());
-        }
+        user.setUsername(userUpdateRequestDTO.getUsername());
+        user.setAddress(userUpdateRequestDTO.getAddress());
+        user.setAge(userUpdateRequestDTO.getAge());
+        user.setPostCode(userUpdateRequestDTO.getPostCode());
 
         user.setModifieddate(Timestamp.valueOf(LocalDateTime.now()));
         userRepository.save(user);
