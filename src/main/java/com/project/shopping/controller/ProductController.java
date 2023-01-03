@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
 
@@ -38,7 +39,7 @@ public class ProductController {
 
 
     @PostMapping("/api/product/create")
-    public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody ProductCreateRequestDTO productCreateRequestDTO) {
+    public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody @Valid ProductCreateRequestDTO productCreateRequestDTO) {
         if(authentication == null){
             throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
@@ -85,7 +86,7 @@ public class ProductController {
 
     }
     @PostMapping("/api/product/search")
-    public ResponseEntity<?> searchProudct(@RequestBody ProductSearchRequestDTO productSearchRequestDTO){
+    public ResponseEntity<?> searchProudct(@RequestBody @Valid ProductSearchRequestDTO productSearchRequestDTO){
         List<ProductSearchResponseDTO> response = productService.getProductList(productSearchRequestDTO.getKeyword(), ActiveStatus);
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품검색에 성공했습니다.");
@@ -126,7 +127,7 @@ public class ProductController {
     }
 
     @PutMapping("/api/product/update/{id}")
-    public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody ProductUpdateRequestDTO productUpdateRequestDTO){
+    public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody @Valid ProductUpdateRequestDTO productUpdateRequestDTO){
         if(authentication == null){
             throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }

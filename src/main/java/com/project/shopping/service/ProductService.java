@@ -58,13 +58,6 @@ public class ProductService {
                 .modifiedDate(Timestamp.valueOf(LocalDateTime.now()))
                 .build(); // 상품 생성
 
-        System.out.println(product.getName());
-
-        if(product == null  || product.getName() == "" ||  product.getTitle()== ""
-                && product.getContent() == "" ||  product.getPrice() == 0 ||  product.getTotal() == 0
-                ||  product.getImgUrl() == ""){
-            throw  new CustomException("잘못된 형식의 데이터 입니다." , ErrorCode.BadParameterException);
-        }
         productRepository.save(product);
         ProductCreateResponseDTO productCreateResponseDTO = ProductCreateResponseDTO.builder()
                 .title(product.getTitle())
@@ -151,28 +144,14 @@ public class ProductService {
                 .orElseThrow(()-> new CustomException("User Not Fount", ErrorCode.NotFoundUserException)); // 유저 찾기
         Product product = productRepository.findByIdAndUserId(ProductId, user)
                 .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));// 해당 상품 찾기
-        if(productUpdateRequestDTO.getTitle() != ""){
-            product.setTitle(productUpdateRequestDTO.getTitle());
-        }
-        if(productUpdateRequestDTO.getContent() != ""){
-            product.setContent(productUpdateRequestDTO.getContent());
-        }
-        if(productUpdateRequestDTO.getName() != ""){
-            product.setName(productUpdateRequestDTO.getName());
 
-        }
-        if(productUpdateRequestDTO.getPrice() != 0){
-            product.setPrice(productUpdateRequestDTO.getPrice());
+        product.setTitle(productUpdateRequestDTO.getTitle());
+        product.setContent(productUpdateRequestDTO.getContent());
+        product.setName(productUpdateRequestDTO.getName());
+        product.setPrice(productUpdateRequestDTO.getPrice());
+        product.setTotal(productUpdateRequestDTO.getTotal());
+        product.setImgUrl(productUpdateRequestDTO.getImgUrl());
 
-        }
-        if(productUpdateRequestDTO.getTotal() !=0){
-            product.setTotal(productUpdateRequestDTO.getTotal());
-
-        }
-        if(productUpdateRequestDTO.getImgUrl() != ""){
-            product.setImgUrl(productUpdateRequestDTO.getImgUrl());
-
-        }
         product.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
 
 
@@ -215,6 +194,7 @@ public class ProductService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()-> new CustomException("User Not Fount", ErrorCode.NotFoundUserException));// user 찾기
+
         if(!productRepository.existsByIdAndUserId(ProductId,user)){
             throw  new CustomException("상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
         }

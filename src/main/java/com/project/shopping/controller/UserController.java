@@ -25,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -40,34 +41,11 @@ public class UserController  {
 
 
     private final  UserService userService;
-//    @Autowired
-//    private Tokenprovider tokenprovider;
-
-//    @PostMapping("join")
-//    public String join(@RequestBody User user){
-//
-//        return "회원 가입 완료 ";
-//    }
-
-
-
-
-
-
-
-//    @PostMapping("/api/login")
-//    public ResponseEntity<?> login(@RequestBody UserLoginRequestDTO userLoginRequestDTO) throws IOException {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setLocation(URI.create("/login"));
-//        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
-//    }
-//
 
     @PostMapping("/api/join")
-    public ResponseEntity<?> signup(@RequestBody userJoinRequestDTO userJoinRequestDTO){
+    public ResponseEntity<?> signup(@RequestBody @Valid userJoinRequestDTO userJoinRequestDTO){
 
         UserJoinResponseDTO userJoinResponseDTO = userService.create(userJoinRequestDTO);
-
 
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "회원가입에 성공했습니다.");
@@ -77,10 +55,8 @@ public class UserController  {
     }
 
     @DeleteMapping("/api/user/delete")
-    public ResponseEntity<?> deleteUser(@RequestBody UserDeleteRequestDTO userDeleteRequestDTO, Authentication authentication ){
-        if (authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
-        }
+    public ResponseEntity<?> deleteUser(@RequestBody @Valid UserDeleteRequestDTO userDeleteRequestDTO, Authentication authentication ){
+
 
         UserDeleteResponseDTO userDeleteResponseDTO  = userService.delete(userDeleteRequestDTO,authentication);
 
@@ -158,7 +134,7 @@ public class UserController  {
     }
 
     @PutMapping("/api/user/update")
-    public ResponseEntity<?> userupdate(Authentication authentication, @RequestBody UserUpdateRequestDTO userUpdateRequestDTO){
+    public ResponseEntity<?> userupdate(Authentication authentication, @RequestBody @Valid UserUpdateRequestDTO userUpdateRequestDTO){
         if(authentication == null){
             throw  new CustomException("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
         }
@@ -174,11 +150,7 @@ public class UserController  {
 
     @GetMapping("/api/join/email-check/{value}")
     public ResponseEntity<?> checkemail(@PathVariable(value = "value") String value) throws Exception {
-        // 존재할시
-        if(userService.existsByEmail(value)){
-            throw  new CustomException("이메일이 존재합니다.", ErrorCode.DuplicatedEmilException);
-        }
-        System.out.println(value);
+        userService.existsByEmail(value);
         UserCheckEmailResponseDTO userCheckEmailResponseDTO = UserCheckEmailResponseDTO.builder().email(value).build();
 
         Map<String, Object> response = new HashMap<>();
@@ -193,9 +165,7 @@ public class UserController  {
 
     @GetMapping("/api/join/nickname-check/{value}")
     public ResponseEntity<?> checknickname(@PathVariable(value = "value") String value){
-        if(userService.existsByNickname(value)){
-            throw  new CustomException("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
-        }
+        userService.existsByNickname(value);
         UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = UserCheckNicknameResponseDTO.builder().nickname(value).build();
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "사용가능한 닉네임 입니다..");
