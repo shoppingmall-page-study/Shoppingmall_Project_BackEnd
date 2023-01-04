@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,7 +42,7 @@ public class ReviewController {
 
     // 리뷰 생성
     @PostMapping("/api/review/create/{id}")
-    public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody ReviewCreateRequestDTO reviewCreateRequestDTO){
+    public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody @Valid ReviewCreateRequestDTO reviewCreateRequestDTO){
         if(authentication == null){
             throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
@@ -89,8 +90,6 @@ public class ReviewController {
         // 현재 나의 리뷰 목록 조회
         List<ReviewUserJoinResponseDTO>  userReviewlist = reviewService.getEqUserAndActive(authentication,ActiveStatus);
 
-
-
         Map<String , Object> result = new HashMap<>();
         result.put("msg","리뷰 조회에 성공했습니다.");
         result.put("data",userReviewlist);
@@ -115,7 +114,7 @@ public class ReviewController {
     }
 
     @PutMapping("/api/review/update/{id}")
-    public ResponseEntity<?> productUpdate(Authentication authentication, @PathVariable(value = "id") int reviewId, @RequestBody ReviewUpdateRequestDTO reviewUpdateRequestDTO){
+    public ResponseEntity<?> productUpdate(Authentication authentication, @PathVariable(value = "id") int reviewId, @RequestBody @Valid ReviewUpdateRequestDTO reviewUpdateRequestDTO){
         if(authentication == null){
             throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }

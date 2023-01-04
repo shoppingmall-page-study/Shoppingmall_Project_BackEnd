@@ -59,9 +59,6 @@ public class ReviewService {
                 .status("active")
                 .build();
 
-        if(review.getProductId() == null){
-            throw new NoSuchElementException("해당 상품이 없습니다.");
-        }
         reviewrepository.save(review);
         ReviewCreateResponseDTO reviewCreateResponseDTO = ReviewCreateResponseDTO.builder()
                 .reviewId(review.getId())
@@ -82,20 +79,17 @@ public class ReviewService {
 
         Review findReview = reviewrepository.findByUserIdAndId(user,reviewId)
                 .orElseThrow(()-> new CustomException("Review Not Found", ErrorCode.NotFoundReviewException));// 유저와 해당 리뷰 아이디로 리뷰 찾기
-        if(reviewUpdateRequestDTO.getContent() != ""){
-            findReview.setContent(reviewUpdateRequestDTO.getContent());
-        }
-        if(reviewUpdateRequestDTO.getTitle() != ""){
-            findReview.setTitle(reviewUpdateRequestDTO.getTitle());
-        }
-        if(reviewUpdateRequestDTO.getImgUrl() != ""){
-            findReview.setImageUrl(reviewUpdateRequestDTO.getImgUrl());
-        }
 
-        findReview.builder().modifieddate(LocalDate.now());
+        findReview.setContent(reviewUpdateRequestDTO.getContent());
+        findReview.setTitle(reviewUpdateRequestDTO.getTitle());
+        findReview.setImageUrl(reviewUpdateRequestDTO.getImgUrl());
 
-        if(findReview.getProductId() == null){
-            throw new NoSuchElementException("해당 상품이 없습니다.");
+
+        findReview.setModifieddate(LocalDate.now());
+
+        // 수정하기
+        if(findReview.getProductId().getStatus().equals("Disabled")){
+            throw new CustomException("Product Not Found", ErrorCode.NotFoundProductException);
         }
 
         reviewrepository.save(findReview);
@@ -124,9 +118,7 @@ public class ReviewService {
         String email = principalDetails.getUser().getEmail();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()-> new CustomException("User Not Fount", ErrorCode.NotFoundUserException));
-        if(!reviewrepository.existsByUserIdAndId(user,ReviewId)){
-            throw new CustomException("해당 리뷰가 존재하지 않습니다", ErrorCode.NotFoundReviewException);
-        }
+
         Review findreview = reviewrepository.findByUserIdAndId(user, ReviewId)
                 .orElseThrow(()-> new CustomException("Review Not Found", ErrorCode.NotFoundReviewException));
         findreview.setStatus("Disabled");

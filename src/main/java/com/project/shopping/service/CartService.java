@@ -35,10 +35,10 @@ public class CartService {
         PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = userDetails.getUser().getEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException("",ErrorCode.NotFoundUserException));// user 찾기
+                .orElseThrow(()-> new CustomException("User Not Found",ErrorCode.NotFoundUserException));// user 찾기
         Product product = productRepository.findById(ProductId)
                 .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));// 상품 찾기
-        System.out.println(cartCreateRequestDTO.getProductNum()); // 현재 장바구니 개수 로그
+
 
         if(cartRepository.existsCartByUserIdAndProductIdAndStatus(user, product,"active")){ // 해당 상품이 존재 할시
             Cart findCart = cartRepository.findCartByUserIdAndProductId(user, product)
@@ -119,9 +119,7 @@ public class CartService {
         }
 
         cart.setProductNum(cartUpdateRequestDTO.getProductNum());
-        if(cart.getProductId()== null){
-            throw new NoSuchElementException("해당 상품이 없습니다.");
-        }
+
         cartRepository.save(cart);
 
 
@@ -150,9 +148,10 @@ public class CartService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()-> new CustomException("",ErrorCode.NotFoundUserException));
-        if(!cartRepository.existsByUserIdAndId(user, id)){
-            throw  new CustomException("해당 상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
-        }
+//        if(!cartRepository.existsByUserIdAndId(user, id)){
+//            throw  new CustomException("Cart Not Found",ErrorCode.NotFoundCartException);
+//        } // 밑에 코드랑 같은 코드 임
+
         Cart findcart = cartRepository.findCartByUserIdAndId(user, id)
                         .orElseThrow(()-> new CustomException("Cart Not Found", ErrorCode.NotFoundCartException));
         findcart.setStatus("Disabled");
@@ -202,8 +201,11 @@ public class CartService {
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String userEmail = principalDetails.getUser().getEmail();
+
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(()-> new CustomException("",ErrorCode.NotFoundUserException));
+
+
         List<Cart> cartList =  cartRepository.getEqUserAndCart(user, status);
         List<CartUserListJoinResponseDTO> cartdtos = new ArrayList<>();
         //long totalsum = 0; // 최종 합계
