@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class CartController {
     // product id를 받아서 해당 상품을 찾고 인증객체를 통한 user 을 받아 장바구니 생성
     @PostMapping("/api/cart/create/{id}")
     // 여기서 ID는 상품 ID
-    public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "id") int ProductId ,@RequestBody CartCreateRequestDTO cartCreateRequestDTO){
+    public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "id") int ProductId ,@RequestBody @Valid CartCreateRequestDTO cartCreateRequestDTO){
         if(authentication == null){
             throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
         }
@@ -103,7 +104,7 @@ public class CartController {
     }
 
     @PutMapping("/api/cart/update/{id}")
-    public ResponseEntity<?> cartupdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody CartUpdateRequestDTO cartUpdateRequestDTO){
+    public ResponseEntity<?> cartupdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody @Valid CartUpdateRequestDTO cartUpdateRequestDTO){
 
         if(authentication == null){
             throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);

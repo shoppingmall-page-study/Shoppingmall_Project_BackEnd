@@ -4,14 +4,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
 public class ReviewCreateRequestDTO {
     //review
+
+    @NotBlank
     private  String imgUrl;
+    @NotBlank
     private  String title;
+    @NotBlank
     private  String content;
 
     @Builder

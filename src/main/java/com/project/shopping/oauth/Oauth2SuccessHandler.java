@@ -52,6 +52,7 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
         User user = userRequstMapper.user(oAuth2User); // 이메일만 담아서 생성
 
+
         String jwttoken = tokenprovider.create(user);
         System.out.println(jwttoken);
         response.addHeader("Authorization","Bearer "+jwttoken); //토큰을 생성 하고
@@ -64,6 +65,10 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
         boolean uu = userRepository.existsByEmail(email);
 
+
+        // 1.security jwt refresh 생성 안함  봐야함 redias
+        // 2.oauth 내 jwt 생성 문제
+        // 매핑관계
         if(uu == false){
             User users = User.builder()
                     .email(email)
