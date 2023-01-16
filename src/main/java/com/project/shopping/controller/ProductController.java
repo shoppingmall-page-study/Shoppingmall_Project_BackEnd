@@ -85,6 +85,7 @@ public class ProductController {
         return ResponseEntity.ok().body(result);
 
     }
+
     @PostMapping("/api/product/search")
     public ResponseEntity<?> searchProduct(@RequestBody @Valid ProductSearchRequestDTO productSearchRequestDTO){
         List<ProductSearchResponseDTO> response = productService.getProductList(productSearchRequestDTO.getKeyword(), ActiveStatus);
