@@ -40,6 +40,10 @@ public class JwtAuthenticationFilter extends JsonIdPwAuthenticationFilter{
         try{
             Token token = tokenprovider.generateToken(authentication); // 토큰 생성
             String accessToken = token.getAccessToken(); // access token
+            String refreshToken = token.getRefreshToken(); // refresh token
+
+
+            // accessToken header로 전송
             response.setContentType("application/json");
 
             response.addHeader("Authorization","Bearer "+accessToken); // header에 accesstoken 추가
@@ -54,6 +58,12 @@ public class JwtAuthenticationFilter extends JsonIdPwAuthenticationFilter{
 
             String result = objectMapper.writeValueAsString(res);
             response.getWriter().write(result);
+
+            // refreshToken  cookie 로 보내기
+            Cookie cookie =  new Cookie("refreshToken",refreshToken);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
         }catch (Exception e){
             System.out.println(e.getMessage());
         }

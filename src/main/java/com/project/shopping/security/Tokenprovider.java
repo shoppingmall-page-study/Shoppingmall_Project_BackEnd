@@ -5,9 +5,11 @@ import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.Error.ErrorResponse;
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.model.User;
+import com.project.shopping.repository.RedisDao;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.time.Instant;
@@ -28,12 +31,18 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class Tokenprovider {
+    private  final RedisDao redisDao;
     private Key key;
 
 
-    public Tokenprovider(@Value("${jwt.secret}")String secretKey){
-        byte[] keyBytes = Decoders.BASE64URL.decode(secretKey);
+    @Value("${jwt.secret}")
+    private  String secretKey;
+
+    @PostConstruct
+    protected  void init(){
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -55,6 +64,7 @@ public class Tokenprovider {
 
         //Access Token 생성
         Date accessTokenExpireseIn = new Date(now + 86400000); // 만료 시간
+        Date refreshTokenExpireseIn = new Date(now + 86400000); // refreshToken 만료시간
 
 
         // 인증객체를 이용해서 email  뽑아 오기
@@ -64,9 +74,16 @@ public class Tokenprovider {
         String accessToken = Jwts.builder().setSubject(email).claim("auth",authorities).setExpiration(accessTokenExpireseIn).signWith(key, SignatureAlgorithm.HS256).compact();
 
         // Refresh Token 생성
-        String refreshToekn = Jwts.builder().setExpiration(new Date(now +86400000)).signWith(key, SignatureAlgorithm.HS256).compact();
+        String refreshToekn = Jwts.builder().setExpiration(refreshTokenExpireseIn).signWith(key, SignatureAlgorithm.HS256).compact();
 
-        return Token.builder().accessToken(accessToken).refreshToken(refreshToekn).build();
+        System.out.println(refreshToekn +"refreshtoken생성");
+        Token token = Token.builder().accessToken(accessToken).refreshToken(refreshToekn).build();
+
+
+        //redis에 refresh 토큰 저장
+        redisDao.setValues(email,token,refreshTokenExpireseIn);
+
+        return token;
     }
 
     // 토큰 정보 검증 메소드
