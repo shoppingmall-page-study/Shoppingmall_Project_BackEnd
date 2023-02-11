@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
-public class RedisDao {
+public class RedisRepository {
     private  final RedisTemplate<String, Token> redisTemplate;
 
     // refresh 토큰 생성 및 업데이트

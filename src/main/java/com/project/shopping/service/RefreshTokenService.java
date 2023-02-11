@@ -4,11 +4,12 @@ import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.model.User;
-import com.project.shopping.repository.RedisDao;
+import com.project.shopping.repository.RedisRepository;
 import com.project.shopping.repository.UserRepository;
 import com.project.shopping.security.Token;
 import com.project.shopping.security.Tokenprovider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,8 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RefreshTokenService {
-    private  final RedisDao redisDao;
+    private  final RedisRepository redisRepository;
     private  final Tokenprovider tokenprovider;
     private  final UserRepository userRepository;
 
@@ -30,11 +32,12 @@ public class RefreshTokenService {
 
 
         //redis를 에 저장된 refresh 토큰 찾기
-        Token token = redisDao.getValues(userEmail);
+        Token token = redisRepository.getValues(userEmail);
         String redisSavedRefreshToken = token.getRefreshToken();
 
-        System.out.println(redisSavedRefreshToken+ "redis현재");
-        System.out.println(refreshToken +"현재 쿠키 ");
+        log.info("redis 현재 담긴 토큰", redisSavedRefreshToken);
+        log.info("현재 쿠키에 있는 토큰", refreshToken);
+
 
 
         // redis 토큰 확인하기

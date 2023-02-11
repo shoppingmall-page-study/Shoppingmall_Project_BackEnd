@@ -20,10 +20,10 @@ public class RefreshTokenController {
     private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/api/reissuance/refreshToken")
-    public ResponseEntity<?> reissuanceRefreshToken(@CookieValue(value = "refreshToken") String refreshTooken, HttpServletRequest request, HttpServletResponse response){
-        Token reissuanceToekn = refreshTokenService.reissuanceRefreshToken(request,refreshTooken);
-        String reissuanceAccessToken = reissuanceToekn.getAccessToken();
-        String reissuanceRefreshToken = reissuanceToekn.getRefreshToken();
+    public ResponseEntity<?> reissuanceRefreshToken(@CookieValue(value = "refreshToken") String refreshToken, HttpServletRequest request, HttpServletResponse response){
+        Token reissuanceToken = refreshTokenService.reissuanceRefreshToken(request,refreshToken);
+        String reissuanceAccessToken = reissuanceToken.getAccessToken();
+        String reissuanceRefreshToken = reissuanceToken.getRefreshToken();
 
         //헤더에 accessToken 보내기
         HttpHeaders headers = new HttpHeaders();
@@ -37,12 +37,12 @@ public class RefreshTokenController {
         return ResponseEntity.ok().headers(headers).body("토큰이 재발급 되었습니다");
 
     }
-    @GetMapping("/deleteCookie")
-    public String deleteCookies(HttpServletResponse servletResponse){
+    @GetMapping("/api/deleteCookie")
+    public ResponseEntity<?> expireRefreshToken(HttpServletResponse servletResponse){
         Cookie cookie = new Cookie("refreshToken","null");
         cookie.setMaxAge(0);
         cookie.setPath("/");
         servletResponse.addCookie(cookie);
-        return "cookie 삭제 ";
+        return ResponseEntity.ok().body("쿠키 삭제가 완료 되었습니다");
     }
 }

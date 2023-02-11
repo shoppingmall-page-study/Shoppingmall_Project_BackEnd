@@ -62,6 +62,8 @@ public class JwtAuthenticationFilter extends JsonIdPwAuthenticationFilter{
             // refreshToken  cookie 로 보내기
             Cookie cookie =  new Cookie("refreshToken",refreshToken);
             cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
             response.addCookie(cookie);
 
         }catch (Exception e){

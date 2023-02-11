@@ -2,30 +2,21 @@ package com.project.shopping.security;
 
 
 import com.project.shopping.Error.ErrorCode;
-import com.project.shopping.Error.ErrorResponse;
 import com.project.shopping.auth.PrincipalDetails;
-import com.project.shopping.model.User;
-import com.project.shopping.repository.RedisDao;
+import com.project.shopping.repository.RedisRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -33,7 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class Tokenprovider {
-    private  final RedisDao redisDao;
+    private  final RedisRepository redisRepository;
     private Key key;
 
 
@@ -76,12 +67,12 @@ public class Tokenprovider {
         // Refresh Token 생성
         String refreshToekn = Jwts.builder().setExpiration(refreshTokenExpireseIn).signWith(key, SignatureAlgorithm.HS256).compact();
 
-        System.out.println(refreshToekn +"refreshtoken생성");
+        log.info("refreshToken생성",refreshToekn);
         Token token = Token.builder().accessToken(accessToken).refreshToken(refreshToekn).build();
 
 
         //redis에 refresh 토큰 저장
-        redisDao.setValues(email,token,refreshTokenExpireseIn);
+        redisRepository.setValues(email,token,refreshTokenExpireseIn);
 
         return token;
     }
