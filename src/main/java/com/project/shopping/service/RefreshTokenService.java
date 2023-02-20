@@ -4,7 +4,6 @@ import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.model.User;
-import com.project.shopping.repository.RedisRepository;
 import com.project.shopping.repository.UserRepository;
 import com.project.shopping.security.Token;
 import com.project.shopping.security.Tokenprovider;
@@ -16,23 +15,29 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class RefreshTokenService {
-    private  final RedisRepository redisRepository;
+    private  final RedisService redisService;
     private  final Tokenprovider tokenprovider;
     private  final UserRepository userRepository;
 
-    public Token reissuanceRefreshToken(HttpServletRequest request, String refreshToken){
-        String accessToken = resolveToken( request);
-        String userEmail = tokenprovider.TokenInfo(accessToken);
+    public Token reissuanceRefreshToken(String refreshToken){
+
+        // refreshToken 으로 유저 정보 추출
+        String userEmail = tokenprovider.TokenInfo(refreshToken);
+
+        System.out.println(userEmail);
 
 
         //redis를 에 저장된 refresh 토큰 찾기
-        Token token = redisRepository.getValues(userEmail);
+        Token token = redisService.getValues(userEmail+"jwtToken");
         String redisSavedRefreshToken = token.getRefreshToken();
 
         log.info("redis 현재 담긴 토큰", redisSavedRefreshToken);
@@ -53,24 +58,27 @@ public class RefreshTokenService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
-            //토큰 재발급
-            Token reissuanceToekn = tokenprovider.generateToken(authentication);
+            //access토큰 재발급
+            Token reissuanceToken = tokenprovider.reGenerateAccessToken(authentication);
 
 
 
-            return reissuanceToekn;
+
+
+            return reissuanceToken;
         }else{
-           throw new CustomException("Not Fount RefrshToken", ErrorCode.NotFoundRefrshTokenException);
+           throw new CustomException("Not Fount RefreshToken", ErrorCode.NotFoundRefrshTokenException);
         }
 
     }
 
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
+    public void deleteRefreshToken(HttpServletResponse response){
+        Cookie cookie = new Cookie("refreshToken","null");
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
 
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
-            return bearerToken.substring(7);
-        }
-        return  null;
     }
+
+
 }

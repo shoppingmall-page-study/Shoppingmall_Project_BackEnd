@@ -1,4 +1,4 @@
-package com.project.shopping.repository;
+package com.project.shopping.service;
 
 import com.project.shopping.security.Token;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +10,16 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
-public class RedisRepository {
+public class RedisService {
     private  final RedisTemplate<String, Token> redisTemplate;
 
     // refresh 토큰 생성 및 업데이트
     public void setValues(String key, Token token, Date refreshTokenExpireseIn){
+        ValueOperations<String, Token> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, token);
+    }
+
+    public void setValue(String key, Token token){
         ValueOperations<String, Token> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, token);
     }

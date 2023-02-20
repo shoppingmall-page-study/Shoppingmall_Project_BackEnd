@@ -3,7 +3,7 @@ package com.project.shopping.security;
 
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
-import com.project.shopping.repository.RedisRepository;
+import com.project.shopping.service.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class Tokenprovider {
-    private  final RedisRepository redisRepository;
+    private  final RedisService redisService;
     private Key key;
 
 
@@ -36,6 +36,32 @@ public class Tokenprovider {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
+
+    // accessToken 재생성
+    public Token reGenerateAccessToken(Authentication authentication){
+        String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+        long now = (new Date()).getTime();
+
+
+        Date accessTokenExpireseIn = new Date(now + 1000*60*60*24); // 만료 시간 // 하루
+
+
+        // 인증객체를 이용해서 email  뽑아 오기
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = principalDetails.getUser().getEmail();
+
+        // accessToken 생성
+        String accessToken = Jwts.builder().setSubject(email).claim("auth",authorities).setExpiration(accessTokenExpireseIn).signWith(key, SignatureAlgorithm.HS256).compact();
+
+        Token token = redisService.getValues(email+"jwtToken");
+        token.setAccessToken(accessToken);
+
+        redisService.setValue(email+"jwtToken",token);
+
+        return token;
+
+    }
+
 
 
     // 토큰으로 부터 email 출력
@@ -53,9 +79,10 @@ public class Tokenprovider {
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
         long now = (new Date()).getTime();
 
-        //Access Token 생성
-        Date accessTokenExpireseIn = new Date(now + 86400000); // 만료 시간
-        Date refreshTokenExpireseIn = new Date(now + 86400000); // refreshToken 만료시간
+        //Access Token Refresh Token  만료 시간 정하기
+        Date accessTokenExpireseIn = new Date(now + 1000*60*60*24); // 만료 시간 // 하루
+        Date refreshTokenExpireseIn = new Date(now + 1000*60*60*24*10); // refreshToken 만료시간 // 10일
+
 
 
         // 인증객체를 이용해서 email  뽑아 오기
@@ -65,14 +92,14 @@ public class Tokenprovider {
         String accessToken = Jwts.builder().setSubject(email).claim("auth",authorities).setExpiration(accessTokenExpireseIn).signWith(key, SignatureAlgorithm.HS256).compact();
 
         // Refresh Token 생성
-        String refreshToekn = Jwts.builder().setExpiration(refreshTokenExpireseIn).signWith(key, SignatureAlgorithm.HS256).compact();
+        String refreshToekn = Jwts.builder().setSubject(email).setExpiration(refreshTokenExpireseIn).signWith(key, SignatureAlgorithm.HS256).compact();
 
         log.info("refreshToken생성",refreshToekn);
         Token token = Token.builder().accessToken(accessToken).refreshToken(refreshToekn).build();
 
 
         //redis에 refresh 토큰 저장
-        redisRepository.setValues(email,token,refreshTokenExpireseIn);
+        redisService.setValues(email+"jwtToken",token,refreshTokenExpireseIn);
 
         return token;
     }

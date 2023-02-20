@@ -49,9 +49,6 @@ public class JwtAuthenticationFilter extends JsonIdPwAuthenticationFilter{
             response.addHeader("Authorization","Bearer "+accessToken); // header에 accesstoken 추가
 
 
-//            UserDTO res = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
-//                    .age(user.getAge()).address(user.getAddress())
-//                    .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
             Map<String, Object> res = new HashMap<>();
             res.put("msg", "login success");
             ResponseEntity.ok().body(res);
@@ -62,8 +59,8 @@ public class JwtAuthenticationFilter extends JsonIdPwAuthenticationFilter{
             // refreshToken  cookie 로 보내기
             Cookie cookie =  new Cookie("refreshToken",refreshToken);
             cookie.setPath("/");
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
+            //cookie.setHttpOnly(true);
+            //cookie.setSecure(true);
             response.addCookie(cookie);
 
         }catch (Exception e){

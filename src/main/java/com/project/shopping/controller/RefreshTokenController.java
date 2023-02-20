@@ -6,7 +6,9 @@ import com.project.shopping.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,8 +22,9 @@ public class RefreshTokenController {
     private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/api/reissuance/refreshToken")
-    public ResponseEntity<?> reissuanceRefreshToken(@CookieValue(value = "refreshToken") String refreshToken, HttpServletRequest request, HttpServletResponse response){
-        Token reissuanceToken = refreshTokenService.reissuanceRefreshToken(request,refreshToken);
+    public ResponseEntity<?> reissuanceRefreshToken(@CookieValue(value = "refreshToken") String refreshToken, HttpServletResponse response){
+
+        Token reissuanceToken = refreshTokenService.reissuanceRefreshToken(refreshToken);
         String reissuanceAccessToken = reissuanceToken.getAccessToken();
         String reissuanceRefreshToken = reissuanceToken.getRefreshToken();
 
@@ -32,17 +35,18 @@ public class RefreshTokenController {
         // refreshToken  cookie 로 보내기
         Cookie cookie =  new Cookie("refreshToken",reissuanceRefreshToken);
 
+        //cookie.setHttpOnly(true);
+        //cookie.setSecure(true);
         cookie.setPath("/");
         response.addCookie(cookie);
         return ResponseEntity.ok().headers(headers).body("토큰이 재발급 되었습니다");
 
     }
-    @GetMapping("/api/deleteCookie")
-    public ResponseEntity<?> expireRefreshToken(HttpServletResponse servletResponse){
-        Cookie cookie = new Cookie("refreshToken","null");
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        servletResponse.addCookie(cookie);
+
+    // logout 시 cookie에 저장된 refreshToken 삭제
+    @DeleteMapping("/api/delete/refreshToken")
+    public ResponseEntity<?> expireRefreshToken( HttpServletResponse response, Authentication authentication){
+        refreshTokenService.deleteRefreshToken(response);
         return ResponseEntity.ok().body("쿠키 삭제가 완료 되었습니다");
     }
 }
