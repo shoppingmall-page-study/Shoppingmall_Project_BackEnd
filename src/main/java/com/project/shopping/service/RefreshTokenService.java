@@ -33,7 +33,7 @@ public class RefreshTokenService {
         // refreshToken 으로 유저 정보 추출
         String userEmail = tokenprovider.TokenInfo(refreshToken);
 
-        System.out.println(userEmail);
+        log.info(userEmail);
 
 
         //redis를 에 저장된 refresh 토큰 찾기
@@ -67,7 +67,7 @@ public class RefreshTokenService {
 
             return reissuanceToken;
         }else{
-           throw new CustomException("Not Fount RefreshToken", ErrorCode.NotFoundRefrshTokenException);
+           throw new CustomException("Not Found RefreshToken", ErrorCode.NotFoundRefrshTokenException);
         }
 
     }

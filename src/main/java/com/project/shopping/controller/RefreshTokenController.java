@@ -47,6 +47,6 @@ public class RefreshTokenController {
     @DeleteMapping("/api/delete/refreshToken")
     public ResponseEntity<?> expireRefreshToken( HttpServletResponse response, Authentication authentication){
         refreshTokenService.deleteRefreshToken(response);
-        return ResponseEntity.ok().body("쿠키 삭제가 완료 되었습니다");
+        return ResponseEntity.ok().body("refreshToken이 삭제 완료 되었습니다");
     }
 }
