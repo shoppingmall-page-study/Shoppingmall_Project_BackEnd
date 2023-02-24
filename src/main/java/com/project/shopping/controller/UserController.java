@@ -6,9 +6,14 @@ import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
 
 import com.project.shopping.dto.UserDTO;
+import com.project.shopping.dto.requestDTO.EmailAuthenticationRequestDTO.CheckAuthCodeRequestDTO;
+import com.project.shopping.dto.requestDTO.EmailAuthenticationRequestDTO.SendAuthCodeRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.*;
 
+import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.CheckAuthCodeResponseDTO;
+import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.SendAuthCodeResponseDTO;
 import com.project.shopping.dto.responseDTO.UserResponseDTO.*;
+import com.project.shopping.service.EmailAuthenticationService;
 import com.project.shopping.service.UserService;
 
 
@@ -21,7 +26,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +42,7 @@ public class UserController  {
 
 
     private final  UserService userService;
+    private final EmailAuthenticationService emailAuthenticationService;
 
     @PostMapping("/api/join")
     public ResponseEntity<?> signup(@RequestBody @Valid userJoinRequestDTO userJoinRequestDTO){
@@ -151,9 +160,6 @@ public class UserController  {
         response.put("data", userCheckEmailResponseDTO);
         return ResponseEntity.ok().body(response);
 
-
-
-
     }
 
     @GetMapping("/api/join/nickname-check/{value}")
@@ -165,5 +171,26 @@ public class UserController  {
         response.put("data", userCheckNicknameResponseDTO);
         return ResponseEntity.ok().body(response);
 
+    }
+
+    @PostMapping("/api/authcode/email")
+    public ResponseEntity<?> sendAuthCodeEmail(@RequestBody @Valid SendAuthCodeRequestDTO sendAuthCodeRequestDTO) throws MessagingException, UnsupportedEncodingException {
+        SendAuthCodeResponseDTO sendAuthCodeResponseDTO = emailAuthenticationService.sendAuthenticationCode(sendAuthCodeRequestDTO);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("msg", "이메일 전송이 완료되었습니다.");
+        response.put("data", sendAuthCodeResponseDTO);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/api/authcode/check")
+    public ResponseEntity<?> checkAuthCodeEmail(@RequestBody @Valid CheckAuthCodeRequestDTO checkAuthCodeRequestDTO){
+
+        CheckAuthCodeResponseDTO checkAuthCodeResponseDTO = emailAuthenticationService.checkAuthCode(checkAuthCodeRequestDTO);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("msg", "이메일 인증이 완료되었습니다.");
+        response.put("data", checkAuthCodeResponseDTO);
+        return ResponseEntity.ok().body(response);
     }
 }

@@ -27,12 +27,17 @@ public class UserService {
 
     private final  UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final EmailAuthenticationService emailAuthenticationService;
 
     public UserJoinResponseDTO create(userJoinRequestDTO userJoinRequestDTO){
 
         //이메일 중복 체크
         if(userRepository.existsByEmail(userJoinRequestDTO.getEmail())){
             throw new CustomException("해당 이메일이 존재 합니다.", ErrorCode.DuplicatedEmilException);
+        }
+
+        if(!emailAuthenticationService.isEmailAuthenticated(userJoinRequestDTO.getEmail())){
+            throw new CustomException("인증되지 않은 이메일 입니다.", ErrorCode.UnauthorizedEmailException);
         }
         // 닉네임 중복 체크
         if(userRepository.existsByNickname(userJoinRequestDTO.getNickname())){
@@ -201,4 +206,6 @@ public class UserService {
 
         return  userUpdateResponseDTO;
     }
+
+
 }
