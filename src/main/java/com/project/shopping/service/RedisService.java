@@ -1,38 +1,47 @@
 package com.project.shopping.service;
 
+import com.project.shopping.Error.CustomException;
+import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.security.Token;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class RedisService {
-    private  final RedisTemplate<String, Token> redisTemplate;
+    private  final RedisTemplate<String, Object> redisTemplate;
 
     // refresh 토큰 생성 및 업데이트
-    public void setValues(String key, Token token, Date refreshTokenExpireseIn){
-        ValueOperations<String, Token> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(key, token);
+    public void setValueWithExpire(String key, Object value, Duration ExpiresIn){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, value, ExpiresIn);
     }
 
-    public void setValue(String key, Token token){
-        ValueOperations<String, Token> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(key, token);
+    public void setValue(String key, Object value){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, value);
     }
 
     // key를 이용한 refresh 토큰 읽기
-    public Token getValues(String key){
-        ValueOperations<String, Token> valueOperations = redisTemplate.opsForValue();
-        Token refreshToken = valueOperations.get(key);
-        return refreshToken;
+    public Object getValue(String key){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+
+        Object value = valueOperations.get(key);
+        if(value == null)
+            throw new CustomException("값이 존재하지 않습니다.", ErrorCode.NotFoundValueException);
+
+        return value;
     }
 
     // 로그아웃시 refresh  토큰 삭제
-    public void deleteValues(String key){
+    public void deleteValue(String key){
         redisTemplate.delete(key);
     }
 }

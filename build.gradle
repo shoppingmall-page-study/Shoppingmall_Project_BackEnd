@@ -26,28 +26,42 @@ repositories {
 }
 
 dependencies {
-    implementation 'mysql:mysql-connector-java'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // 웹 + 기본 설정
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.5.2'
+    
+    //mysql
+    implementation 'mysql:mysql-connector-java'
+    
+    //jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    
+    //oauth 인증용도
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    
+    //메일 인증 용도
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    
+    //시큐리티
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+    
+    //jwt 인증 용도
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+    
+    //lombok 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.5.2'
-
+    
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+    //swagger 용도
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
-
-
-
-
 
     //querydsl 추가
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
