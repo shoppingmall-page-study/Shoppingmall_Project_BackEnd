@@ -84,13 +84,19 @@ public class EmailAuthenticationService {
     }
 
     public SendAuthCodeResponseDTO sendAuthenticationCode(SendAuthCodeRequestDTO sendAuthCodeRequestDTO) throws MessagingException, UnsupportedEncodingException {
-        String authCode = createAuthCode();
         String userEmail = sendAuthCodeRequestDTO.getEmail();
 
         if(userRepository.existsByEmail(userEmail))
             throw new CustomException("이미 존재하는 이메일 입니다.", ErrorCode.DuplicatedEmilException);
+
+        //코드 생성
+        String authCode = createAuthCode();
+
+        //레디스 key-value 이메일-코드 형식으로 저장
         saveEmailAuthCode(authCode, userEmail);
         MimeMessage emailForm = createMessage(userEmail, authCode);
+
+        //메일전송
         javaMailSender.send(emailForm);
 
         return new SendAuthCodeResponseDTO().builder().email(userEmail).build();
