@@ -30,12 +30,22 @@ public class RedisService {
     }
 
     // key를 이용한 refresh 토큰 읽기
-    public Object getValue(String key){
+    public String getStringValue(String key){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+
+        String value = (String)valueOperations.get(key);
+        if(value == null)
+            return "";
+
+        return value;
+    }
+
+    public Object getObjectValue(String key){
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
 
         Object value = valueOperations.get(key);
         if(value == null)
-            throw new CustomException("값이 존재하지 않습니다.", ErrorCode.NotFoundValueException);
+            return new Object();
 
         return value;
     }

@@ -54,7 +54,7 @@ public class Tokenprovider {
         // accessToken 생성
         String accessToken = Jwts.builder().setSubject(email).claim("auth",authorities).setExpiration(accessTokenExpireseIn).signWith(key, SignatureAlgorithm.HS256).compact();
 
-        Token token = (Token)redisService.getValue(email+"jwtToken");
+        Token token = (Token)redisService.getObjectValue(email+"jwtToken");
         token.setAccessToken(accessToken);
 
         redisService.setValue(email+"jwtToken",token);
