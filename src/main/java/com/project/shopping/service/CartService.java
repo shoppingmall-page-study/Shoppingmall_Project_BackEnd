@@ -31,18 +31,18 @@ public class CartService {
         PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = userDetails.getUser().getEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException("User Not Found",ErrorCode.NotFoundUserException));// user 찾기
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// user 찾기
         Product product = productRepository.findById(ProductId)
-                .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));// 상품 찾기
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));// 상품 찾기
 
 
         if(cartRepository.existsCartByUserIdAndProductIdAndStatus(user, product,"active")){ // 해당 상품이 존재 할시
             Cart findCart = cartRepository.findCartByUserIdAndProductId(user, product)
-                    .orElseThrow(()-> new CustomException("Cart Not Found", ErrorCode.NotFoundCartException));// 카트찾기
+                    .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));// 카트찾기
             long totalsum = findCart.getProductNum()+ cartCreateRequestDTO.getProductNum();
             //System.out.println(totalsum);
             if(totalsum> product.getTotal()){
-                throw  new CustomException("상품개수가 초과하였습니다.",ErrorCode.NotFoundCartNumException);
+                throw  new CustomException(ErrorCode.NotFoundCartNumException);
             }
             findCart.setProductNum(totalsum);
             Cart createCart = cartRepository.save(findCart); // 카트 생성
@@ -99,18 +99,18 @@ public class CartService {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = principalDetails.getUser().getEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException("",ErrorCode.NotFoundUserException));// 유저 찾기
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 유저 찾기
 
         Cart cart = cartRepository.findCartByUserIdAndId(user,cartId)
-                .orElseThrow(()-> new CustomException("Cart Not Found", ErrorCode.NotFoundCartException));// 유저랑 카트 아이디를 이용한 카트 찾기
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));// 유저랑 카트 아이디를 이용한 카트 찾기
         long totalCount =  (cartUpdateRequestDTO.getProductNum());
 
         //System.out.println(totalcount);
         if(totalCount > cart.getProductId().getTotal()){
-            throw new CustomException("상품의 구매한도를 초과했습니다.", ErrorCode.NotFoundCartNumException);
+            throw new CustomException(ErrorCode.NotFoundCartNumException);
         }
         if(totalCount <1){
-            throw new CustomException("상품의 구매한도를 초과했습니다.", ErrorCode.NotFoundCartNumDownException);
+            throw new CustomException(ErrorCode.NotFoundCartNumDownException);
         }
 
         cart.setProductNum(cartUpdateRequestDTO.getProductNum());
@@ -142,13 +142,13 @@ public class CartService {
         String email = principalDetails.getUser().getEmail();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException("",ErrorCode.NotFoundUserException));
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
 //        if(!cartRepository.existsByUserIdAndId(user, id)){
 //            throw  new CustomException("Cart Not Found",ErrorCode.NotFoundCartException);
 //        } // 밑에 코드랑 같은 코드 임
 
         Cart findcart = cartRepository.findCartByUserIdAndId(user, id)
-                        .orElseThrow(()-> new CustomException("Cart Not Found", ErrorCode.NotFoundCartException));
+                        .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));
         findcart.setStatus("Disabled");
 
         cartRepository.save(findcart);
@@ -180,7 +180,7 @@ public class CartService {
     // 유저  와 cartid를 이용한 해당 장바구니 상품 조회
     public Cart findCartUserAndId(User user, int id){
         return cartRepository.findCartByUserIdAndId(user, id)
-                .orElseThrow(()-> new CustomException("Cart Not Found", ErrorCode.NotFoundCartException));
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));
     }
 
     public  boolean existCartUserAndId(User user, int id){return  cartRepository.existsByUserIdAndId(user, id);}
@@ -189,7 +189,7 @@ public class CartService {
     public boolean existsCartByUserIdAndProductId(User user, Product product){return cartRepository.existsCartByUserIdAndProductIdAndStatus(user,product,"active");}
 
     public Cart findCartByUserIdAndProductId(User user, Product product){return  cartRepository.findCartByUserIdAndProductId(user,product)
-            .orElseThrow(()->new CustomException("Cart Not Found", ErrorCode.NotFoundCartException));
+            .orElseThrow(()->new CustomException(ErrorCode.NotFoundCartException));
     }
 
     public List<CartUserListJoinResponseDTO>  getEqUserAndCart(Authentication authentication, String status){
@@ -198,7 +198,7 @@ public class CartService {
         String userEmail = principalDetails.getUser().getEmail();
 
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(()-> new CustomException("",ErrorCode.NotFoundUserException));
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
 
 
         List<Cart> cartList =  cartRepository.getEqUserAndCart(user, status);

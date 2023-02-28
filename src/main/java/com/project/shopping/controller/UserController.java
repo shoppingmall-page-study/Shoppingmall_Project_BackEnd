@@ -59,9 +59,7 @@ public class UserController  {
     @DeleteMapping("/api/user/delete")
     public ResponseEntity<?> deleteUser(@RequestBody @Valid UserDeleteRequestDTO userDeleteRequestDTO, Authentication authentication ){
 
-
         UserDeleteResponseDTO userDeleteResponseDTO  = userService.delete(userDeleteRequestDTO,authentication);
-
 
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "회원탈퇴에 성공했습니다.");
@@ -121,10 +119,6 @@ public class UserController  {
 
     @GetMapping("/api/user/info")
     public ResponseEntity<?> userinfo(Authentication authentication){
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
-        }
-
 
         UserInfoResponseDTO userInfoResponseDTO = userService.findEmailByUser(authentication); // 유저 찾기
 
@@ -137,9 +131,6 @@ public class UserController  {
 
     @PutMapping("/api/user/update")
     public ResponseEntity<?> userUpdate(Authentication authentication, @RequestBody @Valid UserUpdateRequestDTO userUpdateRequestDTO){
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다",ErrorCode.UnauthorizedException);
-        }
 
         UserUpdateResponseDTO userUpdateResponseDTO = userService.updateUser(authentication, userUpdateRequestDTO);
 

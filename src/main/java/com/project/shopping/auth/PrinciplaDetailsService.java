@@ -21,7 +21,7 @@ public class PrinciplaDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         System.out.println("PrincipalDetailsService");
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()->new CustomException("User Not Found", ErrorCode.NotFoundUserException));
+                .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
 
         System.out.println(user); //user  찍히고
         return  new PrincipalDetails(user);

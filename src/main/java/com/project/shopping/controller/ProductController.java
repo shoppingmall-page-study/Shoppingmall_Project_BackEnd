@@ -30,19 +30,13 @@ import java.util.*;
 @Slf4j
 public class ProductController {
 
-
     private final  ProductService productService;
 
     private String ActiveStatus= "active";
 
 
-
-
     @PostMapping("/api/product/create")
     public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody @Valid ProductCreateRequestDTO productCreateRequestDTO) {
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
 
         ProductCreateResponseDTO registeredProduct = productService.create(productCreateRequestDTO,authentication); // 상품 생성
 
@@ -55,10 +49,6 @@ public class ProductController {
 
     @DeleteMapping("/api/product/delete/{id}")
     public ResponseEntity<?>  productDelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
-
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
 
         ProductDeleteResponseDTO product = productService.deleteProduct(authentication, ProductId);
 
@@ -99,9 +89,6 @@ public class ProductController {
     // 내가 올린 상품 검색
     @GetMapping("/api/products/user")
     public ResponseEntity<?> findResistedProductByUser(Authentication authentication){
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
 
         List<ProductJoinResponseDTO> response = productService.getEqUserAndActive(authentication, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
 
@@ -118,20 +105,15 @@ public class ProductController {
         //service
         ProductJoinResponseDTO productJoinResponseDTO = productService.findById(ProductId);
 
-
         Map<String, Object> result = new HashMap<>();
         result.put("msg","상품검색에 성공했습니다.");
         result.put("data", productJoinResponseDTO);
 
         return ResponseEntity.ok().body(result);
-
     }
 
     @PutMapping("/api/product/update/{id}")
     public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody @Valid ProductUpdateRequestDTO productUpdateRequestDTO){
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
 
         Product product = productService.update(authentication, productUpdateRequestDTO, ProductId);
 

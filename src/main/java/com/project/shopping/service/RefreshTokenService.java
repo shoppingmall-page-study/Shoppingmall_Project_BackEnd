@@ -49,7 +49,7 @@ public class RefreshTokenService {
         if(redisSavedRefreshToken.equals(refreshToken)){
 
             User user = userRepository.findByEmail(userEmail)
-                    .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));
+                    .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
 
 
             // 인증 객체 생성 후
@@ -63,7 +63,7 @@ public class RefreshTokenService {
 
             return reissuanceToken;
         }else{
-           throw new CustomException("Not Found RefreshToken", ErrorCode.NotFoundRefrshTokenException);
+           throw new CustomException(ErrorCode.NotFoundRefrshTokenException);
         }
 
     }

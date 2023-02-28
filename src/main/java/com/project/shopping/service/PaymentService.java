@@ -69,7 +69,7 @@ public class PaymentService {
             String orderId = root.path("response").path("merchant_uid").asText();
             Order order = orderRepository.findById(orderId)
                     .orElseThrow(()->new
-                            CustomException("order Not Found.",ErrorCode.NotFoundOrderException));
+                            CustomException(ErrorCode.NotFoundOrderException));
             ArrayList<ProductInOrderResponseDTO> productInOrderResponseDTOList = new ArrayList<ProductInOrderResponseDTO>();
             ProductInOrderResponseDTO productInOrderResponseDTO;
             for (int i = 0; i < order.getProducts().size(); i++) {
@@ -107,7 +107,7 @@ public class PaymentService {
 
                 return paymentCompleteResponseDTO;
 
-            } else throw new CustomException("위조된 결제 시도 입니다.", ErrorCode.BadParameterException);
+            } else throw new CustomException(ErrorCode.BadParameterException);
 
         } catch (Exception e) {
             //convert error code unicode to korean
@@ -120,7 +120,7 @@ public class PaymentService {
             }
             str.append(uni);
             String msg = str.toString();
-            throw new CustomException(msg, ErrorCode.INTER_SERVER_ERROR);
+            throw new CustomException(ErrorCode.INTER_SERVER_ERROR);
         }
     }
 }
