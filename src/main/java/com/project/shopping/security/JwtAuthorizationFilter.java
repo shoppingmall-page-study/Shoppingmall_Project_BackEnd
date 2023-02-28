@@ -46,7 +46,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             System.out.println(userEmail);
             User user = userRepository.findByEmail(userEmail)
-                    .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));
+                    .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
 
 
             PrincipalDetails principalDetails = new PrincipalDetails(user);

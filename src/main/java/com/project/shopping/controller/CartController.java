@@ -42,18 +42,14 @@ public class CartController {
     @PostMapping("/api/cart/create/{id}")
     // 여기서 ID는 상품 ID
     public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "id") int ProductId ,@RequestBody @Valid CartCreateRequestDTO cartCreateRequestDTO){
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
-        CartCreateResponseDTO createcart = cartService.create(authentication, ProductId, cartCreateRequestDTO); // 카트 생성
+
+        CartCreateResponseDTO createCart = cartService.create(authentication, ProductId, cartCreateRequestDTO); // 카트 생성
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "장바구니 등록에 성공했습니다.");
-        result.put("data", createcart);
+        result.put("data", createCart);
 
         // 유저가 장바구니에 담은 상품이 기존에 있을시
         return  ResponseEntity.ok().body(result);
-
-
     }
     // 장바구니 삭제
 
@@ -62,10 +58,7 @@ public class CartController {
 
 
     @GetMapping("/api/cart/user")
-    public ResponseEntity<?> cartlist(Authentication authentication){
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
+    public ResponseEntity<?> cartList(Authentication authentication){
 
         List<CartUserListJoinResponseDTO> cartList = cartService.getEqUserAndCart(authentication,ActiveStatus);
 
@@ -78,16 +71,11 @@ public class CartController {
 
 
         return  ResponseEntity.ok().body(result);
-
-
     }
 
     // 삭제 쿼리
     @DeleteMapping("/api/cart/delete/{id}") // id는 cart_Id
-    public ResponseEntity<?> cartdelete(Authentication authentication, @PathVariable(value = "id")int id){
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
+    public ResponseEntity<?> cartDelete(Authentication authentication, @PathVariable(value = "id")int id){
 
         CartDeleteResponseDTO cartDeleteResponseDTO = cartService.deleteCart(authentication, id);
 
@@ -99,13 +87,9 @@ public class CartController {
     }
 
     @PutMapping("/api/cart/update/{id}")
-    public ResponseEntity<?> cartupdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody @Valid CartUpdateRequestDTO cartUpdateRequestDTO){
+    public ResponseEntity<?> cartUpdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody @Valid CartUpdateRequestDTO cartUpdateRequestDTO){
 
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
-
-        CartUpdateResosneDTO updatecart = cartService.update(authentication, cartId, cartUpdateRequestDTO);
+        CartUpdateResosneDTO updateCart = cartService.update(authentication, cartId, cartUpdateRequestDTO);
 //            System.out.println(cartUpdateRequestDTO.getProductNum() + "cartcount"); // 1
 //            System.out.println(totalcount+ "totalcount");
 //            System.out.println(updatecart.getProductNum() + "update");
@@ -113,10 +97,9 @@ public class CartController {
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg","장바구니 수정에 성공했습니다.");
-        result.put("data", updatecart);
+        result.put("data", updateCart);
 
         return  ResponseEntity.ok().body(result);
-
 
 
     }

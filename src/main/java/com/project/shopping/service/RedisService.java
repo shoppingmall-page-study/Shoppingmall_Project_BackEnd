@@ -45,7 +45,7 @@ public class RedisService {
 
         Object value = valueOperations.get(key);
         if(value == null)
-            return new Object();
+            return "null";
 
         return value;
     }

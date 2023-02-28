@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ErrorResponse> handleCusomException(CustomException e){
+    public ResponseEntity<ErrorResponse> handleCustomException(CustomException e){
+        log.error("customException", e);
         ErrorResponse response = new ErrorResponse(e.getErrorCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getErrorCode().getStatus()));
     }
@@ -26,7 +27,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleMessageNotReadablException(HttpMessageNotReadableException e){
+    public ResponseEntity<ErrorResponse> handleMessageNotReadableException(HttpMessageNotReadableException e){
         log.warn("HttpMessageNotReadableException", e);
         ErrorResponse response = new ErrorResponse(ErrorCode.BadParameterException);
         return  new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));

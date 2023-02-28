@@ -87,7 +87,7 @@ public class EmailAuthenticationService {
         String userEmail = sendAuthCodeRequestDTO.getEmail();
 
         if(userRepository.existsByEmail(userEmail))
-            throw new CustomException("이미 존재하는 이메일 입니다.", ErrorCode.DuplicatedEmilException);
+            throw new CustomException(ErrorCode.DuplicatedEmilException);
 
         //코드 생성
         String authCode = createAuthCode();
@@ -120,7 +120,7 @@ public class EmailAuthenticationService {
             log.info("인증 코드 값 일치");
             saveIsEmailAuthenticated(userEmail);
         }else{
-            throw new CustomException("일치하지 않는 인증코드 입니다", ErrorCode.BadAuthenticationCodeException);
+            throw new CustomException( ErrorCode.BadAuthenticationCodeException);
         }
         return new CheckAuthCodeResponseDTO().builder().email(userEmail).build();
     }
