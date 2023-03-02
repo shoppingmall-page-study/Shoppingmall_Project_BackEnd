@@ -30,16 +30,10 @@ public class ReviewController {
     // 리뷰 생성
     @PostMapping("/api/review/create/{id}")
     public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody @Valid ReviewCreateRequestDTO reviewCreateRequestDTO){
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
-
 
         ReviewCreateResponseDTO reviewCreateResponseDTO = reviewService.create(authentication, ProductId, reviewCreateRequestDTO);
 
-
         // Review Dto 로 응답 보내기
-
 
         Map<String , Object> result = new HashMap<>();
         result.put("msg","리뷰 등록에 성공했습니다.");
@@ -51,13 +45,8 @@ public class ReviewController {
     // 리뷰 삭제
     @DeleteMapping ("/api/review/delete/{id}")
     public ResponseEntity<?> reviewdelete(Authentication authentication, @PathVariable(value = "id") int ReviewId){ // reviewid
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
 
         ReviewDeleteResponseDTO reviewDeleteResponseDTO = reviewService.deleteReview(authentication, ReviewId);
-
-
 
         Map<String , Object> result = new HashMap<>();
         result.put("msg","리뷰 삭제에 성공했습니다.");
@@ -68,9 +57,6 @@ public class ReviewController {
     // 내가 등록한 리뷰 조회
     @GetMapping("/api/review/user")
     public ResponseEntity<?> findUserReviewlist(Authentication authentication){
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
         // 현재 로그인한 유저 찾기
 
 
@@ -86,7 +72,7 @@ public class ReviewController {
 
     // 상품에 달린 리뷰 조회
     @GetMapping("/api/review/{id}")
-    public ResponseEntity<?> findProductReviewlist(@PathVariable(value = "id") int ProductId){
+    public ResponseEntity<?> findProductReviewList(@PathVariable(value = "id") int ProductId){
 
 
         // 상품에 등록된 리뷰 찾기
@@ -102,10 +88,6 @@ public class ReviewController {
 
     @PutMapping("/api/review/update/{id}")
     public ResponseEntity<?> productUpdate(Authentication authentication, @PathVariable(value = "id") int reviewId, @RequestBody @Valid ReviewUpdateRequestDTO reviewUpdateRequestDTO){
-        if(authentication == null){
-            throw  new CustomException("허용되지 않은 접근입니다." , ErrorCode.UnauthorizedException);
-        }
-
 
         ReviewUpdateResponseDTO reviewUpdateResponseDTO = reviewService.update(authentication, reviewId, reviewUpdateRequestDTO);
 

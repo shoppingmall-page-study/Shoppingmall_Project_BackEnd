@@ -33,15 +33,15 @@ public class UserService {
 
         //이메일 중복 체크
         if(userRepository.existsByEmail(userJoinRequestDTO.getEmail())){
-            throw new CustomException("해당 이메일이 존재 합니다.", ErrorCode.DuplicatedEmilException);
+            throw new CustomException(ErrorCode.DuplicatedEmilException);
         }
 
         if(!emailAuthenticationService.isEmailAuthenticated(userJoinRequestDTO.getEmail())){
-            throw new CustomException("인증되지 않은 이메일 입니다.", ErrorCode.UnauthorizedEmailException);
+            throw new CustomException(ErrorCode.UnauthorizedEmailException);
         }
         // 닉네임 중복 체크
         if(userRepository.existsByNickname(userJoinRequestDTO.getNickname())){
-            throw  new CustomException("해당 닉네임이 존재 합니다", ErrorCode.DuplicatedNickNameException);
+            throw  new CustomException(ErrorCode.DuplicatedNickNameException);
         }
 
         User user = User.builder()
@@ -78,7 +78,7 @@ public class UserService {
         PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = userDetails.getUser().getEmail();
         User user = userRepository.findByEmail(email)
-                        .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));
+                        .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
         user.setAddress(userDTO.getAddress());
         user.setAge(userDTO.getAge());
         user.setPostCode(userDTO.getPostCode());
@@ -98,7 +98,7 @@ public class UserService {
         String email = principalDetails.getUser().getEmail();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));
+                .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
 
         UserInfoResponseDTO userInfoResponseDTO = UserInfoResponseDTO.builder()
                 .username(user.getUsername())
@@ -128,7 +128,7 @@ public class UserService {
         PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = userDetails.getUser().getEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));
+                .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
 
 
         if(passwordEncoder.matches(userDeleteRequestDTO.getPassword(), userDetails.getPassword() )){
@@ -136,7 +136,7 @@ public class UserService {
             user.setStatus("Disable");
             userRepository.save(user);
         }else{
-            throw  new CustomException("잘못된 password 입니다.",ErrorCode.BadPasswordException);
+            throw  new CustomException(ErrorCode.BadPasswordException);
         }
         UserDeleteResponseDTO userDeleteResponseDTO = UserDeleteResponseDTO.
                 builder().
@@ -150,14 +150,14 @@ public class UserService {
 
     public Boolean existsByEmail(String email){
         if(userRepository.existsByEmail(email)){
-            throw  new CustomException("이메일이 존재합니다.", ErrorCode.DuplicatedEmilException);
+            throw  new CustomException(ErrorCode.DuplicatedEmilException);
         }
         return userRepository.existsByEmail(email);
     }
 
     public Boolean existsByNickname(String nickname){
         if(userRepository.existsByNickname(nickname)){
-            throw  new CustomException("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
+            throw  new CustomException(ErrorCode.DuplicatedNickNameException);
         }
         return userRepository.existsByNickname(nickname);}
 
@@ -169,20 +169,20 @@ public class UserService {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = principalDetails.getUser().getEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()->new CustomException("User not found", ErrorCode.NotFoundUserException));// 해당 user찾기
+                .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));// 해당 user찾기
 
         if(!user.getNickname().equals(userUpdateRequestDTO.getNickname())){
             // 만약 현제 유저 닉네임이  들어온 유저 닉네임과 동일하지 않다면
             if(userRepository.existsByNickname(userUpdateRequestDTO.getNickname())){
                 // 들어온 값이 db에 있을시 에러
-                throw  new CustomException("닉네임이 존재합니다.", ErrorCode.DuplicatedNickNameException);
+                throw  new CustomException(ErrorCode.DuplicatedNickNameException);
             }
             user.setNickname(userUpdateRequestDTO.getNickname());
         }
 
         if(!user.getEmail().equals(userUpdateRequestDTO.getEmail())){
             if(userRepository.existsByEmail(userUpdateRequestDTO.getEmail())){
-                throw  new CustomException("이메일이 존재합니다.", ErrorCode.DuplicatedEmilException);
+                throw  new CustomException(ErrorCode.DuplicatedEmilException);
             }
         }
         user.setUsername(userUpdateRequestDTO.getUsername());

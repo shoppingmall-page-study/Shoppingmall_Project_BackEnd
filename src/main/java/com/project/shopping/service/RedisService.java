@@ -34,8 +34,9 @@ public class RedisService {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
 
         String value = (String)valueOperations.get(key);
+
         if(value == null)
-            return "";
+            throw new CustomException(ErrorCode.NotFoundValueException);
 
         return value;
     }
@@ -44,11 +45,24 @@ public class RedisService {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
 
         Object value = valueOperations.get(key);
+
         if(value == null)
-            return new Object();
+            throw new CustomException(ErrorCode.NotFoundValueException);
 
         return value;
     }
+
+    public boolean isValueExist(Object key){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+
+        Object value = valueOperations.get(key);
+
+        if(value == null)
+            return false;
+
+        return true;
+    }
+
 
     // 로그아웃시 refresh  토큰 삭제
     public void deleteValue(String key){

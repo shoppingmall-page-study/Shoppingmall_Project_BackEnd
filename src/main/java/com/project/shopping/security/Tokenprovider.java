@@ -44,7 +44,7 @@ public class Tokenprovider {
         long now = (new Date()).getTime();
 
 
-        Date accessTokenExpireseIn = new Date(now + 1000*60*60*24); // 만료 시간 // 하루
+        Date accessTokenExpiresIn = new Date(now + 1000*60*60*24); // 만료 시간 // 하루
 
 
         // 인증객체를 이용해서 email  뽑아 오기
@@ -52,9 +52,9 @@ public class Tokenprovider {
         String email = principalDetails.getUser().getEmail();
 
         // accessToken 생성
-        String accessToken = Jwts.builder().setSubject(email).claim("auth",authorities).setExpiration(accessTokenExpireseIn).signWith(key, SignatureAlgorithm.HS256).compact();
+        String accessToken = Jwts.builder().setSubject(email).claim("auth",authorities).setExpiration(accessTokenExpiresIn).signWith(key, SignatureAlgorithm.HS256).compact();
 
-        Token token = (Token)redisService.getObjectValue(email+"jwtToken");
+        Token token = redisService.isValueExist(email+"jwtToken") ? (Token)redisService.getObjectValue(email+"jwtToken") : null;
         token.setAccessToken(accessToken);
 
         redisService.setValue(email+"jwtToken",token);

@@ -28,7 +28,7 @@ public class OrderService {
 
     public OrderResponseDTO create(String email, OrderRequestDTO orderRequestDTO)throws CustomException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()->new CustomException("User Not Found.", ErrorCode.NotFoundUserException));
+                .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
         ArrayList<OrderDetail> products = new ArrayList<>();
         ArrayList<ProductInOrderResponseDTO>  responseProductsDTO = new ArrayList<>();
         long totalAmount = 0;
@@ -41,7 +41,7 @@ public class OrderService {
 
         for(int i = 0; i < orderRequestDTO.getProductsId().size(); i++){
             Product product = productRepository.findById((int)orderRequestDTO.getProductsId().get(i))
-                    .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));
+                    .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
             int productNum = orderRequestDTO.getProductsNumber().get(i);
 
             OrderDetail orderDetail = OrderDetail.builder()
@@ -75,7 +75,7 @@ public class OrderService {
 
         if(order.getProducts() == null){
             log.warn("product not found", order.getProducts());
-            throw new RuntimeException("product not found");
+            throw new CustomException(ErrorCode.NotFoundProductException);
         }
 
         return orderResponseDTO;
@@ -83,7 +83,7 @@ public class OrderService {
 
     public Order update(Order order){
         if(order.getProducts()== null){
-            throw new NoSuchElementException("해당 상품이 없습니다.");
+            throw new CustomException(ErrorCode.NotFoundProductException);
         }
         return orderRepository.save(order);
     }
@@ -91,7 +91,7 @@ public class OrderService {
     public List<OrderResponseDTO> getOrderList(String email){
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException("",ErrorCode.NotFoundUserException));
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
         List<Order> orderList = orderRepository.findAllByUser(user);
         List<OrderResponseDTO> orders = new ArrayList<>();
 
@@ -99,7 +99,7 @@ public class OrderService {
             ArrayList<ProductInOrderResponseDTO> products = new ArrayList<>();
 
             for(int i = 0; i < order.getProducts().size(); i++){
-                ProductInOrderResponseDTO productDTO = new ProductInOrderResponseDTO();
+                ProductInOrderResponseDTO productDTO;
                 Product product = order.getProducts().get(i).getProduct();
                 int productNum = order.getProducts().get(i).getProductNum();
 

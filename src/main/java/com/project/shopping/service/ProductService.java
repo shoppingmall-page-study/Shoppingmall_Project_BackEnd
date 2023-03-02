@@ -33,10 +33,10 @@ public class ProductService {
     // 상품 생성
     public ProductCreateResponseDTO create(ProductCreateRequestDTO productCreateRequestDTO, Authentication authentication){
 
-        PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDtails.getUser().getEmail();
+        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = userDetails.getUser().getEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException("User Not Found", ErrorCode.NotFoundUserException));// 유저 찾기
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 유저 찾기
 
         Product product = Product.builder().userId(user)
                 .title(productCreateRequestDTO.getTitle())
@@ -68,8 +68,8 @@ public class ProductService {
 //
 //    public ProductCreateResponseDTO create(Authentication authentication, MultipartFile img, ProductCreateRequestDTO productCreateRequestDTO) throws IOException {
 //
-//        PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
-//        String email = userDtails.getUser().getEmail();
+//        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+//        String email = userDetails.getUser().getEmail();
 //        User user = userRepository.findByEmail(email); // 유저 찾기
 //        System.out.println(productCreateRequestDTO.getContent());
 //
@@ -131,9 +131,9 @@ public class ProductService {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = principalDetails.getUser().getEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException("User Not Fount", ErrorCode.NotFoundUserException)); // 유저 찾기
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException)); // 유저 찾기
         Product product = productRepository.findByIdAndUserId(ProductId, user)
-                .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));// 해당 상품 찾기
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));// 해당 상품 찾기
 
         product.setTitle(productUpdateRequestDTO.getTitle());
         product.setContent(productUpdateRequestDTO.getContent());
@@ -147,7 +147,7 @@ public class ProductService {
     }
     public ProductJoinResponseDTO findById(int id){
         Product findProduct = productRepository.findById(id)
-                .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
         // dto
         ProductJoinResponseDTO productJoinResponseDTO = ProductJoinResponseDTO.builder()
                 .productId(findProduct.getId())
@@ -163,30 +163,30 @@ public class ProductService {
         return  productJoinResponseDTO;
 
     }
-    public Product findproduct(int id){
+    public Product findProduct(int id){
         Product findProduct = productRepository.findById(id)
-                .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
 
         return findProduct;
     }
 
     public Product findProductNameUser(int id, User user){
         return productRepository.findByIdAndUserId(id, user)
-                .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
     }
-    public Boolean existsPruductIdUser(int id , User user){return  productRepository.existsByIdAndUserId(id,user);}
+    public Boolean existsProductIdUser(int id , User user){return  productRepository.existsByIdAndUserId(id,user);}
     public ProductDeleteResponseDTO deleteProduct(Authentication authentication, int ProductId){
-        PrincipalDetails userDtails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDtails.getUser().getEmail();
+        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = userDetails.getUser().getEmail();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException("User Not Fount", ErrorCode.NotFoundUserException));// user 찾기
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// user 찾기
 
         if(!productRepository.existsByIdAndUserId(ProductId,user)){
-            throw  new CustomException("상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
+            throw  new CustomException(ErrorCode.NotFoundProductException);
         }
         Product product = productRepository.findByIdAndUserId(ProductId,user)
-                .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));// 유저와 상품명으로 상품 찾기
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));// 유저와 상품명으로 상품 찾기
         product.setStatus("Disabled");
         productRepository.save(product);
 
@@ -205,12 +205,12 @@ public class ProductService {
 
         return productDeleteResponseDTO;
     }
-    public Product findproductid(int id){
+    public Product findProductId(int id){
         return productRepository.findById(id)
-                .orElseThrow(()-> new CustomException("Product Not Found", ErrorCode.NotFoundProductException));
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
     }
 
-    public List<Product> findall(){
+    public List<Product> findAll(){
         return productRepository.findAll();
     }
 
@@ -236,16 +236,15 @@ public class ProductService {
         return response ;
     }
 
-    public List<Product> findallByUserId(User user){return  productRepository.findAllByUserId(user); }
+    public List<Product> findAllByUserId(User user){return  productRepository.findAllByUserId(user); }
 
     public  List<ProductJoinResponseDTO> getActiveProdcutList(String status){
         System.out.println(status);
         List<Product> products = productRepository.getActiveProdcutList(status);
         if(products.size() == 0){
-            System.out.println("상품 이 없습니다.");
-            throw new CustomException("상품이 존재하지 않습니다.",ErrorCode.NotFoundProductException);
+            throw new CustomException(ErrorCode.NotFoundProductException);
         }
-        List<ProductJoinResponseDTO> productdtos = new ArrayList<>();
+        List<ProductJoinResponseDTO> productDtos = new ArrayList<>();
         for (Product product:products) {
             ProductJoinResponseDTO productProductsResponseDTO = ProductJoinResponseDTO.builder()
                     .productId(product.getId())
@@ -259,17 +258,17 @@ public class ProductService {
                     .modifiedDate(product.getModifiedDate())
                     .build();
 
-            productdtos.add(productProductsResponseDTO);
+            productDtos.add(productProductsResponseDTO);
 
         }
-        return productdtos;
+        return productDtos;
     }
 
     public List<ProductJoinResponseDTO> getEqUserAndActive(Authentication authentication, String status){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = principalDetails.getUser().getEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException("User Not Fount", ErrorCode.NotFoundUserException));// 해당 유저 찾기
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 해당 유저 찾기
 
 
         List<Product> findAllProduct = productRepository.getEqUserAndActive(user, status);
