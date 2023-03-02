@@ -37,7 +37,7 @@ public class RefreshTokenService {
 
 
         //redis를 에 저장된 refresh 토큰 찾기
-        Token token = (Token)redisService.getObjectValue(userEmail+"jwtToken");
+        Token token = redisService.isValueExist(userEmail+"jwtToken") ? (Token)redisService.getObjectValue(userEmail+"jwtToken") : null;
         String redisSavedRefreshToken = token.getRefreshToken();
 
         log.info("redis 현재 담긴 토큰", redisSavedRefreshToken);

@@ -7,6 +7,7 @@ import com.project.shopping.dto.requestDTO.EmailAuthenticationRequestDTO.SendAut
 import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.CheckAuthCodeResponseDTO;
 import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.SendAuthCodeResponseDTO;
 import com.project.shopping.repository.UserRepository;
+import com.project.shopping.security.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -116,7 +117,9 @@ public class EmailAuthenticationService {
     public CheckAuthCodeResponseDTO checkAuthCode(CheckAuthCodeRequestDTO checkAuthCodeRequestDTO){
         String authCode = checkAuthCodeRequestDTO.getAuthCode();
         String userEmail = checkAuthCodeRequestDTO.getEmail();
-        if(authCode.equals(redisService.getStringValue( userEmail + "AuthCode"))) {
+        String authCodeFromRedis = redisService.isValueExist(userEmail+"AuthCode") ? (String)redisService.getStringValue(userEmail+"AuthCode") : null;
+
+        if(authCode.equals(authCodeFromRedis)) {
             log.info("인증 코드 값 일치");
             saveIsEmailAuthenticated(userEmail);
         }else{
@@ -127,7 +130,10 @@ public class EmailAuthenticationService {
 
 
     public boolean isEmailAuthenticated(String email){
-        if((redisService.getStringValue( email + "AuthCode")).equals("Authenticated")) {
+
+        String authCodeFromRedis = redisService.isValueExist(email+"AuthCode") ? (String)redisService.getObjectValue(email+"AuthCode") : null;
+
+        if(authCodeFromRedis.equals("Authenticated")) {
             return true;
         }
         return false;
