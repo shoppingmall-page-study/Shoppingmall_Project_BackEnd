@@ -116,7 +116,7 @@ public class EmailAuthenticationService {
     public CheckAuthCodeResponseDTO checkAuthCode(CheckAuthCodeRequestDTO checkAuthCodeRequestDTO){
         String authCode = checkAuthCodeRequestDTO.getAuthCode();
         String userEmail = checkAuthCodeRequestDTO.getEmail();
-        if(authCode.equals((String)redisService.getValue( userEmail + "AuthCode"))) {
+        if(authCode.equals(redisService.getStringValue( userEmail + "AuthCode"))) {
             log.info("인증 코드 값 일치");
             saveIsEmailAuthenticated(userEmail);
         }else{
@@ -127,7 +127,7 @@ public class EmailAuthenticationService {
 
 
     public boolean isEmailAuthenticated(String email){
-        if(((String)redisService.getValue( email + "AuthCode")).equals("Authenticated")) {
+        if((redisService.getStringValue( email + "AuthCode")).equals("Authenticated")) {
             return true;
         }
         return false;
