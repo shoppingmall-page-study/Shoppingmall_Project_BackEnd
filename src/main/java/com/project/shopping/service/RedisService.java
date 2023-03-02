@@ -34,6 +34,7 @@ public class RedisService {
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
 
         String value = (String)valueOperations.get(key);
+
         if(value == null)
             throw new CustomException(ErrorCode.NotFoundValueException);
 
