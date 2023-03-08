@@ -7,13 +7,13 @@ import com.project.shopping.dto.requestDTO.EmailAuthenticationRequestDTO.SendAut
 import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.CheckAuthCodeResponseDTO;
 import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.SendAuthCodeResponseDTO;
 import com.project.shopping.repository.UserRepository;
-import com.project.shopping.security.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import javax.mail.Message;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -28,9 +28,10 @@ import java.util.Random;
 public class EmailAuthenticationService {
 
     private final UserRepository userRepository;
-    private final RedisService redisService;
+
     private final JavaMailSender javaMailSender;
 
+    private  final RedisTemplate<String, Object> redisTemplate;
     public String createAuthCode(){
         Random random = new Random();
         StringBuffer key = new StringBuffer();
@@ -106,18 +107,18 @@ public class EmailAuthenticationService {
 
     //인증 코드 저장 유효시간 5분 설정
     public void saveEmailAuthCode(String authCode, String email){
-        redisService.setValueWithExpire( email + "AuthCode", authCode,Duration.ofMinutes(5));
+        setValueWithExpire( email + "AuthCode", authCode,Duration.ofMinutes(5));
     }
 
     //인증 되었는지 여부 저장 유효시간 1일 설정
     public void saveIsEmailAuthenticated(String email){
-        redisService.setValueWithExpire( email + "AuthCode", "Authenticated", Duration.ofDays(1));
+        setValueWithExpire( email + "AuthCode", "Authenticated", Duration.ofDays(1));
     }
 
     public CheckAuthCodeResponseDTO checkAuthCode(CheckAuthCodeRequestDTO checkAuthCodeRequestDTO){
         String authCode = checkAuthCodeRequestDTO.getAuthCode();
         String userEmail = checkAuthCodeRequestDTO.getEmail();
-        String authCodeFromRedis = redisService.isValueExist(userEmail+"AuthCode") ? (String)redisService.getStringValue(userEmail+"AuthCode") : null;
+        String authCodeFromRedis = isValueExist(userEmail+"AuthCode") ? getStringValue(userEmail+"AuthCode") : null;
 
         if(authCode.equals(authCodeFromRedis)) {
             log.info("인증 코드 값 일치");
@@ -131,12 +132,54 @@ public class EmailAuthenticationService {
 
     public boolean isEmailAuthenticated(String email){
 
-        String authCodeFromRedis = redisService.isValueExist(email+"AuthCode") ? (String)redisService.getObjectValue(email+"AuthCode") : null;
+        String authCodeFromRedis = isValueExist(email+"AuthCode") ? (String)getObjectValue(email+"AuthCode") : null;
 
         if(authCodeFromRedis.equals("Authenticated")) {
             return true;
         }
         return false;
+    }
+
+
+    public void setValueWithExpire(String key, Object value, Duration ExpiresIn){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, value, ExpiresIn);
+    }
+
+
+    public boolean isValueExist(Object key){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+
+        Object value = valueOperations.get(key);
+
+        if(value == null)
+            return false;
+
+        return true;
+    }
+
+
+    public String getStringValue(String key){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+
+        String value = (String)valueOperations.get(key);
+
+        if(value == null)
+            throw new CustomException(ErrorCode.NotFoundValueException);
+
+        return value;
+    }
+
+
+    public Object getObjectValue(String key){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+
+        Object value = valueOperations.get(key);
+
+        if(value == null)
+            throw new CustomException(ErrorCode.NotFoundValueException);
+
+        return value;
     }
 
 }

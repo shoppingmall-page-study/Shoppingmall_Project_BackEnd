@@ -7,13 +7,14 @@ import com.project.shopping.repository.UserRepository;
 import com.project.shopping.security.CustomAuthenticationEntryPoint;
 import com.project.shopping.security.JwtAuthenticationFilter;
 import com.project.shopping.security.JwtAuthorizationFilter;
-import com.project.shopping.security.Tokenprovider;
+import com.project.shopping.security.TokenProvider;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableWebSecurity
 @Slf4j
+@RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
@@ -46,10 +48,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private  UserRepository userRepository;
     @Autowired
-    private   Tokenprovider tokenprovider;
+    private TokenProvider tokenProvider;
 
     @Autowired
     private Oauth2SuccessHandler successHandler;
+
+    @Autowired
+    private   RedisTemplate<String, Object> redisTemplate;
 
 
     
@@ -82,8 +87,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
 
 
-        http.addFilterBefore(new JwtAuthorizationFilter(tokenprovider, userRepository), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new JwtAuthenticationFilter(authenticationManager(),tokenprovider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthorizationFilter(tokenProvider, userRepository), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(authenticationManager(),tokenProvider,redisTemplate ), UsernamePasswordAuthenticationFilter.class);
 
         http.cors();
         http.oauth2Login()

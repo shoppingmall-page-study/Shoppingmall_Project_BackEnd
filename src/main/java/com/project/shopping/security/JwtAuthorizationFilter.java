@@ -28,7 +28,7 @@ import java.io.IOException;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 
-    private final   Tokenprovider tokenprovider;
+    private final   TokenProvider tokenProvider;
     private final  UserRepository userRepository;
 
     @Override
@@ -36,13 +36,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 
 
-        // 1. Request Header에서 JWT 토큰 추출
-        String token = resolveToken((HttpServletRequest) request);
+        // 1. Request header JWT 토큰 추출
+        String token = resolveToken(request);
 
 
-        if(token != null && tokenprovider.validateToken(token, (HttpServletRequest) request)){
-            // 토큰이 유효할 경우 토큰에서 Authenticatino객체를 가져와 SecurityContext에 저장
-            String userEmail = tokenprovider.TokenInfo(token); // jwt 이용한 eamil 추출
+        if(token != null && tokenProvider.validateToken(token, (HttpServletRequest) request)){
+            // 토큰이 유효할 경우 토큰에서 Authentication 가져와 SecurityContext 저장
+            String userEmail = tokenProvider.TokenInfo(token); // jwt 이용한 eamil 추출
 
             System.out.println(userEmail);
             User user = userRepository.findByEmail(userEmail)
@@ -67,4 +67,5 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
         return  null;
     }
+
 }
