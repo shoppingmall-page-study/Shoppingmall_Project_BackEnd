@@ -35,8 +35,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class JwtAuthenticationFilter extends JsonIdPwAuthenticationFilter{
     private  final AuthenticationManager authenticationManager;
     private  final TokenProvider tokenProvider;
-    ObjectMapper objectMapper = new ObjectMapper();
+
     private  final RedisTemplate<String, Object> redisTemplate;
+    ObjectMapper objectMapper = new ObjectMapper();
+
 
 
     @Override
