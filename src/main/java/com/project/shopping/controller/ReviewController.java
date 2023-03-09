@@ -44,7 +44,7 @@ public class ReviewController {
 
     // 리뷰 삭제
     @DeleteMapping ("/api/review/delete/{id}")
-    public ResponseEntity<?> reviewdelete(Authentication authentication, @PathVariable(value = "id") int ReviewId){ // reviewid
+    public ResponseEntity<?> reviewDelete(Authentication authentication, @PathVariable(value = "id") int ReviewId){ // reviewid
 
         ReviewDeleteResponseDTO reviewDeleteResponseDTO = reviewService.deleteReview(authentication, ReviewId);
 
@@ -56,7 +56,7 @@ public class ReviewController {
 
     // 내가 등록한 리뷰 조회
     @GetMapping("/api/review/user")
-    public ResponseEntity<?> findUserReviewlist(Authentication authentication){
+    public ResponseEntity<?> findUserReviewList(Authentication authentication){
         // 현재 로그인한 유저 찾기
 
 
@@ -76,12 +76,12 @@ public class ReviewController {
 
 
         // 상품에 등록된 리뷰 찾기
-        List<ReviewProductJoinResponseDTO> ProductReviewDto = reviewService.getEqProductAndActive(ProductId, ActiveStatus);
+        List<ReviewProductJoinResponseDTO> reviewProductJoinResponseDTOS = reviewService.getEqProductAndActive(ProductId, ActiveStatus);
 
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg","리뷰 조회에 성공했습니다.");
-        result.put("data",ProductReviewDto);
+        result.put("data",reviewProductJoinResponseDTOS);
         return ResponseEntity.ok().body(result);
 
     }

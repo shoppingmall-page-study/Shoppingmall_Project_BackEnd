@@ -30,10 +30,6 @@ public class CartController {
     private  final CartService cartService;
 
 
-    private final  ProductService productService;
-
-
-    private final UserService userService;
 
     private  String ActiveStatus = "active";
 
@@ -43,10 +39,10 @@ public class CartController {
     // 여기서 ID는 상품 ID
     public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "id") int ProductId ,@RequestBody @Valid CartCreateRequestDTO cartCreateRequestDTO){
 
-        CartCreateResponseDTO createCart = cartService.create(authentication, ProductId, cartCreateRequestDTO); // 카트 생성
+        CartCreateResponseDTO cartCreateResponseDTO = cartService.create(authentication, ProductId, cartCreateRequestDTO); // 카트 생성
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "장바구니 등록에 성공했습니다.");
-        result.put("data", createCart);
+        result.put("data", cartCreateResponseDTO);
 
         // 유저가 장바구니에 담은 상품이 기존에 있을시
         return  ResponseEntity.ok().body(result);
@@ -60,14 +56,11 @@ public class CartController {
     @GetMapping("/api/cart/user")
     public ResponseEntity<?> cartList(Authentication authentication){
 
-        List<CartUserListJoinResponseDTO> cartList = cartService.getEqUserAndCart(authentication,ActiveStatus);
+        List<CartUserListJoinResponseDTO> cartUserListJoinResponseDTOS = cartService.getEqUserAndCart(authentication,ActiveStatus);
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg", " 장바구니 조회에 성공했습니다.");
-        result.put("data",cartList);
-        // list.size
-
-        //System.out.println(totalsum);
+        result.put("data",cartUserListJoinResponseDTOS);
 
 
         return  ResponseEntity.ok().body(result);
@@ -89,15 +82,12 @@ public class CartController {
     @PutMapping("/api/cart/update/{id}")
     public ResponseEntity<?> cartUpdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody @Valid CartUpdateRequestDTO cartUpdateRequestDTO){
 
-        CartUpdateResosneDTO updateCart = cartService.update(authentication, cartId, cartUpdateRequestDTO);
-//            System.out.println(cartUpdateRequestDTO.getProductNum() + "cartcount"); // 1
-//            System.out.println(totalcount+ "totalcount");
-//            System.out.println(updatecart.getProductNum() + "update");
+        CartUpdateResosneDTO cartUpdateResosneDTO = cartService.update(authentication, cartId, cartUpdateRequestDTO);
 
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg","장바구니 수정에 성공했습니다.");
-        result.put("data", updateCart);
+        result.put("data", cartUpdateResosneDTO);
 
         return  ResponseEntity.ok().body(result);
 

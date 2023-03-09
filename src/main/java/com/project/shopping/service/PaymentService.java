@@ -25,8 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private final ProductService productService;
-    private final UserService userService;
+
     private final OrderRepository orderRepository;
     private final OrderService orderService;
 
