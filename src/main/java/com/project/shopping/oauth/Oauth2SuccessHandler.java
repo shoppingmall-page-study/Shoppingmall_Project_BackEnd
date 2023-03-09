@@ -1,18 +1,12 @@
 package com.project.shopping.oauth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.shopping.model.User;
 import com.project.shopping.repository.UserRepository;
-import com.project.shopping.security.Token;
-import com.project.shopping.security.Tokenprovider;
+import com.project.shopping.security.TokenProvider;
 import com.project.shopping.service.UserService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.token.TokenService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -23,8 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 @Component
 @Slf4j
@@ -34,7 +26,7 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
     private UserRepository userRepository;
 
     @Autowired
-    private Tokenprovider tokenprovider;
+    private TokenProvider tokenProvider;
 
     @Autowired
     private UserRequstMapper userRequstMapper;
@@ -53,9 +45,9 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
         User user = userRequstMapper.user(oAuth2User); // 이메일만 담아서 생성
 
 
-        Token token = tokenprovider.generateToken(authentication);
+        String accessToken = tokenProvider.generateAccessToken(authentication);
+        String refreshToken = tokenProvider.generateRefreshToken(authentication);
 
-        String accessToken = token.getAccessToken();
         response.addHeader("Authorization","Bearer "+accessToken); //토큰을 생성 하고
         String email = (String) oAuth2User.getAttributes().get("email");
         String name = (String) oAuth2User.getAttributes().get("name");

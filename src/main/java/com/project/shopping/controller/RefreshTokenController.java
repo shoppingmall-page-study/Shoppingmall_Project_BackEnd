@@ -1,7 +1,6 @@
 package com.project.shopping.controller;
 
 
-import com.project.shopping.security.Token;
 import com.project.shopping.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -22,28 +20,15 @@ public class RefreshTokenController {
     private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/api/reissuance/refreshToken")
-    public ResponseEntity<?> reissuanceRefreshToken(@CookieValue(value = "refreshToken") String refreshToken, HttpServletResponse response){
+    public ResponseEntity<?> reIssuanceRefreshToken(@CookieValue(value = "refreshToken") String refreshToken){
 
-        Token reissuanceToken = refreshTokenService.reissuanceRefreshToken(refreshToken);
-        String reissuanceAccessToken = reissuanceToken.getAccessToken();
-        String reissuanceRefreshToken = reissuanceToken.getRefreshToken();
+        HttpHeaders headers = refreshTokenService.reIssuanceRefreshToken(refreshToken);
 
-        //헤더에 accessToken 보내기
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization","Bearer "+reissuanceAccessToken);
-
-        // refreshToken  cookie 로 보내기
-        Cookie cookie =  new Cookie("refreshToken",reissuanceRefreshToken);
-
-        //cookie.setHttpOnly(true);
-        //cookie.setSecure(true);
-        cookie.setPath("/");
-        response.addCookie(cookie);
         return ResponseEntity.ok().headers(headers).body("토큰이 재발급 되었습니다");
 
     }
 
-    // logout 시 cookie에 저장된 refreshToken 삭제
+    // logout 시 cookie 저장된 refreshToken 삭제
     @DeleteMapping("/api/delete/refreshToken")
     public ResponseEntity<?> expireRefreshToken( HttpServletResponse response, Authentication authentication){
         refreshTokenService.deleteRefreshToken(response);

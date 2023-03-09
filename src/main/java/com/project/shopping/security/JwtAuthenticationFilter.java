@@ -1,12 +1,15 @@
 package com.project.shopping.security;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.UserDTO;
 import com.project.shopping.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,37 +34,31 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 public class JwtAuthenticationFilter extends JsonIdPwAuthenticationFilter{
     private  final AuthenticationManager authenticationManager;
-    private  final Tokenprovider tokenprovider;
+    private  final TokenProvider tokenProvider;
+
+    private  final RedisTemplate<String, Object> redisTemplate;
     ObjectMapper objectMapper = new ObjectMapper();
+
 
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         try{
-            Token token = tokenprovider.generateToken(authentication); // 토큰 생성
-            String accessToken = token.getAccessToken(); // access token
-            String refreshToken = token.getRefreshToken(); // refresh token
+            String accessToken = tokenProvider.generateAccessToken(authentication); // accessToken 생성
+            String refreshToken = tokenProvider.generateRefreshToken(authentication);// refreshToken 생성
+
+            // 인증객체를 통한 이메일 생성
+            String email = useAuthenticationGetEmail(authentication);
+
+            setValue(email+"jwtToken",refreshToken);
+            // 쿠키에 refreshToken 저장
+            setCookieRefreshToken(response,refreshToken);
+
+            // responseHeader 통한 전송
+            sendResponseHeaderAccessToken(response,accessToken);
 
 
-            // accessToken header로 전송
-            response.setContentType("application/json");
 
-            response.addHeader("Authorization","Bearer "+accessToken); // header에 accesstoken 추가
-
-
-            Map<String, Object> res = new HashMap<>();
-            res.put("msg", "login success");
-            ResponseEntity.ok().body(res);
-
-            String result = objectMapper.writeValueAsString(res);
-            response.getWriter().write(result);
-
-            // refreshToken  cookie 로 보내기
-            Cookie cookie =  new Cookie("refreshToken",refreshToken);
-            cookie.setPath("/");
-            //cookie.setHttpOnly(true);
-            //cookie.setSecure(true);
-            response.addCookie(cookie);
 
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -82,6 +79,43 @@ public class JwtAuthenticationFilter extends JsonIdPwAuthenticationFilter{
         } catch (IOException e) {
             return null;
         }
+
+    }
+
+
+    // redis 저장
+    public void setValue(String key, Object value){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, value);
+    }
+
+
+    // 인증객체를 통한  Email 생성
+    private  String useAuthenticationGetEmail(Authentication authentication){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = principalDetails.getUser().getEmail();
+        return  email;
+
+    }
+
+    // responseHeader AccessToken 보내기
+    private   void sendResponseHeaderAccessToken(HttpServletResponse response,String accessToken) throws IOException {
+        // accessToken header 전송
+        response.setContentType("application/json");
+        response.addHeader("Authorization","Bearer "+accessToken); // header에 accesstoken 추가
+
+        Map<String, Object> message = new HashMap<>();
+        message.put("msg", "login success");
+        ResponseEntity.ok().body(message);
+        String result = objectMapper.writeValueAsString(message);
+        response.getWriter().write(result);
+
+    }
+
+    private  void setCookieRefreshToken( HttpServletResponse response, String refreshToken){
+        Cookie cookie =  new Cookie("refreshToken",refreshToken);
+        cookie.setPath("/");
+        response.addCookie(cookie);
 
     }
 

@@ -62,69 +62,7 @@ public class ProductService {
 
         return productCreateResponseDTO;
     }
-//    @Value("${file.dir}")
-//    private String fileDir;
-//
-//
-//    public ProductCreateResponseDTO create(Authentication authentication, MultipartFile img, ProductCreateRequestDTO productCreateRequestDTO) throws IOException {
-//
-//        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-//        String email = userDetails.getUser().getEmail();
-//        User user = userRepository.findByEmail(email); // 유저 찾기
-//        System.out.println(productCreateRequestDTO.getContent());
-//
-//        File Folder = new File(fileDir);
-//        if(!Folder.exists()){
-//            try{
-//                System.out.println("폴더가 존재하지 않습니다.");
-//                Folder.mkdir();
-//                System.out.println("폴더 생성 완료");
-//            }catch (Exception e){
-//                e.getStackTrace();
-//            }
-//        }
-//
-//        // 파일 생성 및 저장
-//        String origName = img.getOriginalFilename();
-//        String uuid = UUID.randomUUID().toString();
-//        String extension = origName.substring(origName.lastIndexOf("."));
-//        String savedName  = uuid +extension;
-//        String savedPath =fileDir + savedName;
-//        img.transferTo(new File(savedPath));
-//
-//        Product product = Product.builder().userId(user)
-//                .title(productCreateRequestDTO.getTitle())
-//                .content(productCreateRequestDTO.getContent())
-//                .name(productCreateRequestDTO.getName())
-//                .price(productCreateRequestDTO.getPrice())
-//                .total(productCreateRequestDTO.getTotal())
-//                .status("active")
-//                .imgUrl(savedPath)
-//                .createDate(Timestamp.valueOf(LocalDateTime.now()))
-//                .modifiedDate(Timestamp.valueOf(LocalDateTime.now()))
-//                .build(); // 상품 생성
-//
-//        System.out.println(product.getName());
-//
-//        if(product == null  || product.getName() == "" ||  product.getTitle()== ""
-//                && product.getContent() == "" ||  product.getPrice() == 0 ||  product.getTotal() == 0
-//                ||  product.getImgUrl() == ""){
-//            throw  new CustomExcpetion("잘못된 형식의 데이터 입니다." , ErrorCode.BadParameterException);
-//        }
-//        productRepository.save(product);
-//        ProductCreateResponseDTO productCreateResponseDTO = ProductCreateResponseDTO.builder()
-//                .title(product.getTitle())
-//                .content(product.getContent())
-//                .name(product.getName())
-//                .price(product.getPrice())
-//                .total(product.getTotal())
-//                .imgUrl(product.getImgUrl())
-//                .createDate(product.getCreateDate())
-//                .modifiedDate(product.getModifiedDate())
-//                .build();
-//
-//        return productCreateResponseDTO;
-//    }
+
 
     public Product update(Authentication authentication, ProductUpdateRequestDTO productUpdateRequestDTO, int ProductId){
 
