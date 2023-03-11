@@ -39,12 +39,12 @@ public class CartService {
         if(cartRepository.existsCartByUserIdAndProductIdAndStatus(user, product,"active")){ // 해당 상품이 존재 할시
             Cart findCart = cartRepository.findCartByUserIdAndProductId(user, product)
                     .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));// 카트찾기
-            long totalsum = findCart.getProductNum()+ cartCreateRequestDTO.getProductNum();
+            long totalSum = findCart.getProductNum()+ cartCreateRequestDTO.getProductNum();
             //System.out.println(totalsum);
-            if(totalsum> product.getTotal()){
+            if(totalSum> product.getTotal()){
                 throw  new CustomException(ErrorCode.NotFoundCartNumException);
             }
-            findCart.setProductNum(totalsum);
+            findCart.setProductNum(totalSum);
             Cart createCart = cartRepository.save(findCart); // 카트 생성
             ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
                     .productId(createCart.getProductId().getId())
@@ -174,23 +174,7 @@ public class CartService {
 
 
     }
-    // user가 등록한 장바구니 목록 조회
-    public  List<Cart> findallByUserId(User user){return cartRepository.findAllByuserId(user); }
 
-    // 유저  와 cartid를 이용한 해당 장바구니 상품 조회
-    public Cart findCartUserAndId(User user, int id){
-        return cartRepository.findCartByUserIdAndId(user, id)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));
-    }
-
-    public  boolean existCartUserAndId(User user, int id){return  cartRepository.existsByUserIdAndId(user, id);}
-
-
-    public boolean existsCartByUserIdAndProductId(User user, Product product){return cartRepository.existsCartByUserIdAndProductIdAndStatus(user,product,"active");}
-
-    public Cart findCartByUserIdAndProductId(User user, Product product){return  cartRepository.findCartByUserIdAndProductId(user,product)
-            .orElseThrow(()->new CustomException(ErrorCode.NotFoundCartException));
-    }
 
     public List<CartUserListJoinResponseDTO>  getEqUserAndCart(Authentication authentication, String status){
 
@@ -227,4 +211,5 @@ public class CartService {
         return cartdtos;
 
     }
+
 }

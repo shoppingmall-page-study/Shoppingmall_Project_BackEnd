@@ -101,18 +101,9 @@ public class ProductService {
         return  productJoinResponseDTO;
 
     }
-    public Product findProduct(int id){
-        Product findProduct = productRepository.findById(id)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
 
-        return findProduct;
-    }
 
-    public Product findProductNameUser(int id, User user){
-        return productRepository.findByIdAndUserId(id, user)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
-    }
-    public Boolean existsProductIdUser(int id , User user){return  productRepository.existsByIdAndUserId(id,user);}
+
     public ProductDeleteResponseDTO deleteProduct(Authentication authentication, int ProductId){
         PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = userDetails.getUser().getEmail();
@@ -143,14 +134,6 @@ public class ProductService {
 
         return productDeleteResponseDTO;
     }
-    public Product findProductId(int id){
-        return productRepository.findById(id)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
-    }
-
-    public List<Product> findAll(){
-        return productRepository.findAll();
-    }
 
     public List<ProductSearchResponseDTO> getProductList(String title, String stauts){
 
@@ -174,7 +157,7 @@ public class ProductService {
         return response ;
     }
 
-    public List<Product> findAllByUserId(User user){return  productRepository.findAllByUserId(user); }
+
 
     public  List<ProductJoinResponseDTO> getActiveProdcutList(String status){
         System.out.println(status);

@@ -38,11 +38,11 @@ public class ProductController {
     @PostMapping("/api/product/create")
     public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody @Valid ProductCreateRequestDTO productCreateRequestDTO) {
 
-        ProductCreateResponseDTO registeredProduct = productService.create(productCreateRequestDTO,authentication); // 상품 생성
+        ProductCreateResponseDTO productCreateResponseDTO = productService.create(productCreateRequestDTO,authentication); // 상품 생성
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "상품 등록에 성공했습니다.");
-        result.put("data", registeredProduct);
+        result.put("data", productCreateResponseDTO);
         return ResponseEntity.ok().body(result);
     }
 
@@ -50,12 +50,12 @@ public class ProductController {
     @DeleteMapping("/api/product/delete/{id}")
     public ResponseEntity<?>  productDelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
 
-        ProductDeleteResponseDTO product = productService.deleteProduct(authentication, ProductId);
+        ProductDeleteResponseDTO productDeleteResponseDTO = productService.deleteProduct(authentication, ProductId);
 
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "상품삭제에 성공했습니다.");
-        result.put("data", product);
+        result.put("data", productDeleteResponseDTO);
 
         return ResponseEntity.ok().body(result);
 
@@ -67,21 +67,21 @@ public class ProductController {
 
     @GetMapping("/api/products")
     public ResponseEntity<?> findAll(){
-        List<ProductJoinResponseDTO> products = productService.getActiveProdcutList(ActiveStatus);
+        List<ProductJoinResponseDTO> productJoinResponseDTOS = productService.getActiveProdcutList(ActiveStatus);
 
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품검색에 성공했습니다.");
-        result.put("data",products);
+        result.put("data",productJoinResponseDTOS);
         return ResponseEntity.ok().body(result);
 
     }
 
     @PostMapping("/api/product/search")
     public ResponseEntity<?> searchProduct(@RequestBody @Valid ProductSearchRequestDTO productSearchRequestDTO){
-        List<ProductSearchResponseDTO> response = productService.getProductList(productSearchRequestDTO.getKeyword(), ActiveStatus);
+        List<ProductSearchResponseDTO> productSearchResponseDTOS = productService.getProductList(productSearchRequestDTO.getKeyword(), ActiveStatus);
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품검색에 성공했습니다.");
-        result.put("data",response);
+        result.put("data",productSearchResponseDTOS);
         return ResponseEntity.ok().body(result);
 
     }
@@ -90,12 +90,12 @@ public class ProductController {
     @GetMapping("/api/products/user")
     public ResponseEntity<?> findResistedProductByUser(Authentication authentication){
 
-        List<ProductJoinResponseDTO> response = productService.getEqUserAndActive(authentication, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
+        List<ProductJoinResponseDTO> productJoinResponseDTOS = productService.getEqUserAndActive(authentication, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
 
 
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품 조회에 성공했습니다.");
-        result.put("data",response);
+        result.put("data",productJoinResponseDTOS);
         return ResponseEntity.ok().body(result);
 
     }
