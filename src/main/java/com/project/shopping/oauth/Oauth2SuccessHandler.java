@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -39,47 +40,27 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        System.out.println("OAuth2login 성공");
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-
-        User user = userRequstMapper.user(oAuth2User); // 이메일만 담아서 생성
-
+        log.info("Oauth 로그인 성공");
 
         String accessToken = tokenProvider.generateAccessToken(authentication);
         String refreshToken = tokenProvider.generateRefreshToken(authentication);
 
-        response.addHeader("Authorization","Bearer "+accessToken); //토큰을 생성 하고
-        String email = (String) oAuth2User.getAttributes().get("email");
-        String name = (String) oAuth2User.getAttributes().get("name");
-        System.out.println(email);
-        System.out.println(name);
-        String password = passwordEncoder.encode(email);
+        // 쿠키 생성  후 쿠키 저장
+        Cookie cookie = generatedCookie(refreshToken);
+        response.addCookie(cookie);
+
+        // Oauth 정보로 부터 email 및 name 추출
+        String email = UserEmailGetByOauthInfo(authentication);
+        String name = UserNameGetByOauthInfo(authentication);
 
 
-        boolean uu = userRepository.existsByEmail(email);
 
-
-        // 1.security jwt refresh 생성 안함  봐야함 redias
-        // 2.oauth 내 jwt 생성 문제
-        // 매핑관계
-        if(uu == false){
-            User users = User.builder()
-                    .email(email)
-                    .password(password)
-                    .username(name)
-                    .address("????").age(100)
-                    .roles("ROLE_USER")
-                    .status("active")
-                    .postCode("????")
-                    .nickname("????").phoneNumber("????").build();
-            userRepository.save(users);
-
-            String targetUrl = makeRediretjoinUrl(accessToken);
-            response.sendRedirect(targetUrl);
+        if(!userService.existsByEmail(email)){
+            userService.OauthLoginCreateUser(email,name);
+            response.sendRedirect( makeRediretjoinUrl(accessToken));
 
         }else{
-            String targetUrl = makeRedirectUrl(accessToken);
-            response.sendRedirect(targetUrl);
+            response.sendRedirect(makeRedirectUrl(accessToken));
         }
 
 
@@ -95,63 +76,29 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
                 .build().toUriString();
     }
 
-    //ObjectMapper objectMapper = new ObjectMapper();
-//    @Override
-//    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-//        System.out.println("OAuth2login 성공");
-//        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-//
-//        User user = userRequstMapper.user(oAuth2User); // 이메일만 담아서 생성
-//
-//        //String jwttoken = tokenprovider.create(user);
-//        //response.addHeader("Authorization","Bearer "+jwttoken); //토큰을 생성 하고
-//        String email = (String) oAuth2User.getAttributes().get("email");
-//        String name = (String) oAuth2User.getAttributes().get("name");
-//
-//        System.out.println(name);
-//
-//
-//        boolean uu = userRepository.existsByEmail(email);
-//
-//        if(uu == false){
-////            User users = User.builder()
-////                    .email(email)
-////                    .password(password)
-////                    .username(name)
-////                    .address("????").age(100)
-////                    .roles("ROLE_USER")
-////                    .postCode("????")
-////                    .nickname("?????").phoneNumber("????").build();
-////            userService.create(users);
-//
-//            String targetUrl = makeRediretjoinUrl(name,email);
-//
-//
-//            //String result = objectMapper.writeValueAsString(users);
-//            //response.getWriter().write(result);
-//            response.sendRedirect(targetUrl);
-//
-//        }else{
-//            User finduser = userService.findEmailByUser(email);
-//            String jwttoken = tokenprovider.create(finduser);
-//            String targetUrl = makeRedirectUrl(jwttoken);
-//            response.sendRedirect(targetUrl);
-//        }
-//
-//
-//    }
-//
-//    private String makeRediretjoinUrl(String name,String email) throws UnsupportedEncodingException {
-//        System.out.println(name);
-//        String encodedParam = URLEncoder.encode(name, "UTF-8");
-//        return UriComponentsBuilder.fromUriString("http://localhost:3000/registration/").queryParam("name"+ encodedParam).queryParam("email",email)
-//                .build().toUriString();
-//    }
-//
-//    private String makeRedirectUrl(String jwttoken) {
-//        return UriComponentsBuilder.fromUriString("http://localhost:3000/oauth/"+jwttoken)
-//                .build().toUriString();
-//    }
+    private String UserEmailGetByOauthInfo(Authentication authentication){
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        String email = (String) oAuth2User.getAttributes().get("email");
+
+
+        return email;
+    }
+
+    //Oauth 로 부터 받은 정보로 name 추출
+    private String UserNameGetByOauthInfo(Authentication authentication){
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        String name = (String) oAuth2User.getAttributes().get("name");
+
+
+        return name;
+    }
+
+    private Cookie generatedCookie(String refreshToken){
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setPath("/");
+        return  cookie;
+    }
+
 
 
 }

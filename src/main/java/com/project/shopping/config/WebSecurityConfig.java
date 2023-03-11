@@ -82,6 +82,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/join/nickname-check/*").permitAll()
                 .antMatchers("/api/products").permitAll()
                 .antMatchers("/api/reissuance/refreshToken").permitAll()
+                .antMatchers("/api/oauth2/authorization/*").permitAll()
+                .antMatchers("/api/login/oauth2/code/*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
