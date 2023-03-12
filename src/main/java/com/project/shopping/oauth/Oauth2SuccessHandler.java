@@ -5,6 +5,7 @@ import com.project.shopping.model.User;
 import com.project.shopping.repository.UserRepository;
 import com.project.shopping.security.TokenProvider;
 import com.project.shopping.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,11 +24,12 @@ import java.io.IOException;
 //oauth 로그인 성공시 리다이렉트 시켜주는 클래스
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
 
-    @Autowired
-    private TokenProvider tokenProvider;
+
+    private final TokenProvider tokenProvider;
 
 
 
@@ -42,6 +44,7 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
         response.addCookie(generatedCookie(refreshToken));
 
 
+        // 해당 url 로 리다이렉트
         response.sendRedirect(makeRedirectUrl(accessToken));
 
 

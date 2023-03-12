@@ -29,25 +29,41 @@ public class CustomOAuth2UserService implements OAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2UserService<OAuth2UserRequest,OAuth2User> oAuth2UserService= new DefaultOAuth2UserService();
-        OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
 
-        String registrationId =userRequest.getClientRegistration().getRegistrationId();
-        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
-        OAuth2Attribute oAuth2Attribute = OAuth2Attribute.of(registrationId,userNameAttributeName,oAuth2User.getAttributes());
+        // oauth 로 부터 받은 access 토큰으로 부터 정보 추출
+        OAuth2Attribute oAuth2Attribute = oAuth2Attribute(userRequest);
         log.info("{}", oAuth2Attribute);
 
-
-        String name = oAuth2Attribute.getName();
-        String email = oAuth2Attribute.getEmail();
+        // email, name 추출
+        String name = getNameToOauth(oAuth2Attribute);
+        String email = getEmailToOauth(oAuth2Attribute);
         log.info("oath 추출 이름" + name);
         log.info("oath 추출 email " + email);
+
+
         User user = !userService.existsByEmail(email) ? oauthLoginCreateUser(email,name) : oauthLoginFindByEmail(email);
 
         return new PrincipalDetails(user,oAuth2Attribute.getAttributes());
     }
 
     //Oauth  정보 추출
+    private  OAuth2Attribute oAuth2Attribute(OAuth2UserRequest userRequest){
+        OAuth2UserService<OAuth2UserRequest,OAuth2User> oAuth2UserService= new DefaultOAuth2UserService();
+        OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
+        String registrationId =userRequest.getClientRegistration().getRegistrationId();
+        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+        return OAuth2Attribute.of(registrationId,userNameAttributeName,oAuth2User.getAttributes());
+    }
+
+    // Oauth 정보에서 이름 추출
+    private  String getNameToOauth(OAuth2Attribute oAuth2Attribute){
+        return oAuth2Attribute.getName();
+    }
+
+    //Oauth 정보에서 이메일 추출
+    private String getEmailToOauth(OAuth2Attribute oAuth2Attribute){
+        return  oAuth2Attribute.getEmail();
+    }
 
 
     // Oauth 첫 로그인시 User 생성
