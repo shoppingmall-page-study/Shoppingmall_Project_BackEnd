@@ -1,6 +1,11 @@
 package com.project.shopping.oauth;
 
+import com.project.shopping.auth.PrincipalDetails;
+import com.project.shopping.model.User;
+import com.project.shopping.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -15,7 +20,13 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService {
+
+
+    private final UserService userService;
+
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService<OAuth2UserRequest,OAuth2User> oAuth2UserService= new DefaultOAuth2UserService();
@@ -25,9 +36,30 @@ public class CustomOAuth2UserService implements OAuth2UserService {
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
         OAuth2Attribute oAuth2Attribute = OAuth2Attribute.of(registrationId,userNameAttributeName,oAuth2User.getAttributes());
         log.info("{}", oAuth2Attribute);
-        Map<String,Object> memberAttribute = oAuth2Attribute.convertToMap();
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),memberAttribute,"email"
-        );
+
+
+        String name = oAuth2Attribute.getName();
+        String email = oAuth2Attribute.getEmail();
+        log.info("oath 추출 이름" + name);
+        log.info("oath 추출 email " + email);
+        User user = !userService.existsByEmail(email) ? oauthLoginCreateUser(email,name) : oauthLoginFindByEmail(email);
+
+        return new PrincipalDetails(user,oAuth2Attribute.getAttributes());
     }
+
+    //Oauth  정보 추출
+
+
+    // Oauth 첫 로그인시 User 생성
+    private User oauthLoginCreateUser(String email, String name){
+        log.info("Oauth 첫 로그인");
+        return  userService.OauthLoginCreateUser(email,name);
+
+    }
+    // Oauth 로그인시 User 존재할시 email 부터 user 찾기
+    private User oauthLoginFindByEmail(String email){
+        log.info("이미 기존 회원 있음");
+        return userService.findByEmail(email);
+    }
+
 }

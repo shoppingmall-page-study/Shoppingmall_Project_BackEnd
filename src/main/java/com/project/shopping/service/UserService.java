@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -79,11 +80,11 @@ public class UserService {
                 .email(email)
                 .password(generateRandomPassword())
                 .username(name)
-                .address("????").age(1000)
+                .address("null").age(1000)
                 .roles("ROLE_USER")
-                .status("active")
-                .postCode("????")
-                .nickname("????").phoneNumber("????").build();
+                .status("null")
+                .postCode("null")
+                .nickname("null").phoneNumber("null").build();
         return userRepository.save(user);
     }
 
@@ -164,16 +165,11 @@ public class UserService {
     }
 
     public Boolean existsByEmail(String email){
-        if(userRepository.existsByEmail(email)){
-            throw  new CustomException(ErrorCode.DuplicatedEmilException);
-        }
+
         return userRepository.existsByEmail(email);
     }
 
     public Boolean existsByNickname(String nickname){
-        if(userRepository.existsByNickname(nickname)){
-            throw  new CustomException(ErrorCode.DuplicatedNickNameException);
-        }
         return userRepository.existsByNickname(nickname);}
 
 
@@ -237,6 +233,10 @@ public class UserService {
 
         return passwordEncoder.encode(generatedRandomString);
 
+    }
+    public User findByEmail(String email){
+        return  userRepository.findByEmail(email)
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 유저 찾기
     }
 
 
