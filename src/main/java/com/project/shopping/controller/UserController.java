@@ -59,29 +59,22 @@ public class UserController  {
     @DeleteMapping("/api/user/delete")
     public ResponseEntity<?> deleteUser(@RequestBody @Valid UserDeleteRequestDTO userDeleteRequestDTO, Authentication authentication ){
 
-        UserDeleteResponseDTO userDeleteResponseDTO  = userService.delete(userDeleteRequestDTO,authentication);
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = principalDetails.getUser().getEmail();
+
+        UserDeleteResponseDTO userDeleteResponseDTO  = userService.delete(userDeleteRequestDTO, email);
 
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "회원탈퇴에 성공했습니다.");
         response.put("data", userDeleteResponseDTO);
+
         return  ResponseEntity.ok().body(response);
-
-
-
     }
 
     @PostMapping("/api/Oauth/join")
-    public ResponseEntity<?> oauthSignup(@RequestBody UserDTO userDTO,Authentication authentication) {
-        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDetails.getUser().getEmail();
-        System.out.println(email);
-
-        UserDTO response = userService.saveUser(userDTO, authentication);
-
-
+    public ResponseEntity<?> oauthSignup(@RequestBody UserDTO userDTO) {
+        UserDTO response = userService.saveUser(userDTO);
         return ResponseEntity.ok().body(response);
-
-
     }
 
 
@@ -120,7 +113,10 @@ public class UserController  {
     @GetMapping("/api/user/info")
     public ResponseEntity<?> userinfo(Authentication authentication){
 
-        UserInfoResponseDTO userInfoResponseDTO = userService.findEmailByUser(authentication); // 유저 찾기
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = principalDetails.getUser().getEmail();
+
+        UserInfoResponseDTO userInfoResponseDTO = userService.findUserByEmail(email); // 유저 찾기
 
 
         Map<String, Object> response = new HashMap<>();
@@ -132,7 +128,10 @@ public class UserController  {
     @PutMapping("/api/user/update")
     public ResponseEntity<?> userUpdate(Authentication authentication, @RequestBody @Valid UserUpdateRequestDTO userUpdateRequestDTO){
 
-        UserUpdateResponseDTO userUpdateResponseDTO = userService.updateUser(authentication, userUpdateRequestDTO);
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        String email = principalDetails.getUser().getEmail();
+
+        UserUpdateResponseDTO userUpdateResponseDTO = userService.updateUser(userUpdateRequestDTO, email);
 
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "유저수정에 성공했습니다.");
