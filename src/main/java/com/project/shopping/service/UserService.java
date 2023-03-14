@@ -88,11 +88,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public UserDTO saveUser(UserDTO userDTO, Authentication authentication){
 
+    public UserDTO saveUser(UserDTO userDTO){
 
-        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDetails.getUser().getEmail();
+        String email = userDTO.getEmail();
         User user = userRepository.findByEmail(email)
                         .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
         user.setAddress(userDTO.getAddress());
@@ -102,16 +101,15 @@ public class UserService {
         user.setPhoneNumber(userDTO.getPhoneNumber());
 
         userRepository.save(user);
+
         UserDTO response = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
                 .age(user.getAge()).address(user.getAddress())
                 .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
+
         return  response;
     }
 
-    public UserInfoResponseDTO findEmailByUser(Authentication authentication){
-
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
+    public UserInfoResponseDTO findUserByEmail(String email){
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
@@ -128,7 +126,6 @@ public class UserService {
                 .modifiedDate(user.getModifiedDate())
                 .build();
 
-
         return userInfoResponseDTO;
     }
 
@@ -140,14 +137,13 @@ public class UserService {
 //        }
 //        return null;
 //    }
-    public UserDeleteResponseDTO delete(UserDeleteRequestDTO userDeleteRequestDTO, Authentication authentication){
-        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDetails.getUser().getEmail();
+    public UserDeleteResponseDTO delete(UserDeleteRequestDTO userDeleteRequestDTO, String email){
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
 
 
-        if(passwordEncoder.matches(userDeleteRequestDTO.getPassword(), userDetails.getPassword() )){
+        if(passwordEncoder.matches(userDeleteRequestDTO.getPassword(), user.getPassword() )){
 
             user.setStatus("Disable");
             userRepository.save(user);
@@ -176,30 +172,19 @@ public class UserService {
 
 
 
-    public UserUpdateResponseDTO updateUser(Authentication authentication, UserUpdateRequestDTO userUpdateRequestDTO){
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
+    public UserUpdateResponseDTO updateUser(UserUpdateRequestDTO userUpdateRequestDTO, String email){
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));// 해당 user찾기
 
-        if(!user.getNickname().equals(userUpdateRequestDTO.getNickname())){
-            // 만약 현제 유저 닉네임이  들어온 유저 닉네임과 동일하지 않다면
-            if(userRepository.existsByNickname(userUpdateRequestDTO.getNickname())){
-                // 들어온 값이 db에 있을시 에러
-                throw  new CustomException(ErrorCode.DuplicatedNickNameException);
-            }
-            user.setNickname(userUpdateRequestDTO.getNickname());
-        }
-
         if(!user.getEmail().equals(userUpdateRequestDTO.getEmail())){
-            if(userRepository.existsByEmail(userUpdateRequestDTO.getEmail())){
-                throw  new CustomException(ErrorCode.DuplicatedEmilException);
-            }
+                throw  new CustomException(ErrorCode.BadParameterException);
         }
         user.setUsername(userUpdateRequestDTO.getUsername());
         user.setAddress(userUpdateRequestDTO.getAddress());
         user.setAge(userUpdateRequestDTO.getAge());
         user.setPostCode(userUpdateRequestDTO.getPostCode());
+        user.setNickname(userUpdateRequestDTO.getNickname());
         userRepository.save(user);
 
         UserUpdateResponseDTO userUpdateResponseDTO = UserUpdateResponseDTO.builder()
@@ -213,7 +198,6 @@ public class UserService {
                 .createDate(user.getCreateDate())
                 .modifiedDate(user.getModifiedDate())
                 .build();
-
 
         return  userUpdateResponseDTO;
     }

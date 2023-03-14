@@ -132,7 +132,7 @@ public class EmailAuthenticationService {
 
     public boolean isEmailAuthenticated(String email){
 
-        String authCodeFromRedis = isValueExist(email+"AuthCode") ? (String)getObjectValue(email+"AuthCode") : null;
+        String authCodeFromRedis = isValueExist(email+"AuthCode") ? (String)getObjectValue(email+"AuthCode") : "null";
 
         if(authCodeFromRedis.equals("Authenticated")) {
             return true;
