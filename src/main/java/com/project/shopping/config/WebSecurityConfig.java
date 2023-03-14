@@ -40,29 +40,19 @@ import java.util.stream.Collectors;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
-    @Autowired
-    private  UserRepository userRepository;
-    @Autowired
-    private TokenProvider tokenProvider;
-
-    @Autowired
-    private Oauth2SuccessHandler successHandler;
-
-    @Autowired
-    private   RedisTemplate<String, Object> redisTemplate;
 
 
-    
 
-    @Autowired
-    private CustomOAuth2UserService oAuth2UserService;
-    @Autowired
-    private CorsFilter corsFilter;
+    private final   UserRepository userRepository;
+    private final TokenProvider tokenProvider;
+
+    private final  Oauth2SuccessHandler successHandler;
+
+    private final    RedisTemplate<String, Object> redisTemplate;
+
+
+    private final
+    CustomOAuth2UserService oAuth2UserService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

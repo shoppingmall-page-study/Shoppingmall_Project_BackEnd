@@ -1,22 +1,13 @@
 package com.project.shopping.oauth;
 
-import com.project.shopping.auth.PrincipalDetails;
-import com.project.shopping.model.User;
-import com.project.shopping.repository.UserRepository;
-import com.project.shopping.security.TokenProvider;
-import com.project.shopping.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -29,7 +20,7 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
 
 
-    private final TokenProvider tokenProvider;
+    private final OauthGenerateCookieAndTokenService oauthGenerateCookieAndTokenService;
 
 
 
@@ -37,11 +28,12 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("Oauth 로그인 성공");
 
-        String accessToken = tokenProvider.generateAccessToken(authentication);
-        String refreshToken = tokenProvider.generateRefreshToken(authentication);
+        String accessToken = oauthGenerateCookieAndTokenService.generateAccessToken(authentication);
+        String refreshToken = oauthGenerateCookieAndTokenService.generateRefreshToken(authentication);
+
 
         // 쿠키 생성  후 쿠키 저장
-        response.addCookie(generatedCookie(refreshToken));
+        response.addCookie(oauthGenerateCookieAndTokenService.generateCookie(refreshToken));
 
 
         // 해당 url 로 리다이렉트
@@ -63,12 +55,6 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
                 .build().toUriString();
     }
 
-
-    private Cookie generatedCookie(String refreshToken){
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setPath("/");
-        return  cookie;
-    }
 
 
 

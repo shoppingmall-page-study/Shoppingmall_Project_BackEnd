@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
 import java.util.Collections;
 import java.util.Map;
 
@@ -45,6 +46,8 @@ public class CustomOAuth2UserService implements OAuth2UserService {
 
         return new PrincipalDetails(user,oAuth2Attribute.getAttributes());
     }
+
+
 
     //Oauth  정보 추출
     private  OAuth2Attribute oAuth2Attribute(OAuth2UserRequest userRequest){
