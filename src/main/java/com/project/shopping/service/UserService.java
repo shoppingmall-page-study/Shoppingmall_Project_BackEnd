@@ -5,14 +5,13 @@ import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.dto.UserDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserDeleteRequestDTO;
+import com.project.shopping.dto.requestDTO.UserRequestDTO.UserOAuthAddInfoRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserUpdateRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.userJoinRequestDTO;
-import com.project.shopping.dto.responseDTO.UserResponseDTO.UserDeleteResponseDTO;
-import com.project.shopping.dto.responseDTO.UserResponseDTO.UserInfoResponseDTO;
-import com.project.shopping.dto.responseDTO.UserResponseDTO.UserJoinResponseDTO;
-import com.project.shopping.dto.responseDTO.UserResponseDTO.UserUpdateResponseDTO;
+import com.project.shopping.dto.responseDTO.UserResponseDTO.*;
 import com.project.shopping.model.User;
 import com.project.shopping.repository.UserRepository;
+import com.project.shopping.security.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,7 +48,7 @@ public class UserService {
                 .password(passwordEncoder.encode((userJoinRequestDTO.getPassword())))
                 .username(userJoinRequestDTO.getUsername())
                 .address(userJoinRequestDTO.getAddress()).age(userJoinRequestDTO.getAge())
-                .roles("ROLE_USER")
+                .roles(Role.ROLE_USER.getRole())
                 .nickname(userJoinRequestDTO.getNickname()).phoneNumber(userJoinRequestDTO.getPhoneNumber())
                 .status("active")
                 .postCode(userJoinRequestDTO.getPostCode()).build();
@@ -78,7 +77,7 @@ public class UserService {
                 .password(generateRandomPassword())
                 .username(name)
                 .address("null").age(1000)
-                .roles("ROLE_USER")
+                .roles(Role.ROLE_GUEST.getRole())
                 .status("null")
                 .postCode("null")
                 .nickname("null").phoneNumber("null").build();
@@ -86,26 +85,39 @@ public class UserService {
     }
 
 
-    public UserDTO saveUser(UserDTO userDTO){
-
-        String email = userDTO.getEmail();
+    public UserOAuthAddInfoResponseDTO oauthUserInfoAdd(String email, UserOAuthAddInfoRequestDTO userOAuthAddInfoRequestDTO){
         User user = userRepository.findByEmail(email)
-                        .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
-        user.setAddress(userDTO.getAddress());
-        user.setAge(userDTO.getAge());
-        user.setPostCode(userDTO.getPostCode());
-        user.setNickname(userDTO.getNickname());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
+                .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
+
+        if(userRepository.existsByNickname(userOAuthAddInfoRequestDTO.getNickname())){
+            throw  new CustomException(ErrorCode.DuplicatedNickNameException);
+        }
+
+
+        user.setAddress(userOAuthAddInfoRequestDTO.getAddress());
+        user.setPostCode(userOAuthAddInfoRequestDTO.getPostCode());
+        user.setAge(userOAuthAddInfoRequestDTO.getAge());
+        user.setNickname(userOAuthAddInfoRequestDTO.getNickname());
+        user.setRoles(Role.ROLE_USER.getRole());
+        user.setPhoneNumber(userOAuthAddInfoRequestDTO.getPhoneNumber());
 
         userRepository.save(user);
 
-        UserDTO response = UserDTO.builder().username(user.getUsername()).email(user.getEmail())
-                .age(user.getAge()).address(user.getAddress())
-                .nickname(user.getNickname()).phoneNumber(user.getPhoneNumber()).build();
+        UserOAuthAddInfoResponseDTO userOAuthAddInfoResponseDTO = UserOAuthAddInfoResponseDTO.builder()
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .address(user.getAddress())
+                .postCode(user.getPostCode())
+                .age(user.getAge())
+                .nickname(user.getNickname())
+                .phoneNumber(user.getPhoneNumber())
+                .createDate(user.getCreateDate())
+                .modifiedDate(user.getModifiedDate())
+                .build();
 
-        return  response;
+        return userOAuthAddInfoResponseDTO;
+
     }
-
     public UserInfoResponseDTO findUserByEmail(String email){
 
         User user = userRepository.findByEmail(email)

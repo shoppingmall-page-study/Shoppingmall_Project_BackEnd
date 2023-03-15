@@ -68,44 +68,15 @@ public class UserController  {
         return  ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("/api/Oauth/join")
-    public ResponseEntity<?> oauthSignup(@RequestBody UserDTO userDTO) {
-        UserDTO response = userService.saveUser(userDTO);
-        return ResponseEntity.ok().body(response);
+    @PostMapping("/api/oauth/user/info/add")
+    public ResponseEntity<?> oauthUserInfoAdd(Authentication authentication, @RequestBody UserOAuthAddInfoRequestDTO userOAuthAddInfoRequestDTO) {
+
+        String email = ((PrincipalDetails) authentication.getPrincipal()).getEmail();
+
+        return ResponseEntity.ok().body( userService.oauthUserInfoAdd(email,userOAuthAddInfoRequestDTO));
     }
 
 
-//    @PostMapping("/Oauth/join")
-//    public ResponseEntity<?> oauthsignup(@RequestBody UserDTO userDTO) {
-//
-//        try{
-//            //System.out.println(userDTO.getPassword());
-//            //System.out.println(passwordEncoder.encode(userDTO.getPassword()));
-//            String password = passwordEncoder.encode(userDTO.getEmail());
-//            User user = User.builder()
-//                    .email(userDTO.getEmail())
-//                    .password(password)
-//                    .username(userDTO.getUsername())
-//                    .address(userDTO.getAddress()).age(userDTO.getAge())
-//                    .roles("ROLE_USER")
-//                    .nickname(userDTO.getNickname()).phoneNumber(userDTO.getPhoneNumber())
-//                    .createDate(Timestamp.valueOf(LocalDateTime.now()))
-//                    .status("active")
-//                    .postCode(userDTO.getPostCode()).build();
-//            User registeredUser = userService.create(user);
-//
-//            UserDTO response = UserDTO.builder().username(registeredUser.getUsername()).email(registeredUser.getEmail())
-//                    .age(registeredUser.getAge()).address(user.getAddress())
-//                    .nickname(registeredUser.getNickname()).phoneNumber(registeredUser.getPhoneNumber())
-//                    .postCode(registeredUser.getPostCode()).build();
-//            return ResponseEntity.ok().body(response);
-//        }catch (Exception e){
-//            ResponseDTO response = ResponseDTO.builder().error(e.getMessage()).build();
-//            return ResponseEntity.badRequest().body(response);
-//        }
-//
-//
-//    }
 
     @GetMapping("/api/user/info")
     public ResponseEntity<?> userinfo(Authentication authentication){

@@ -52,6 +52,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String postCode;
 
+    @Setter
     private String roles;
     @Column(nullable = false)
     @Setter

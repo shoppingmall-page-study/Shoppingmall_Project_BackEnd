@@ -74,6 +74,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/reissuance/refreshToken").permitAll()
                 .antMatchers("/api/oauth2/authorization/*").permitAll()
                 .antMatchers("/api/login/oauth2/code/*").permitAll()
+                .antMatchers("/api/user/*").hasRole("USER")
+                .antMatchers("/api/cart/*").hasRole("USER")
+                .antMatchers("/api/product/*").hasRole("USER")
+                .antMatchers("/api/review/*").hasRole("USER")
+                .antMatchers("/api/oauth/user/info/add").hasRole("GUEST")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
