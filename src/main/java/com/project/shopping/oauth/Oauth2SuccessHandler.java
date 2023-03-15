@@ -29,8 +29,8 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("Oauth 로그인 성공");
 
-        String accessToken = generateAccessToken(authentication);
-        String refreshToken = generateRefreshToken(authentication);
+        String accessToken = tokenProvider.generateAccessToken(authentication);
+        String refreshToken = tokenProvider.generateRefreshToken(authentication);
 
 
         // 쿠키 생성  후 쿠키 저장
@@ -56,7 +56,6 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
     }
 
     //쿠키 생성
-
     private Cookie generateCookie(String refreshToken){
         Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setPath("/");
@@ -64,16 +63,8 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
     }
 
 
-    // access 토큰 생성
 
-    private String generateAccessToken(Authentication authentication){
-        return tokenProvider.generateAccessToken(authentication);
-    }
-    //refresh 토큰 생성
 
-    private String generateRefreshToken(Authentication authentication){
-        return tokenProvider.generateRefreshToken(authentication);
-    }
 
 
 
