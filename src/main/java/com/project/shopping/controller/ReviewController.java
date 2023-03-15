@@ -33,8 +33,7 @@ public class ReviewController {
     @PostMapping("/api/review/create/{id}")
     public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody @Valid ReviewCreateRequestDTO reviewCreateRequestDTO){
 
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        User user = principalDetails.getUser();
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
         ReviewCreateResponseDTO reviewCreateResponseDTO = reviewService.create(user, ProductId, reviewCreateRequestDTO);
 
@@ -51,8 +50,7 @@ public class ReviewController {
     @DeleteMapping ("/api/review/delete/{id}")
     public ResponseEntity<?> reviewDelete(Authentication authentication, @PathVariable(value = "id") int ReviewId){ // reviewid
 
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        User user = principalDetails.getUser();
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
         ReviewDeleteResponseDTO reviewDeleteResponseDTO = reviewService.deleteReview(user, ReviewId);
 
@@ -66,8 +64,7 @@ public class ReviewController {
     @GetMapping("/api/review/user")
     public ResponseEntity<?> findUserReviewList(Authentication authentication){
         // 현재 로그인한 유저 찾기
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        User user = principalDetails.getUser();
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
         // 현재 나의 리뷰 목록 조회
         List<ReviewUserJoinResponseDTO>  userReviewlist = reviewService.getEqUserAndActive(user,ActiveStatus);
@@ -98,8 +95,7 @@ public class ReviewController {
     @PutMapping("/api/review/update/{id}")
     public ResponseEntity<?> productReviewUpdate(Authentication authentication, @PathVariable(value = "id") int reviewId, @RequestBody @Valid ReviewUpdateRequestDTO reviewUpdateRequestDTO){
 
-        PrincipalDetails principalDetails =  (PrincipalDetails) authentication.getPrincipal();
-        User user = principalDetails.getUser();
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
         ReviewUpdateResponseDTO reviewUpdateResponseDTO = reviewService.update(user, reviewId, reviewUpdateRequestDTO);
 
