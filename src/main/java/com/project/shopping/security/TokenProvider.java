@@ -61,7 +61,7 @@ public class TokenProvider {
         //Access Token Refresh Token  만료 시간 정하기
         Date accessTokenExpiresIn = generateDateExpiresIn( 1000*60*60*24); // 만료 시간 // 하루
         String accessToken = Jwts.builder().setSubject(email).claim("auth",authorities).setExpiration(accessTokenExpiresIn).signWith(key, SignatureAlgorithm.HS256).compact();
-
+        log.info("accessToken 생성" +accessToken);
         return accessToken;
     }
 
@@ -71,7 +71,6 @@ public class TokenProvider {
     public String generateRefreshToken(Authentication authentication){
 
         Date refreshTokenExpiresIn = generateDateExpiresIn( 1000*60*60*24*10); // refreshToken 만료시간 // 10일
-        log.info(authentication.getClass().getName());
         // 이메일 정보 추출
         String email = authenticationGetEmail(authentication);
 

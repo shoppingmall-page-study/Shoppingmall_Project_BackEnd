@@ -2,10 +2,12 @@ package com.project.shopping.oauth;
 
 import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.model.User;
+import com.project.shopping.security.TokenProvider;
 import com.project.shopping.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -28,6 +30,7 @@ public class CustomOAuth2UserService implements OAuth2UserService {
     private final UserService userService;
 
 
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
@@ -42,7 +45,7 @@ public class CustomOAuth2UserService implements OAuth2UserService {
         log.info("oath 추출 email " + email);
 
 
-        User user = !userService.existsByEmail(email) ? oauthLoginCreateUser(email,name) : oauthLoginFindByEmail(email);
+        User user = !userService.existsByEmail(email) ? oAuthLoginCreateUser(email,name) : oAuthLoginFindByEmail(email);
 
         return new PrincipalDetails(user,oAuth2Attribute.getAttributes());
     }
@@ -70,15 +73,19 @@ public class CustomOAuth2UserService implements OAuth2UserService {
 
 
     // Oauth 첫 로그인시 User 생성
-    private User oauthLoginCreateUser(String email, String name){
+    private User oAuthLoginCreateUser(String email, String name){
         log.info("Oauth 첫 로그인");
-        return  userService.OauthLoginCreateUser(email,name);
+        return  userService.oAuthLoginCreateUser(email,name);
 
     }
     // Oauth 로그인시 User 존재할시 email 부터 user 찾기
-    private User oauthLoginFindByEmail(String email){
+    private User oAuthLoginFindByEmail(String email){
         log.info("이미 기존 회원 있음");
         return userService.findByEmail(email);
     }
+
+
+
+
 
 }

@@ -75,7 +75,7 @@ public class UserService {
         return userJoinResponseDTO;
     }
 
-    public  User OauthLoginCreateUser(String email, String name){
+    public  User oAuthLoginCreateUser(String email, String name){
         User user = User.builder()
                 .email(email)
                 .password(generateRandomPassword())
