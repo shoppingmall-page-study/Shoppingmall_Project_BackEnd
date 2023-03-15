@@ -39,13 +39,13 @@ public class CustomOAuth2UserService implements OAuth2UserService {
         log.info("{}", oAuth2Attribute);
 
         // email, name 추출
-        String name = getNameToOauth(oAuth2Attribute);
-        String email = getEmailToOauth(oAuth2Attribute);
+        String name =  oAuth2Attribute.getName();
+        String email = oAuth2Attribute.getEmail();
         log.info("oath 추출 이름" + name);
         log.info("oath 추출 email " + email);
 
 
-        User user = !userService.existsByEmail(email) ? oAuthLoginCreateUser(email,name) : oAuthLoginFindByEmail(email);
+        User user = !userService.existsByEmail(email) ? userService.oAuthLoginCreateUser(email,name) : userService.findByEmail(email);
 
         return new PrincipalDetails(user,oAuth2Attribute.getAttributes());
     }
@@ -59,29 +59,6 @@ public class CustomOAuth2UserService implements OAuth2UserService {
         String registrationId =userRequest.getClientRegistration().getRegistrationId();
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
         return OAuth2Attribute.of(registrationId,userNameAttributeName,oAuth2User.getAttributes());
-    }
-
-    // Oauth 정보에서 이름 추출
-    private  String getNameToOauth(OAuth2Attribute oAuth2Attribute){
-        return oAuth2Attribute.getName();
-    }
-
-    //Oauth 정보에서 이메일 추출
-    private String getEmailToOauth(OAuth2Attribute oAuth2Attribute){
-        return  oAuth2Attribute.getEmail();
-    }
-
-
-    // Oauth 첫 로그인시 User 생성
-    private User oAuthLoginCreateUser(String email, String name){
-        log.info("Oauth 첫 로그인");
-        return  userService.oAuthLoginCreateUser(email,name);
-
-    }
-    // Oauth 로그인시 User 존재할시 email 부터 user 찾기
-    private User oAuthLoginFindByEmail(String email){
-        log.info("이미 기존 회원 있음");
-        return userService.findByEmail(email);
     }
 
 
