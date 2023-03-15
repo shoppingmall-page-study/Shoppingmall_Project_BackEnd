@@ -132,7 +132,7 @@ public class EmailAuthenticationService {
 
     public boolean isEmailAuthenticated(String email){
 
-        String authCodeFromRedis = isValueExist(email+"AuthCode") ? (String)getObjectValue(email+"AuthCode") : "null";
+        String authCodeFromRedis = isValueExist(email+"AuthCode") ? getStringValue(email+"AuthCode") : "null";
 
         if(authCodeFromRedis.equals("Authenticated")) {
             return true;
@@ -170,16 +170,5 @@ public class EmailAuthenticationService {
         return value;
     }
 
-
-    public Object getObjectValue(String key){
-        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-
-        Object value = valueOperations.get(key);
-
-        if(value == null)
-            throw new CustomException(ErrorCode.NotFoundValueException);
-
-        return value;
-    }
 
 }

@@ -3,7 +3,6 @@ package com.project.shopping.service;
 
 import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
-import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.UserDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserDeleteRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserUpdateRequestDTO;
@@ -16,11 +15,9 @@ import com.project.shopping.model.User;
 import com.project.shopping.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -137,9 +134,9 @@ public class UserService {
 //        }
 //        return null;
 //    }
-    public UserDeleteResponseDTO delete(UserDeleteRequestDTO userDeleteRequestDTO, String email){
+    public UserDeleteResponseDTO delete(UserDeleteRequestDTO userDeleteRequestDTO, User user){
 
-        User user = userRepository.findByEmail(email)
+        userRepository.findByEmail(user.getEmail())
                 .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
 
 
@@ -172,14 +169,20 @@ public class UserService {
 
 
 
-    public UserUpdateResponseDTO updateUser(UserUpdateRequestDTO userUpdateRequestDTO, String email){
+    public UserUpdateResponseDTO updateUser(UserUpdateRequestDTO userUpdateRequestDTO, User user){
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));// 해당 user찾기
+        userRepository.findByEmail(user.getEmail())
+            .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));// 해당 user찾기
 
         if(!user.getEmail().equals(userUpdateRequestDTO.getEmail())){
                 throw  new CustomException(ErrorCode.BadParameterException);
         }
+
+        if(userRepository.existsByNickname(userUpdateRequestDTO.getNickname())){
+            throw  new CustomException(ErrorCode.DuplicatedNickNameException);
+        }
+
+
         user.setUsername(userUpdateRequestDTO.getUsername());
         user.setAddress(userUpdateRequestDTO.getAddress());
         user.setAge(userUpdateRequestDTO.getAge());
