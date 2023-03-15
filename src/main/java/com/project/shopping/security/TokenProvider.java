@@ -3,14 +3,19 @@ package com.project.shopping.security;
 
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
+import com.project.shopping.oauth.CustomOAuth2UserService;
+import com.project.shopping.oauth.Oauth2SuccessHandler;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.cfg.annotations.reflection.internal.XMLContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -49,17 +54,14 @@ public class TokenProvider {
 
     //유저 정보를 가지고 AccessToken 토큰 생성
     public String generateAccessToken(Authentication authentication){
+        // 인증 객체로 eamil 생성
+        String email = authenticationGetEmail(authentication);
         //권한 정보 가져오기
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
-
         //Access Token Refresh Token  만료 시간 정하기
         Date accessTokenExpiresIn = generateDateExpiresIn( 1000*60*60*24); // 만료 시간 // 하루
-
-        // 인증객체를 이용해서 email  뽑아 오기
-        String email = useAuthenticationGetEmail(authentication);
         String accessToken = Jwts.builder().setSubject(email).claim("auth",authorities).setExpiration(accessTokenExpiresIn).signWith(key, SignatureAlgorithm.HS256).compact();
-
-
+        log.info("accessToken 생성" +accessToken);
         return accessToken;
     }
 
@@ -69,9 +71,8 @@ public class TokenProvider {
     public String generateRefreshToken(Authentication authentication){
 
         Date refreshTokenExpiresIn = generateDateExpiresIn( 1000*60*60*24*10); // refreshToken 만료시간 // 10일
-
-        // 인증객체를 이용해서 email  뽑아 오기
-        String email = useAuthenticationGetEmail(authentication);
+        // 이메일 정보 추출
+        String email = authenticationGetEmail(authentication);
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder().setSubject(email).setExpiration(refreshTokenExpiresIn).signWith(key, SignatureAlgorithm.HS256).compact();
@@ -79,6 +80,7 @@ public class TokenProvider {
 
         return refreshToken;
     }
+
 
 
 
@@ -119,7 +121,7 @@ public class TokenProvider {
     }
 
     // 인증객체를 이용한 사용자 이메일 추출
-    private  String useAuthenticationGetEmail(Authentication authentication){
+    private String authenticationGetEmail(Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String email = principalDetails.getUser().getEmail();
         return  email;

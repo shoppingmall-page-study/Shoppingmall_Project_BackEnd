@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.Map;
 
 @Getter
-public class PrincipalDetails implements UserDetails , OAuth2User {
+public class PrincipalDetails implements UserDetails , OAuth2User  {
 
     private User user;
     private  Map<String, Object> attributes;
@@ -32,6 +32,12 @@ public class PrincipalDetails implements UserDetails , OAuth2User {
     public Map<String, Object> getAttributes() {
         return attributes;
     }
+
+    @Override
+    public String getName() {
+        return (String) attributes.get("name");
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -72,8 +78,5 @@ public class PrincipalDetails implements UserDetails , OAuth2User {
         return true;
     }
 
-    @Override
-    public String getName() {
-        return null;
-    }
+
 }
