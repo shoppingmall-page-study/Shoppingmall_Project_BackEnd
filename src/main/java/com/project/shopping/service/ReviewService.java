@@ -2,7 +2,6 @@ package com.project.shopping.service;
 
 import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
-import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.requestDTO.RevieRequestDTO.ReviewCreateRequestDTO;
 import com.project.shopping.dto.requestDTO.RevieRequestDTO.ReviewUpdateRequestDTO;
 import com.project.shopping.dto.responseDTO.ReviewResponseDTO.*;
@@ -13,14 +12,10 @@ import com.project.shopping.repository.ProductRepository;
 import com.project.shopping.repository.ReviewRepository;
 import com.project.shopping.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -33,13 +28,12 @@ public class ReviewService {
     private  final ProductRepository productRepository;
 
     // 생성
-    public ReviewCreateResponseDTO create(Authentication authentication, int ProductId, ReviewCreateRequestDTO reviewCreateRequestDTO){
+    public ReviewCreateResponseDTO create(User user, int ProductId, ReviewCreateRequestDTO reviewCreateRequestDTO){
 
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
+        String email = user.getEmail();
 
         // 로그인 정보로 user 찾기
-        User user = userRepository.findByEmail(email)
+        userRepository.findByEmail(email)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
 
         // 파라미터로 받은 값으로 상품 찾기
@@ -69,10 +63,9 @@ public class ReviewService {
     }
 
 
-    public ReviewUpdateResponseDTO update(Authentication authentication, int reviewId, ReviewUpdateRequestDTO reviewUpdateRequestDTO){
-        PrincipalDetails principalDetails =  (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email)
+    public ReviewUpdateResponseDTO update(User user, int reviewId, ReviewUpdateRequestDTO reviewUpdateRequestDTO){
+
+        userRepository.findByEmail(user.getEmail())
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 유저 찾기
 
         Review findReview = reviewrepository.findByUserIdAndId(user,reviewId)
@@ -100,18 +93,10 @@ public class ReviewService {
 
 
 
-    // 내 리뷰 목록 죄히
-    public List<Review> findAllByUserId(User user){return  reviewrepository.findAllByUserId(user);}
-
-    // 상품 리뷰 목록 조회
-    public List<Review> findAllByProductId(Product product){return  reviewrepository.findAllByProductId(product);}
-
     // 삭제
-    public ReviewDeleteResponseDTO deleteReview(Authentication authentication,int ReviewId){
+    public ReviewDeleteResponseDTO deleteReview(User user,int ReviewId){
 
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email)
+        userRepository.findByEmail(user.getEmail())
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
 
         Review findreview = reviewrepository.findByUserIdAndId(user, ReviewId)
@@ -131,17 +116,10 @@ public class ReviewService {
     }
 
 
-    public Review findReviewUserAndId(User user, int id){
-        return reviewrepository.findByUserIdAndId(user,id)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundReviewException));
-    }
-    public Boolean existReviewUserAndId(User user, int id){return reviewrepository.existsByUserIdAndId(user,id);}
 
-    public List<ReviewUserJoinResponseDTO>  getEqUserAndActive(Authentication authentication, String status){
+    public List<ReviewUserJoinResponseDTO>  getEqUserAndActive(User user, String status){
 
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email)
+        userRepository.findByEmail(user.getEmail())
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
         List<Review> userReviewlist = reviewrepository.getEqUserAndActive(user, status);
         //dto 만들기
