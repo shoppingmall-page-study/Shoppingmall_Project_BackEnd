@@ -114,7 +114,6 @@ public class UserController  {
 
         UserInfoResponseDTO userInfoResponseDTO = userService.findUserByEmail(email); // 유저 찾기
 
-
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "유저조회에 성공했습니다.");
         response.put("data", userInfoResponseDTO);

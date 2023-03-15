@@ -139,7 +139,6 @@ public class UserService {
         userRepository.findByEmail(user.getEmail())
                 .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
 
-
         if(passwordEncoder.matches(userDeleteRequestDTO.getPassword(), user.getPassword() )){
 
             user.setStatus("Disable");
