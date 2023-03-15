@@ -1,8 +1,6 @@
 package com.project.shopping.controller;
 
 
-import com.project.shopping.Error.CustomException;
-import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
 
 import com.project.shopping.dto.UserDTO;
@@ -13,6 +11,7 @@ import com.project.shopping.dto.requestDTO.UserRequestDTO.*;
 import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.CheckAuthCodeResponseDTO;
 import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.SendAuthCodeResponseDTO;
 import com.project.shopping.dto.responseDTO.UserResponseDTO.*;
+import com.project.shopping.model.User;
 import com.project.shopping.service.EmailAuthenticationService;
 import com.project.shopping.service.UserService;
 
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,29 +57,21 @@ public class UserController  {
     @DeleteMapping("/api/user/delete")
     public ResponseEntity<?> deleteUser(@RequestBody @Valid UserDeleteRequestDTO userDeleteRequestDTO, Authentication authentication ){
 
-        UserDeleteResponseDTO userDeleteResponseDTO  = userService.delete(userDeleteRequestDTO,authentication);
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
+
+        UserDeleteResponseDTO userDeleteResponseDTO  = userService.delete(userDeleteRequestDTO, user);
 
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "회원탈퇴에 성공했습니다.");
         response.put("data", userDeleteResponseDTO);
+
         return  ResponseEntity.ok().body(response);
-
-
-
     }
 
     @PostMapping("/api/Oauth/join")
-    public ResponseEntity<?> oauthSignup(@RequestBody UserDTO userDTO,Authentication authentication) {
-        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDetails.getUser().getEmail();
-        System.out.println(email);
-
-        UserDTO response = userService.saveUser(userDTO, authentication);
-
-
+    public ResponseEntity<?> oauthSignup(@RequestBody UserDTO userDTO) {
+        UserDTO response = userService.saveUser(userDTO);
         return ResponseEntity.ok().body(response);
-
-
     }
 
 
@@ -120,8 +110,9 @@ public class UserController  {
     @GetMapping("/api/user/info")
     public ResponseEntity<?> userinfo(Authentication authentication){
 
-        UserInfoResponseDTO userInfoResponseDTO = userService.findEmailByUser(authentication); // 유저 찾기
+        String email = ((PrincipalDetails)authentication.getPrincipal()).getEmail();
 
+        UserInfoResponseDTO userInfoResponseDTO = userService.findUserByEmail(email); // 유저 찾기
 
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "유저조회에 성공했습니다.");
@@ -132,7 +123,9 @@ public class UserController  {
     @PutMapping("/api/user/update")
     public ResponseEntity<?> userUpdate(Authentication authentication, @RequestBody @Valid UserUpdateRequestDTO userUpdateRequestDTO){
 
-        UserUpdateResponseDTO userUpdateResponseDTO = userService.updateUser(authentication, userUpdateRequestDTO);
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
+
+        UserUpdateResponseDTO userUpdateResponseDTO = userService.updateUser(userUpdateRequestDTO, user);
 
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "유저수정에 성공했습니다.");
