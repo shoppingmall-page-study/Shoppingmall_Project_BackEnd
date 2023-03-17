@@ -13,7 +13,6 @@ import com.project.shopping.dto.requestDTO.UserRequestDTO.UserUpdateRequestDTO;
 import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.CheckAuthCodeResponseDTO;
 import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.SendAuthCodeResponseDTO;
 import com.project.shopping.dto.responseDTO.UserResponseDTO.*;
-import com.project.shopping.model.User;
 import com.project.shopping.security.Role;
 import com.project.shopping.service.EmailAuthenticationService;
 import com.project.shopping.service.UserService;

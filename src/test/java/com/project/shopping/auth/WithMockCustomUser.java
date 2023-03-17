@@ -12,4 +12,5 @@ import java.lang.annotation.RetentionPolicy;
 public @interface WithMockCustomUser {
     String user();
     Role roles();
+
 }
