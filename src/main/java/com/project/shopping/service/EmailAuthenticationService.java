@@ -32,7 +32,7 @@ public class EmailAuthenticationService {
     private final JavaMailSender javaMailSender;
 
     private  final RedisTemplate<String, Object> redisTemplate;
-    public String createAuthCode(){
+    private String createAuthCode(){
         Random random = new Random();
         StringBuffer key = new StringBuffer();
 
@@ -56,7 +56,7 @@ public class EmailAuthenticationService {
 
 
     // 메일 내용 작성
-    public MimeMessage createMessage(String receiver, String authCode) throws MessagingException, UnsupportedEncodingException {
+    private MimeMessage createMessage(String receiver, String authCode) throws MessagingException, UnsupportedEncodingException {
 		log.info("보내는 대상 : " + receiver);
 		log.info("인증 번호 : " + authCode);
 
@@ -106,12 +106,12 @@ public class EmailAuthenticationService {
 
 
     //인증 코드 저장 유효시간 5분 설정
-    public void saveEmailAuthCode(String authCode, String email){
+    private void saveEmailAuthCode(String authCode, String email){
         setValueWithExpire( email + "AuthCode", authCode,Duration.ofMinutes(5));
     }
 
     //인증 되었는지 여부 저장 유효시간 1일 설정
-    public void saveIsEmailAuthenticated(String email){
+    private void saveIsEmailAuthenticated(String email){
         setValueWithExpire( email + "AuthCode", "Authenticated", Duration.ofDays(1));
     }
 
@@ -132,9 +132,7 @@ public class EmailAuthenticationService {
 
     public boolean isEmailAuthenticated(String email){
 
-
         String authCodeFromRedis = isValueExist(email+"AuthCode") ? getStringValue(email+"AuthCode") : "null";
-
 
         if(authCodeFromRedis.equals("Authenticated")) {
             return true;
@@ -143,13 +141,13 @@ public class EmailAuthenticationService {
     }
 
 
-    public void setValueWithExpire(String key, Object value, Duration ExpiresIn){
+    private void setValueWithExpire(String key, Object value, Duration ExpiresIn){
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, value, ExpiresIn);
     }
 
 
-    public boolean isValueExist(Object key){
+    private boolean isValueExist(Object key){
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
 
         Object value = valueOperations.get(key);
@@ -161,7 +159,7 @@ public class EmailAuthenticationService {
     }
 
 
-    public String getStringValue(String key){
+    private String getStringValue(String key){
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
 
         String value = (String)valueOperations.get(key);
