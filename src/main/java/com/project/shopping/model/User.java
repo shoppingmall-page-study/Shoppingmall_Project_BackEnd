@@ -1,5 +1,6 @@
 package com.project.shopping.model;
 
+import com.project.shopping.security.Role;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -53,7 +54,7 @@ public class User extends BaseTimeEntity {
     private String postCode;
 
     @Setter
-    private String roles;
+    private Role roles;
     @Column(nullable = false)
     @Setter
     private  String status;
@@ -64,8 +65,8 @@ public class User extends BaseTimeEntity {
 
 
     public List<String> getRoleList(){
-        if(this.roles.length()>0){
-            return Arrays.asList(this.roles.split(","));
+        if(this.roles.getRole().length()>0){
+            return Arrays.asList(this.roles.getRole().split(","));
         }
 
         return new ArrayList<>();
@@ -74,7 +75,7 @@ public class User extends BaseTimeEntity {
 
 
     @Builder
-    public User(String email,String password, String username, String address, int age, String nickname, String phoneNumber,String postCode ,String roles, String status) {
+    public User(String email,String password, String username, String address, int age, String nickname, String phoneNumber,String postCode ,Role roles, String status) {
         this.email = email;
         this.password = password;
         this.username = username;

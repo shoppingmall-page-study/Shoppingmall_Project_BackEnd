@@ -48,7 +48,7 @@ public class UserService {
                 .password(passwordEncoder.encode((userJoinRequestDTO.getPassword())))
                 .username(userJoinRequestDTO.getUsername())
                 .address(userJoinRequestDTO.getAddress()).age(userJoinRequestDTO.getAge())
-                .roles(Role.ROLE_USER.getRole())
+                .roles(Role.ROLE_USER)
                 .nickname(userJoinRequestDTO.getNickname()).phoneNumber(userJoinRequestDTO.getPhoneNumber())
                 .status("active")
                 .postCode(userJoinRequestDTO.getPostCode()).build();
@@ -77,7 +77,7 @@ public class UserService {
                 .password(generateRandomPassword())
                 .username(name)
                 .address("null").age(1000)
-                .roles(Role.ROLE_GUEST.getRole())
+                .roles(Role.ROLE_GUEST)
                 .status("null")
                 .postCode("null")
                 .nickname("null").phoneNumber("null").build();
@@ -98,7 +98,7 @@ public class UserService {
         user.setPostCode(userOAuthAddInfoRequestDTO.getPostCode());
         user.setAge(userOAuthAddInfoRequestDTO.getAge());
         user.setNickname(userOAuthAddInfoRequestDTO.getNickname());
-        user.setRoles(Role.ROLE_USER.getRole());
+        user.setRoles(Role.ROLE_USER);
         user.setPhoneNumber(userOAuthAddInfoRequestDTO.getPhoneNumber());
 
         userRepository.save(user);
@@ -232,10 +232,15 @@ public class UserService {
         return passwordEncoder.encode(generatedRandomString);
 
     }
+
+
     public User findByEmail(String email){
         return  userRepository.findByEmail(email)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 유저 찾기
     }
+
+
+
 
 
 }
