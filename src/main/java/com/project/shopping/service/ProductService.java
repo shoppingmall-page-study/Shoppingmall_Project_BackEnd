@@ -3,7 +3,6 @@ package com.project.shopping.service;
 
 import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
-import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductCreateRequestDTO;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductUpdateRequestDTO;
 import com.project.shopping.dto.responseDTO.ProductResponseDTO.ProductCreateResponseDTO;
@@ -13,9 +12,7 @@ import com.project.shopping.dto.responseDTO.ProductResponseDTO.ProductSearchResp
 import com.project.shopping.model.Product;
 import com.project.shopping.model.User;
 import com.project.shopping.repository.ProductRepository;
-import com.project.shopping.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,18 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
 
-
     private final ProductRepository productRepository;
 
-
-    private final  UserRepository userRepository;
-    // 상품 생성
-    public ProductCreateResponseDTO create(ProductCreateRequestDTO productCreateRequestDTO, Authentication authentication){
-
-        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 유저 찾기
+    public ProductCreateResponseDTO create(ProductCreateRequestDTO productCreateRequestDTO, User user){
 
         Product product = Product.builder().userId(user)
                 .title(productCreateRequestDTO.getTitle())
@@ -49,6 +37,7 @@ public class ProductService {
                 .build(); // 상품 생성
 
         product = productRepository.save(product);
+
         ProductCreateResponseDTO productCreateResponseDTO = ProductCreateResponseDTO.builder()
                 .title(product.getTitle())
                 .content(product.getContent())
@@ -64,12 +53,8 @@ public class ProductService {
     }
 
 
-    public Product update(Authentication authentication, ProductUpdateRequestDTO productUpdateRequestDTO, int ProductId){
+    public Product update(User user, ProductUpdateRequestDTO productUpdateRequestDTO, int ProductId){
 
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException)); // 유저 찾기
         Product product = productRepository.findByIdAndUserId(ProductId, user)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));// 해당 상품 찾기
 
@@ -104,16 +89,8 @@ public class ProductService {
 
 
 
-    public ProductDeleteResponseDTO deleteProduct(Authentication authentication, int ProductId){
-        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDetails.getUser().getEmail();
+    public ProductDeleteResponseDTO deleteProduct(User user, int ProductId){
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// user 찾기
-
-        if(!productRepository.existsByIdAndUserId(ProductId,user)){
-            throw  new CustomException(ErrorCode.NotFoundProductException);
-        }
         Product product = productRepository.findByIdAndUserId(ProductId,user)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));// 유저와 상품명으로 상품 찾기
         product.setStatus("Disabled");
@@ -135,9 +112,9 @@ public class ProductService {
         return productDeleteResponseDTO;
     }
 
-    public List<ProductSearchResponseDTO> getProductList(String title, String stauts){
+    public List<ProductSearchResponseDTO> getProductList(String title, String status){
 
-        List<Product> productList = productRepository.getProductList(title, stauts);
+        List<Product> productList = productRepository.getProductList(title, status);
         List<ProductSearchResponseDTO> response  = new ArrayList<>();
 
         for(Product product : productList){
@@ -185,12 +162,7 @@ public class ProductService {
         return productDtos;
     }
 
-    public List<ProductJoinResponseDTO> getEqUserAndActive(Authentication authentication, String status){
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 해당 유저 찾기
-
+    public List<ProductJoinResponseDTO> getEqUserAndActive(User user, String status){
 
         List<Product> findAllProduct = productRepository.getEqUserAndActive(user, status);
 

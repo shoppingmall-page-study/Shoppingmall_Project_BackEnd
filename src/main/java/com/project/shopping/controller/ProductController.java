@@ -3,11 +3,13 @@ package com.project.shopping.controller;
 
 import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
+import com.project.shopping.auth.PrincipalDetails;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductCreateRequestDTO;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductSearchRequestDTO;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductUpdateRequestDTO;
 import com.project.shopping.dto.responseDTO.ProductResponseDTO.*;
 import com.project.shopping.model.Product;
+import com.project.shopping.model.User;
 import com.project.shopping.repository.ProductRepository;
 import com.project.shopping.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +40,9 @@ public class ProductController {
     @PostMapping("/api/product/create")
     public ResponseEntity<?> createProduct(Authentication authentication, @RequestBody @Valid ProductCreateRequestDTO productCreateRequestDTO) {
 
-        ProductCreateResponseDTO productCreateResponseDTO = productService.create(productCreateRequestDTO,authentication); // 상품 생성
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
+
+        ProductCreateResponseDTO productCreateResponseDTO = productService.create(productCreateRequestDTO,user); // 상품 생성
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "상품 등록에 성공했습니다.");
@@ -50,8 +54,9 @@ public class ProductController {
     @DeleteMapping("/api/product/delete/{id}")
     public ResponseEntity<?>  productDelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
 
-        ProductDeleteResponseDTO productDeleteResponseDTO = productService.deleteProduct(authentication, ProductId);
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
+        ProductDeleteResponseDTO productDeleteResponseDTO = productService.deleteProduct(user, ProductId);
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "상품삭제에 성공했습니다.");
@@ -60,10 +65,6 @@ public class ProductController {
         return ResponseEntity.ok().body(result);
 
     }
-
-
-
-
 
     @GetMapping("/api/products")
     public ResponseEntity<?> findAll(){
@@ -90,7 +91,9 @@ public class ProductController {
     @GetMapping("/api/products/user")
     public ResponseEntity<?> findResistedProductByUser(Authentication authentication){
 
-        List<ProductJoinResponseDTO> productJoinResponseDTOS = productService.getEqUserAndActive(authentication, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
+
+        List<ProductJoinResponseDTO> productJoinResponseDTOS = productService.getEqUserAndActive(user, ActiveStatus); // 해당 유저가 등록한 상품들 찾기
 
 
         Map<String , Object> result = new HashMap<>();
@@ -115,7 +118,8 @@ public class ProductController {
     @PutMapping("/api/product/update/{id}")
     public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody @Valid ProductUpdateRequestDTO productUpdateRequestDTO){
 
-        Product product = productService.update(authentication, productUpdateRequestDTO, ProductId);
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
+        Product product = productService.update(user, productUpdateRequestDTO, ProductId);
 
         ProductUpdateResponseDTO productUpdateResponseDTO = ProductUpdateResponseDTO.builder()
                 .productId(product.getId())
