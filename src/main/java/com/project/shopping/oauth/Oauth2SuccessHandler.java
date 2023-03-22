@@ -28,8 +28,6 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
 
 
-
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("Oauth 로그인 성공");
@@ -43,7 +41,7 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
         // 쿠키 생성  후 쿠키 저장
         response.addCookie(generateCookie(refreshToken));
        log.info("현재 유저 유저 권한" + user.getRoles() );
-        if(user.getRoles().equals(Role.ROLE_USER)){
+        if(user.getRoles()== Role.ROLE_USER){
             // 해당 url 로 리다이렉트
             log.info("추가 정보 받은 상태",user.getRoles());
             response.sendRedirect(makeRedirectUrl(accessToken));

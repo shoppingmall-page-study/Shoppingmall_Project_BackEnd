@@ -64,9 +64,9 @@ public class User extends BaseTimeEntity {
     private boolean passwordEnable;
 
 
-    public List<String> getRoleList(){
-        if(this.roles.getRole().length()>0){
-            return Arrays.asList(this.roles.getRole().split(","));
+    public List<Role> getRoleList(){
+        if(this.roles!=null){
+            return Arrays.asList(this.roles);
         }
 
         return new ArrayList<>();
