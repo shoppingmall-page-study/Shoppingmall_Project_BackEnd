@@ -26,9 +26,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
-    public OrderResponseDTO create(String email, OrderRequestDTO orderRequestDTO)throws CustomException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
+    public OrderResponseDTO create(User user, OrderRequestDTO orderRequestDTO)throws CustomException {
+
         ArrayList<OrderDetail> products = new ArrayList<>();
         ArrayList<ProductInOrderResponseDTO>  responseProductsDTO = new ArrayList<>();
         long totalAmount = 0;
@@ -88,10 +87,8 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public List<OrderResponseDTO> getOrderList(String email){
+    public List<OrderResponseDTO> getOrderList(User user){
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
         List<Order> orderList = orderRepository.findAllByUser(user);
         List<OrderResponseDTO> orders = new ArrayList<>();
 

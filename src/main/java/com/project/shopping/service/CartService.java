@@ -13,7 +13,6 @@ import com.project.shopping.repository.CartRepository;
 import com.project.shopping.repository.ProductRepository;
 import com.project.shopping.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,11 +26,8 @@ public class CartService {
     private  final UserRepository userRepository;
 
     //생성
-    public  CartCreateResponseDTO create(Authentication authentication, int ProductId, CartCreateRequestDTO cartCreateRequestDTO){
-        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = userDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// user 찾기
+    public  CartCreateResponseDTO create(User user, int ProductId, CartCreateRequestDTO cartCreateRequestDTO){
+
         Product product = productRepository.findById(ProductId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));// 상품 찾기
 
@@ -39,13 +35,18 @@ public class CartService {
         if(cartRepository.existsCartByUserIdAndProductIdAndStatus(user, product,"active")){ // 해당 상품이 존재 할시
             Cart findCart = cartRepository.findCartByUserIdAndProductId(user, product)
                     .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));// 카트찾기
+
             long totalSum = findCart.getProductNum()+ cartCreateRequestDTO.getProductNum();
-            //System.out.println(totalsum);
+
             if(totalSum> product.getTotal()){
                 throw  new CustomException(ErrorCode.NotFoundCartNumException);
+
             }
+
             findCart.setProductNum(totalSum);
+
             Cart createCart = cartRepository.save(findCart); // 카트 생성
+
             ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
                     .productId(createCart.getProductId().getId())
                     .title(createCart.getProductId().getTitle())
@@ -95,17 +96,12 @@ public class CartService {
 
     }
 
-    public CartUpdateResosneDTO update(Authentication authentication, int cartId, CartUpdateRequestDTO cartUpdateRequestDTO){
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 유저 찾기
+    public CartUpdateResosneDTO update(User user, int cartId, CartUpdateRequestDTO cartUpdateRequestDTO){
 
         Cart cart = cartRepository.findCartByUserIdAndId(user,cartId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));// 유저랑 카트 아이디를 이용한 카트 찾기
         long totalCount =  (cartUpdateRequestDTO.getProductNum());
 
-        //System.out.println(totalcount);
         if(totalCount > cart.getProductId().getTotal()){
             throw new CustomException(ErrorCode.NotFoundCartNumException);
         }
@@ -137,15 +133,7 @@ public class CartService {
     }
 
     // 삭제
-    public  CartDeleteResponseDTO deleteCart(Authentication authentication, int id){
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
-//        if(!cartRepository.existsByUserIdAndId(user, id)){
-//            throw  new CustomException("Cart Not Found",ErrorCode.NotFoundCartException);
-//        } // 밑에 코드랑 같은 코드 임
+    public  CartDeleteResponseDTO deleteCart(User user, int id){
 
         Cart findcart = cartRepository.findCartByUserIdAndId(user, id)
                         .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));
@@ -176,14 +164,7 @@ public class CartService {
     }
 
 
-    public List<CartUserListJoinResponseDTO>  getEqUserAndCart(Authentication authentication, String status){
-
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String userEmail = principalDetails.getUser().getEmail();
-
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
-
+    public List<CartUserListJoinResponseDTO>  getEqUserAndCart(User user, String status){
 
         List<Cart> cartList =  cartRepository.getEqUserAndCart(user, status);
         List<CartUserListJoinResponseDTO> cartdtos = new ArrayList<>();
