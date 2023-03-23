@@ -3,13 +3,12 @@ package com.project.shopping.service;
 import com.project.shopping.dto.UserDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserDeleteRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserJoinRequestDTO;
+import com.project.shopping.dto.requestDTO.UserRequestDTO.UserOAuthAddInfoRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserUpdateRequestDTO;
-import com.project.shopping.dto.responseDTO.UserResponseDTO.UserDeleteResponseDTO;
-import com.project.shopping.dto.responseDTO.UserResponseDTO.UserInfoResponseDTO;
-import com.project.shopping.dto.responseDTO.UserResponseDTO.UserJoinResponseDTO;
-import com.project.shopping.dto.responseDTO.UserResponseDTO.UserUpdateResponseDTO;
+import com.project.shopping.dto.responseDTO.UserResponseDTO.*;
 import com.project.shopping.model.User;
 import com.project.shopping.repository.UserRepository;
+import com.project.shopping.security.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -102,7 +101,7 @@ class UserServiceTest {
                 .password("test")
                 .username(name)
                 .address("null").age(1000)
-                .roles("ROLE_USER")
+                .roles(Role.ROLE_USER)
                 .status("null")
                 .postCode("null")
                 .nickname("null").phoneNumber("null").build();
@@ -120,10 +119,10 @@ class UserServiceTest {
 
 
     @Test
-    @DisplayName("## OAuth 유저 생성 서비스 테스트 ##")
+    @DisplayName("## OAuth 유저 추가정보 입력 서비스 테스트 ##")
     public void saveUser () throws Exception{
 
-        UserDTO userDTO = UserDTO.builder()
+        UserOAuthAddInfoResponseDTO userOAuthAddInfoResponseDTO = UserOAuthAddInfoResponseDTO.builder()
                 .email("test@gmail.com")
                 .username("test")
                 .address("test")
@@ -133,6 +132,15 @@ class UserServiceTest {
                 .phoneNumber("010-0000-0000")
                 .build();
 
+        UserOAuthAddInfoRequestDTO userOAuthAddInfoRequestDTO = UserOAuthAddInfoRequestDTO.builder()
+                .address("test")
+                .postCode("test")
+                .age(20)
+                .nickname("test")
+                .phoneNumber("010-0000-0000")
+                .build();
+
+        String email = "typoon0820@gmail.com";
 
         User user = User.builder()
                 .email("test@gmail.com")
@@ -153,10 +161,10 @@ class UserServiceTest {
 
 
         //when
-        UserDTO result = userService.saveUser(userDTO);
+        UserOAuthAddInfoResponseDTO result = userService.oauthUserInfoAdd(email, userOAuthAddInfoRequestDTO);
 
         //then
-        assertThat(result).usingRecursiveComparison().isEqualTo(userDTO);
+        assertThat(result).usingRecursiveComparison().isEqualTo(userOAuthAddInfoResponseDTO);
     }
 
     @Test

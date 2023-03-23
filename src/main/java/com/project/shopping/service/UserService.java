@@ -7,16 +7,12 @@ import com.project.shopping.dto.UserDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserDeleteRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserOAuthAddInfoRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserUpdateRequestDTO;
-<<<<<<< HEAD
-import com.project.shopping.dto.requestDTO.UserRequestDTO.userJoinRequestDTO;
 import com.project.shopping.dto.responseDTO.UserResponseDTO.*;
-=======
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserJoinRequestDTO;
 import com.project.shopping.dto.responseDTO.UserResponseDTO.UserDeleteResponseDTO;
 import com.project.shopping.dto.responseDTO.UserResponseDTO.UserInfoResponseDTO;
 import com.project.shopping.dto.responseDTO.UserResponseDTO.UserJoinResponseDTO;
 import com.project.shopping.dto.responseDTO.UserResponseDTO.UserUpdateResponseDTO;
->>>>>>> a1504cd (유저 컨트롤러 테스트 작성 중)
 import com.project.shopping.model.User;
 import com.project.shopping.repository.UserRepository;
 import com.project.shopping.security.Role;

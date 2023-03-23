@@ -8,11 +8,13 @@ import com.project.shopping.dto.requestDTO.EmailAuthenticationRequestDTO.CheckAu
 import com.project.shopping.dto.requestDTO.EmailAuthenticationRequestDTO.SendAuthCodeRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserDeleteRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserJoinRequestDTO;
+import com.project.shopping.dto.requestDTO.UserRequestDTO.UserOAuthAddInfoRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserUpdateRequestDTO;
 import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.CheckAuthCodeResponseDTO;
 import com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO.SendAuthCodeResponseDTO;
 import com.project.shopping.dto.responseDTO.UserResponseDTO.*;
 import com.project.shopping.model.User;
+import com.project.shopping.security.Role;
 import com.project.shopping.service.EmailAuthenticationService;
 import com.project.shopping.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -50,7 +52,7 @@ class UserControllerTest {
     private EmailAuthenticationService emailAuthenticationService;
 
     @Test
-    @WithMockCustomUser(user = "test@gmail.com", roles = "ROLE_USER")
+    @WithMockCustomUser(user = "test@gmail.com", roles = Role.ROLE_USER)
     @DisplayName("## 회원가입 테스트 ##")
     public void signUp() throws Exception{
 
@@ -93,7 +95,7 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockCustomUser(user = "test@gmail.com", roles = "ROLE_USER")
+    @WithMockCustomUser(user = "test@gmail.com", roles = Role.ROLE_USER)
     @DisplayName("## 유저 삭제 테스트 ##")
     public void deleteUser() throws Exception{
 
@@ -126,11 +128,19 @@ class UserControllerTest {
     }
     
     @Test
-    @WithMockCustomUser(user = "test@gmail.com", roles = "ROLE_USER")
-    @DisplayName("## OAuth 회원가입 ##")
+    @WithMockCustomUser(user = "test@gmail.com", roles = Role.ROLE_USER)
+    @DisplayName("## OAuth 추가정보입력 ##")
     public void oauthSignup () throws Exception{
 
-        UserDTO userDTO = UserDTO.builder()
+        UserOAuthAddInfoRequestDTO userOAuthAddInfoRequestDTO = UserOAuthAddInfoRequestDTO.builder()
+                .address("test")
+                .postCode("test")
+                .nickname("test")
+                .age(20)
+                .phoneNumber("010-0000-0000")
+                .build();
+
+        UserOAuthAddInfoResponseDTO userOAuthAddInfoResponseDTO = UserOAuthAddInfoResponseDTO.builder()
                 .email("test@gmail.com")
                 .username("test")
                 .address("test")
@@ -138,17 +148,16 @@ class UserControllerTest {
                 .nickname("test")
                 .age(20)
                 .phoneNumber("010-0000-0000")
-                .status("active")
                 .build();
 
         //given
-        BDDMockito.given(userService.saveUser(any())).willReturn(userDTO);
+        BDDMockito.given(userService.oauthUserInfoAdd(any(),any())).willReturn(userOAuthAddInfoResponseDTO);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(userDTO);
+        String json = objectMapper.writeValueAsString(userOAuthAddInfoRequestDTO);
 
         //when
-        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/api/Oauth/join")
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/api/oauth/user/info/add")
                 .with(SecurityMockMvcRequestPostProcessors.csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json));
@@ -159,7 +168,7 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockCustomUser(user = "test@gmail.com", roles = "ROLE_USER")
+    @WithMockCustomUser(user = "test@gmail.com", roles = Role.ROLE_USER)
     @DisplayName("## 유저정보가져오기 ##")
     public void userInfo () throws Exception{
 
@@ -187,7 +196,7 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockCustomUser(user = "test@gmail.com", roles = "ROLE_USER")
+    @WithMockCustomUser(user = "test@gmail.com", roles = Role.ROLE_USER)
     @DisplayName("## 유저 업데이트 테스트 ##")
     public void userUpdate () throws Exception{
 
@@ -228,7 +237,7 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockCustomUser(user = "test@gmail.com", roles = "ROLE_USER")
+    @WithMockCustomUser(user = "test@gmail.com", roles = Role.ROLE_USER)
     @DisplayName("## 이메일 체크 테스트 ##")
     public void checkEmail () throws Exception{
 
@@ -251,7 +260,7 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockCustomUser(user = "test@gmail.com", roles = "ROLE_USER")
+    @WithMockCustomUser(user = "test@gmail.com", roles = Role.ROLE_USER)
     @DisplayName("## 닉네임 체크 테스트 ##")
     public void checkNickname () throws Exception{
 
@@ -273,7 +282,7 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockCustomUser(user = "test@gmail.com", roles = "ROLE_USER")
+    @WithMockCustomUser(user = "test@gmail.com", roles = Role.ROLE_USER)
     @DisplayName("## 인증코드 이메일 전송 테스트 ##")
     public void sendAuthCodeEmail () throws Exception{
 
@@ -303,7 +312,7 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockCustomUser(user = "test@gmail.com", roles = "ROLE_USER")
+    @WithMockCustomUser(user = "test@gmail.com", roles = Role.ROLE_USER)
     @DisplayName("## 인증코드 이메일 확인 테스트 ##")
     public void checkAuthCodeEmail () throws Exception{
 
