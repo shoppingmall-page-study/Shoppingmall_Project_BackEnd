@@ -31,10 +31,9 @@ public class OrderController {
 
     @GetMapping("/api/order")
     public ResponseEntity<?> getOrderList(Authentication authentication){
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String email = principalDetails.getUser().getEmail();
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-        List<OrderResponseDTO> orders = orderService.getOrderList(email);
+        List<OrderResponseDTO> orders = orderService.getOrderList(user);
 
         Map<String , Object> result = new HashMap<>();
         result.put("data", orders);
@@ -45,10 +44,9 @@ public class OrderController {
 
     @PostMapping("/api/order/create")
     public ResponseEntity<?> createOrder(Authentication authentication,@Valid @RequestBody OrderRequestDTO orderRequestDTO){
-            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-            String email = principalDetails.getUser().getEmail();
+            User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-            OrderResponseDTO orderResponseDTO = orderService.create(email, orderRequestDTO);
+            OrderResponseDTO orderResponseDTO = orderService.create(user, orderRequestDTO);
             Map<String, Object> result = new HashMap<>();
             result.put("msg", "주문 등록에 성공했습니다.");
             result.put("data", orderResponseDTO);

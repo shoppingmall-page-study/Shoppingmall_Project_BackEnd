@@ -39,7 +39,9 @@ public class CartController {
     // 여기서 ID는 상품 ID
     public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "id") int ProductId ,@RequestBody @Valid CartCreateRequestDTO cartCreateRequestDTO){
 
-        CartCreateResponseDTO cartCreateResponseDTO = cartService.create(authentication, ProductId, cartCreateRequestDTO); // 카트 생성
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
+
+        CartCreateResponseDTO cartCreateResponseDTO = cartService.create(user, ProductId, cartCreateRequestDTO); // 카트 생성
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "장바구니 등록에 성공했습니다.");
         result.put("data", cartCreateResponseDTO);
@@ -56,7 +58,9 @@ public class CartController {
     @GetMapping("/api/cart/user")
     public ResponseEntity<?> cartList(Authentication authentication){
 
-        List<CartUserListJoinResponseDTO> cartUserListJoinResponseDTOS = cartService.getEqUserAndCart(authentication,ActiveStatus);
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
+
+        List<CartUserListJoinResponseDTO> cartUserListJoinResponseDTOS = cartService.getEqUserAndCart(user, ActiveStatus);
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg", " 장바구니 조회에 성공했습니다.");
@@ -70,8 +74,9 @@ public class CartController {
     @DeleteMapping("/api/cart/delete/{id}") // id는 cart_Id
     public ResponseEntity<?> cartDelete(Authentication authentication, @PathVariable(value = "id")int id){
 
-        CartDeleteResponseDTO cartDeleteResponseDTO = cartService.deleteCart(authentication, id);
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
+        CartDeleteResponseDTO cartDeleteResponseDTO = cartService.deleteCart(user, id);
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg","장바구니 삭제에 성공했습니다.");
@@ -82,8 +87,9 @@ public class CartController {
     @PutMapping("/api/cart/update/{id}")
     public ResponseEntity<?> cartUpdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody @Valid CartUpdateRequestDTO cartUpdateRequestDTO){
 
-        CartUpdateResosneDTO cartUpdateResosneDTO = cartService.update(authentication, cartId, cartUpdateRequestDTO);
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
+        CartUpdateResosneDTO cartUpdateResosneDTO = cartService.update(user, cartId, cartUpdateRequestDTO);
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg","장바구니 수정에 성공했습니다.");
@@ -93,9 +99,5 @@ public class CartController {
 
 
     }
-
-
-
-
 
 }
