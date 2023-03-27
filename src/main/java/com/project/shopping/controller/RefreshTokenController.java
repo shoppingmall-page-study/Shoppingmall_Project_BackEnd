@@ -30,7 +30,7 @@ public class RefreshTokenController {
 
     // logout 시 cookie 저장된 refreshToken 삭제
     @DeleteMapping("/api/delete/refreshToken")
-    public ResponseEntity<?> expireRefreshToken( HttpServletResponse response, Authentication authentication){
+    public ResponseEntity<?> expireRefreshToken( HttpServletResponse response){
         refreshTokenService.deleteRefreshToken(response);
         return ResponseEntity.ok().body("refreshToken이 삭제 완료 되었습니다");
     }
