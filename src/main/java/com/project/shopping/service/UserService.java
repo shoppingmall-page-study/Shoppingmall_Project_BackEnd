@@ -7,8 +7,12 @@ import com.project.shopping.dto.UserDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserDeleteRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserOAuthAddInfoRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserUpdateRequestDTO;
-import com.project.shopping.dto.requestDTO.UserRequestDTO.userJoinRequestDTO;
 import com.project.shopping.dto.responseDTO.UserResponseDTO.*;
+import com.project.shopping.dto.requestDTO.UserRequestDTO.UserJoinRequestDTO;
+import com.project.shopping.dto.responseDTO.UserResponseDTO.UserDeleteResponseDTO;
+import com.project.shopping.dto.responseDTO.UserResponseDTO.UserInfoResponseDTO;
+import com.project.shopping.dto.responseDTO.UserResponseDTO.UserJoinResponseDTO;
+import com.project.shopping.dto.responseDTO.UserResponseDTO.UserUpdateResponseDTO;
 import com.project.shopping.model.User;
 import com.project.shopping.repository.UserRepository;
 import com.project.shopping.security.Role;
@@ -28,7 +32,7 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailAuthenticationService emailAuthenticationService;
 
-    public UserJoinResponseDTO create(userJoinRequestDTO userJoinRequestDTO){
+    public UserJoinResponseDTO create(UserJoinRequestDTO userJoinRequestDTO){
 
         //이메일 중복 체크
         if(userRepository.existsByEmail(userJoinRequestDTO.getEmail())){
@@ -116,7 +120,6 @@ public class UserService {
                 .build();
 
         return userOAuthAddInfoResponseDTO;
-
     }
     public UserInfoResponseDTO findUserByEmail(String email){
 

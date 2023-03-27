@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
 
-@EnableJpaAuditing
 @EnableAspectJAutoProxy
 @SpringBootApplication
 public class ShoppingApplication {

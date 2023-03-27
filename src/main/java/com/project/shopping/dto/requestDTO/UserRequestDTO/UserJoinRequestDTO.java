@@ -13,7 +13,7 @@ import javax.validation.constraints.Pattern;
 
 @NoArgsConstructor
 @Getter
-public class userJoinRequestDTO {
+public class UserJoinRequestDTO {
 
     @Email
     @NotBlank
@@ -40,7 +40,7 @@ public class userJoinRequestDTO {
 
     @Builder
 
-    public userJoinRequestDTO(String email, String password, String username, String address, String postCode, int age, String nickname, String phoneNumber) {
+    public UserJoinRequestDTO(String email, String password, String username, String address, String postCode, int age, String nickname, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.username = username;

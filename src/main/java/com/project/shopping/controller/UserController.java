@@ -43,7 +43,7 @@ public class UserController  {
     private final EmailAuthenticationService emailAuthenticationService;
 
     @PostMapping("/api/join")
-    public ResponseEntity<?> signup(@RequestBody @Valid userJoinRequestDTO userJoinRequestDTO){
+    public ResponseEntity<?> signup(@RequestBody @Valid UserJoinRequestDTO userJoinRequestDTO){
 
         UserJoinResponseDTO userJoinResponseDTO = userService.create(userJoinRequestDTO);
 
@@ -111,7 +111,7 @@ public class UserController  {
         UserCheckEmailResponseDTO userCheckEmailResponseDTO = UserCheckEmailResponseDTO.builder().email(value).build();
 
         Map<String, Object> response = new HashMap<>();
-        response.put("msg", "사용가능한 이메일 입니다..");
+        response.put("msg", "사용가능한 이메일 입니다.");
         response.put("data", userCheckEmailResponseDTO);
         return ResponseEntity.ok().body(response);
 
@@ -122,7 +122,7 @@ public class UserController  {
         userService.existsByNickname(value);
         UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = UserCheckNicknameResponseDTO.builder().nickname(value).build();
         Map<String, Object> response = new HashMap<>();
-        response.put("msg", "사용가능한 닉네임 입니다..");
+        response.put("msg", "사용가능한 닉네임 입니다.");
         response.put("data", userCheckNicknameResponseDTO);
         return ResponseEntity.ok().body(response);
 
