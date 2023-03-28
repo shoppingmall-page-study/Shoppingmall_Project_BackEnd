@@ -19,4 +19,5 @@ public class UserDeleteResponseDTO {
     public static UserDeleteResponseDTO toUserDeleteResponseDTO(User user){
         return  new UserDeleteResponseDTO(user.getEmail(), user.getUsername(),user.getNickname());
     }
+
 }

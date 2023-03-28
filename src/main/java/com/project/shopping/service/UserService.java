@@ -17,6 +17,7 @@ import com.project.shopping.repository.UserRepository;
 import com.project.shopping.security.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -50,12 +51,12 @@ public class UserService {
 
         // dto -> entity
         User user = userJoinRequestDTO.toEntity(passwordEncoder.encode(userJoinRequestDTO.getPassword()),Role.ROLE_USER,"active");
-
         // user 저장 후
         userRepository.save(user);
 
         // entity -> dto 변환 후 return
         return UserJoinResponseDTO.toUserJoinResponseDTO(user);
+
     }
 
     public  User oAuthLoginCreateUser(String email, String name){
@@ -83,6 +84,7 @@ public class UserService {
         log.info(user.getRoles()+", user 권한");
 
         return UserOAuthAddInfoResponseDTO.toUserOAuthAddInfoResponseDTO(user);
+
     }
 
     public UserInfoResponseDTO findUserByEmail(String email){
@@ -130,9 +132,7 @@ public class UserService {
             throw  new CustomException(ErrorCode.DuplicatedNickNameException);
         }
 
-        // user 업데이트
-        user.update(userUpdateRequestDTO.toEntity());
-        userRepository.save(user);
+
 
 
         return UserUpdateResponseDTO.toUserUpdateResponseDTO(user);
@@ -169,12 +169,6 @@ public class UserService {
         return passwordEncoder.encode(generatedRandomString);
 
     }
-
-
-
-
-
-
 
 
 }
