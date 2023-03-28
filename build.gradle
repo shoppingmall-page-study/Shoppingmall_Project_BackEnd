@@ -69,6 +69,8 @@ dependencies {
 
 
 
+    //ModelMapper 추가
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.9'
 }
 
 tasks.named('test') {

@@ -13,8 +13,5 @@ public class UserDeleteRequestDTO {
     @NotBlank
     private  String password;
 
-    @Builder
-    public UserDeleteRequestDTO(String password) {
-        this.password = password;
-    }
+
 }

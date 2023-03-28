@@ -3,7 +3,6 @@ package com.project.shopping.service;
 
 import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
-import com.project.shopping.dto.UserDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserDeleteRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserOAuthAddInfoRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.UserUpdateRequestDTO;
@@ -18,6 +17,7 @@ import com.project.shopping.repository.UserRepository;
 import com.project.shopping.security.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +31,8 @@ public class UserService {
     private final  UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailAuthenticationService emailAuthenticationService;
+
+    private  final ModelMapper modelMapper;
 
     public UserJoinResponseDTO create(UserJoinRequestDTO userJoinRequestDTO){
 
@@ -47,32 +49,13 @@ public class UserService {
             throw  new CustomException(ErrorCode.DuplicatedNickNameException);
         }
 
-        User user = User.builder()
-                .email(userJoinRequestDTO.getEmail())
-                .password(passwordEncoder.encode((userJoinRequestDTO.getPassword())))
-                .username(userJoinRequestDTO.getUsername())
-                .address(userJoinRequestDTO.getAddress()).age(userJoinRequestDTO.getAge())
-                .roles(Role.ROLE_USER)
-                .nickname(userJoinRequestDTO.getNickname()).phoneNumber(userJoinRequestDTO.getPhoneNumber())
-                .status("active")
-                .postCode(userJoinRequestDTO.getPostCode()).build();
+        // dto -> entity
+        User user = userJoinRequestDTO.toEntity(passwordEncoder.encode(userJoinRequestDTO.getPassword()),Role.ROLE_USER,"active");
+        // user 저장 후
+        userRepository.save(user);
 
-
-        user = userRepository.save(user);
-        UserJoinResponseDTO userJoinResponseDTO = UserJoinResponseDTO.builder()
-                .email(user.getEmail())
-                .username(user.getUsername())
-                .address(user.getAddress())
-                .postCode(user.getPostCode())
-                .age(user.getAge())
-                .nickname(user.getNickname())
-                .phoneNumber(user.getPhoneNumber())
-                .createDate(user.getCreateDate())
-                .modifiedDate(user.getModifiedDate())
-                .build();
-
-
-        return userJoinResponseDTO;
+        // entity -> dto 변환 후 return
+        return modelMapper.map(user, UserJoinResponseDTO.class);
     }
 
     public  User oAuthLoginCreateUser(String email, String name){
@@ -89,66 +72,29 @@ public class UserService {
     }
 
 
-    public UserOAuthAddInfoResponseDTO oauthUserInfoAdd(String email, UserOAuthAddInfoRequestDTO userOAuthAddInfoRequestDTO){
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
+    public UserOAuthAddInfoResponseDTO oauthUserInfoAdd(User user, UserOAuthAddInfoRequestDTO userOAuthAddInfoRequestDTO){
 
         if(userRepository.existsByNickname(userOAuthAddInfoRequestDTO.getNickname())){
             throw  new CustomException(ErrorCode.DuplicatedNickNameException);
         }
 
 
-        user.setAddress(userOAuthAddInfoRequestDTO.getAddress());
-        user.setPostCode(userOAuthAddInfoRequestDTO.getPostCode());
-        user.setAge(userOAuthAddInfoRequestDTO.getAge());
-        user.setNickname(userOAuthAddInfoRequestDTO.getNickname());
-        user.setRoles(Role.ROLE_USER);
-        user.setPhoneNumber(userOAuthAddInfoRequestDTO.getPhoneNumber());
-
+        user.oauthInfoAdd(userOAuthAddInfoRequestDTO.toEntity());
         userRepository.save(user);
+        log.info(user.getRoles()+", user 권한");
 
-        UserOAuthAddInfoResponseDTO userOAuthAddInfoResponseDTO = UserOAuthAddInfoResponseDTO.builder()
-                .email(user.getEmail())
-                .username(user.getUsername())
-                .address(user.getAddress())
-                .postCode(user.getPostCode())
-                .age(user.getAge())
-                .nickname(user.getNickname())
-                .phoneNumber(user.getPhoneNumber())
-                .createDate(user.getCreateDate())
-                .modifiedDate(user.getModifiedDate())
-                .build();
-
-        return userOAuthAddInfoResponseDTO;
+        return modelMapper.map(user, UserOAuthAddInfoResponseDTO.class);
     }
+
     public UserInfoResponseDTO findUserByEmail(String email){
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
 
-        UserInfoResponseDTO userInfoResponseDTO = UserInfoResponseDTO.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .age(user.getAge())
-                .address(user.getAddress())
-                .nickname(user.getNickname())
-                .phoneNumber(user.getPhoneNumber())
-                .postCode(user.getPostCode())
-                .createDate(user.getCreateDate())
-                .modifiedDate(user.getModifiedDate())
-                .build();
-
-        return userInfoResponseDTO;
+        return modelMapper.map(user, UserInfoResponseDTO.class);
     }
 
-    //login 인증
-//    public User getByCredentials(final String email , final String password, final PasswordEncoder encoder){
-//        final User original = userRepository.findByEmail(email);
-//        if(original != null && encoder.matches(password, original.getPassword())){
-//            return original;
-//        }
-//        return null;
-//    }
+
     public UserDeleteResponseDTO delete(UserDeleteRequestDTO userDeleteRequestDTO, User user){
 
         userRepository.findByEmail(user.getEmail())
@@ -156,18 +102,12 @@ public class UserService {
 
         if(passwordEncoder.matches(userDeleteRequestDTO.getPassword(), user.getPassword() )){
 
-            user.setStatus("Disable");
+            user.delete();
             userRepository.save(user);
         }else{
             throw  new CustomException(ErrorCode.BadPasswordException);
         }
-        UserDeleteResponseDTO userDeleteResponseDTO = UserDeleteResponseDTO.
-                builder().
-                email(user.getEmail())
-                .username(user.getUsername())
-                .nickname(user.getNickname())
-                .build();
-        return  userDeleteResponseDTO;
+        return  modelMapper.map(user, UserDeleteResponseDTO.class);
 
     }
 
@@ -177,7 +117,8 @@ public class UserService {
     }
 
     public Boolean existsByNickname(String nickname){
-        return userRepository.existsByNickname(nickname);}
+        return userRepository.existsByNickname(nickname);
+    }
 
 
 
@@ -185,38 +126,31 @@ public class UserService {
 
     public UserUpdateResponseDTO updateUser(UserUpdateRequestDTO userUpdateRequestDTO, User user){
 
-        userRepository.findByEmail(user.getEmail())
-            .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));// 해당 user찾기
-
-        if(!user.getEmail().equals(userUpdateRequestDTO.getEmail())){
-                throw  new CustomException(ErrorCode.BadParameterException);
-        }
 
         if(userRepository.existsByNickname(userUpdateRequestDTO.getNickname())){
             throw  new CustomException(ErrorCode.DuplicatedNickNameException);
         }
 
 
-        user.setUsername(userUpdateRequestDTO.getUsername());
-        user.setAddress(userUpdateRequestDTO.getAddress());
-        user.setAge(userUpdateRequestDTO.getAge());
-        user.setPostCode(userUpdateRequestDTO.getPostCode());
-        user.setNickname(userUpdateRequestDTO.getNickname());
+        // user 업데이트
+        user.update(userUpdateRequestDTO.toEntity());
         userRepository.save(user);
+        return modelMapper.map( user , UserUpdateResponseDTO.class);
+    }
 
-        UserUpdateResponseDTO userUpdateResponseDTO = UserUpdateResponseDTO.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .age(user.getAge())
-                .address(user.getAddress())
-                .nickname(user.getNickname())
-                .phoneNumber(user.getPhoneNumber())
-                .postCode(user.getPostCode())
-                .createDate(user.getCreateDate())
-                .modifiedDate(user.getModifiedDate())
-                .build();
+    public User findByEmail(String email){
+        return  userRepository.findByEmail(email)
+                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 유저 찾기
+    }
 
-        return  userUpdateResponseDTO;
+    // 닉네임 체크 api
+    public UserCheckNicknameResponseDTO checkNickname(String value){
+        if(userRepository.existsByNickname(value)){
+            new CustomException(ErrorCode.DuplicatedNickNameException);
+        }
+        UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = UserCheckNicknameResponseDTO.builder().nickname(value).build();
+
+        return  userCheckNicknameResponseDTO;
     }
 
     // 랜덤 문자열 password
@@ -237,10 +171,7 @@ public class UserService {
     }
 
 
-    public User findByEmail(String email){
-        return  userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 유저 찾기
-    }
+
 
 
 

@@ -20,17 +20,5 @@ public class UserInfoResponseDTO {
     private LocalDateTime createDate;
     private  LocalDateTime modifiedDate;
 
-    @Builder
 
-    public UserInfoResponseDTO(String email, String username, String address, String postCode, int age, String nickname, String phoneNumber, LocalDateTime createDate, LocalDateTime modifiedDate) {
-        this.email = email;
-        this.username = username;
-        this.address = address;
-        this.postCode = postCode;
-        this.age = age;
-        this.nickname = nickname;
-        this.phoneNumber = phoneNumber;
-        this.createDate = createDate;
-        this.modifiedDate = modifiedDate;
-    }
 }

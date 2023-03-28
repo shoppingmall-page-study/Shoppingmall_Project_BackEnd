@@ -3,7 +3,6 @@ package com.project.shopping.controller;
 
 import com.project.shopping.auth.PrincipalDetails;
 
-import com.project.shopping.dto.UserDTO;
 import com.project.shopping.dto.requestDTO.EmailAuthenticationRequestDTO.CheckAuthCodeRequestDTO;
 import com.project.shopping.dto.requestDTO.EmailAuthenticationRequestDTO.SendAuthCodeRequestDTO;
 import com.project.shopping.dto.requestDTO.UserRequestDTO.*;
@@ -71,9 +70,9 @@ public class UserController  {
     @PostMapping("/api/oauth/user/info/add")
     public ResponseEntity<?> oauthUserInfoAdd(Authentication authentication, @RequestBody UserOAuthAddInfoRequestDTO userOAuthAddInfoRequestDTO) {
 
-        String email = ((PrincipalDetails) authentication.getPrincipal()).getEmail();
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-        return ResponseEntity.ok().body( userService.oauthUserInfoAdd(email,userOAuthAddInfoRequestDTO));
+        return ResponseEntity.ok().body( userService.oauthUserInfoAdd(user,userOAuthAddInfoRequestDTO));
     }
 
 
@@ -105,22 +104,20 @@ public class UserController  {
     }
 
 
-    @GetMapping("/api/join/email-check/{value}")
-    public ResponseEntity<?> checkEmail(@PathVariable(value = "value") String value) throws Exception {
-        userService.existsByEmail(value);
-        UserCheckEmailResponseDTO userCheckEmailResponseDTO = UserCheckEmailResponseDTO.builder().email(value).build();
+    //@GetMapping("/api/join/email-check/{value}")
+    //public ResponseEntity<?> checkEmail(@PathVariable(value = "value") String value) throws Exception {
+        //userService.existsByEmail(value);
+        //UserCheckEmailResponseDTO userCheckEmailResponseDTO = UserCheckEmailResponseDTO.builder().email(value).build();
+        //   Map<String, Object> response = new HashMap<>();
+    //    response.put("msg", "사용가능한 이메일 입니다.");
+    //    response.put("data", userCheckEmailResponseDTO);
+    //    return ResponseEntity.ok().body(response);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("msg", "사용가능한 이메일 입니다.");
-        response.put("data", userCheckEmailResponseDTO);
-        return ResponseEntity.ok().body(response);
-
-    }
+    //}
 
     @GetMapping("/api/join/nickname-check/{value}")
     public ResponseEntity<?> checkNickname(@PathVariable(value = "value") String value){
-        userService.existsByNickname(value);
-        UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = UserCheckNicknameResponseDTO.builder().nickname(value).build();
+        UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = userService.checkNickname(value);
         Map<String, Object> response = new HashMap<>();
         response.put("msg", "사용가능한 닉네임 입니다.");
         response.put("data", userCheckNicknameResponseDTO);

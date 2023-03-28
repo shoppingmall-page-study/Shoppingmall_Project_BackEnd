@@ -9,9 +9,5 @@ import lombok.NoArgsConstructor;
 public class UserCheckEmailResponseDTO {
     private  String email;
 
-    @Builder
 
-    public UserCheckEmailResponseDTO(String email) {
-        this.email = email;
-    }
 }

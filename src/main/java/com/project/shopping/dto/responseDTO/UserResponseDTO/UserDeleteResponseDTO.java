@@ -11,10 +11,5 @@ public class UserDeleteResponseDTO {
     private  String username;
     private  String nickname;
 
-    @Builder
-    public UserDeleteResponseDTO(String email, String username, String nickname) {
-        this.email = email;
-        this.username = username;
-        this.nickname = nickname;
-    }
+
 }
