@@ -79,7 +79,7 @@ public class UserService {
         }
 
 
-        user.oauthInfoAdd(userOAuthAddInfoRequestDTO.toEntity());
+        user.oauthInfoAdd(modelMapper.map(userOAuthAddInfoRequestDTO,User.class));
         userRepository.save(user);
         log.info(user.getRoles()+", user 권한");
 
@@ -133,7 +133,7 @@ public class UserService {
 
 
         // user 업데이트
-        user.update(userUpdateRequestDTO.toEntity());
+        user.update(modelMapper.map(userUpdateRequestDTO,User.class));
         userRepository.save(user);
         return modelMapper.map( user , UserUpdateResponseDTO.class);
     }

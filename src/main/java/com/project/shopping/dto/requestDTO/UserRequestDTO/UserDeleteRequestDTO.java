@@ -13,5 +13,4 @@ public class UserDeleteRequestDTO {
     @NotBlank
     private  String password;
 
-
 }

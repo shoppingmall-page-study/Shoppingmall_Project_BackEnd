@@ -29,14 +29,6 @@ public class UserOAuthAddInfoRequestDTO {
     @Pattern(regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$")
     private  String phoneNumber;
 
-    public User toEntity(){
-        return User.builder()
-                .address(this.address)
-                .postCode(this.postCode)
-                .age(this.age)
-                .nickname(this.nickname)
-                .phoneNumber(this.phoneNumber)
-                .build();
-    }
+
 
 }

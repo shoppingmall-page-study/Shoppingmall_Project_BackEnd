@@ -40,14 +40,5 @@ public class UserUpdateRequestDTO {
         this.phoneNumber = phoneNumber;
         this.postCode = postCode;
     }
-    public User toEntity(){
-        return User.builder()
-                .username(this.username)
-                .address(this.address)
-                .age(this.age)
-                .nickname(this.nickname)
-                .phoneNumber(this.phoneNumber)
-                .postCode(this.postCode)
-                .build();
-    }
+
 }
