@@ -5,10 +5,7 @@ import com.project.shopping.Error.CustomException;
 import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductCreateRequestDTO;
 import com.project.shopping.dto.requestDTO.ProductRequestDTO.ProductUpdateRequestDTO;
-import com.project.shopping.dto.responseDTO.ProductResponseDTO.ProductCreateResponseDTO;
-import com.project.shopping.dto.responseDTO.ProductResponseDTO.ProductDeleteResponseDTO;
-import com.project.shopping.dto.responseDTO.ProductResponseDTO.ProductJoinResponseDTO;
-import com.project.shopping.dto.responseDTO.ProductResponseDTO.ProductSearchResponseDTO;
+import com.project.shopping.dto.responseDTO.ProductResponseDTO.*;
 import com.project.shopping.model.Product;
 import com.project.shopping.model.User;
 import com.project.shopping.repository.ProductRepository;
@@ -26,52 +23,30 @@ public class ProductService {
 
     public ProductCreateResponseDTO create(ProductCreateRequestDTO productCreateRequestDTO, User user){
 
-        Product product = Product.builder().userId(user)
-                .title(productCreateRequestDTO.getTitle())
-                .content(productCreateRequestDTO.getContent())
-                .name(productCreateRequestDTO.getName())
-                .price(productCreateRequestDTO.getPrice())
-                .total(productCreateRequestDTO.getTotal())
-                .status("active")
-                .imgUrl(productCreateRequestDTO.getImgUrl())
-                .build(); // 상품 생성
+        Product product =  productCreateRequestDTO.toEntity(user);
+        product.activeState();
 
-        product = productRepository.save(product);
+        productRepository.save(product);
 
-        ProductCreateResponseDTO productCreateResponseDTO = ProductCreateResponseDTO.builder()
-                .title(product.getTitle())
-                .content(product.getContent())
-                .name(product.getName())
-                .price(product.getPrice())
-                .total(product.getTotal())
-                .imgUrl(product.getImgUrl())
-                .createDate(product.getCreateDate())
-                .modifiedDate(product.getModifiedDate())
-                .build();
-
-        return productCreateResponseDTO;
+        return product.toProductCreateResponseDTO();
     }
 
 
-    public Product update(User user, ProductUpdateRequestDTO productUpdateRequestDTO, int ProductId){
+    public ProductUpdateResponseDTO update(User user, ProductUpdateRequestDTO productUpdateRequestDTO, int ProductId){
 
         Product product = productRepository.findByIdAndUserId(ProductId, user)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));// 해당 상품 찾기
 
-        product.setTitle(productUpdateRequestDTO.getTitle());
-        product.setContent(productUpdateRequestDTO.getContent());
-        product.setName(productUpdateRequestDTO.getName());
-        product.setPrice(productUpdateRequestDTO.getPrice());
-        product.setTotal(productUpdateRequestDTO.getTotal());
-        product.setImgUrl(productUpdateRequestDTO.getImgUrl());
+        product.update(productUpdateRequestDTO.toEntity());
+        productRepository.save(product);
 
-        return productRepository.save(product);
+        return product.toProductUpdateResponseDTO();
 
     }
     public ProductJoinResponseDTO findById(int id){
         Product findProduct = productRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
-        // dto
+        // entityToDTO
         ProductJoinResponseDTO productJoinResponseDTO = ProductJoinResponseDTO.builder()
                 .productId(findProduct.getId())
                 .title(findProduct.getTitle())
@@ -96,20 +71,9 @@ public class ProductService {
         product.setStatus("Disabled");
         productRepository.save(product);
 
-        ProductDeleteResponseDTO productDeleteResponseDTO = ProductDeleteResponseDTO.builder()
-                .productId(product.getId())
-                .title(product.getTitle())
-                .content(product.getContent())
-                .name(product.getName())
-                .price(product.getPrice())
-                .total(product.getTotal())
-                .imgUrl(product.getImgUrl())
-                .createDate(product.getCreateDate())
-                .modifiedDate(product.getModifiedDate())
-                .build();
 
 
-        return productDeleteResponseDTO;
+        return product.toProductDeleteResponseDTO();
     }
 
     public List<ProductSearchResponseDTO> getProductList(String title, String status){
@@ -118,18 +82,7 @@ public class ProductService {
         List<ProductSearchResponseDTO> response  = new ArrayList<>();
 
         for(Product product : productList){
-            ProductSearchResponseDTO productSearchResponseDTO = ProductSearchResponseDTO.builder()
-                    .productId(product.getId())
-                    .title(product.getTitle())
-                    .content(product.getContent())
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .total(product.getTotal())
-                    .imgUrl(product.getImgUrl())
-                    .createDate(product.getCreateDate())
-                    .modifiedDate(product.getModifiedDate())
-                    .build();
-            response.add(productSearchResponseDTO);
+            response.add(product.toProductSearchResponseDTO());
         }
         return response ;
     }
@@ -142,24 +95,14 @@ public class ProductService {
         if(products.size() == 0){
             throw new CustomException(ErrorCode.NotFoundProductException);
         }
-        List<ProductJoinResponseDTO> productDtos = new ArrayList<>();
+        List<ProductJoinResponseDTO> productJoinResponseDTOS = new ArrayList<>();
         for (Product product:products) {
-            ProductJoinResponseDTO productProductsResponseDTO = ProductJoinResponseDTO.builder()
-                    .productId(product.getId())
-                    .title(product.getTitle())
-                    .content(product.getContent())
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .total(product.getTotal())
-                    .imgUrl(product.getImgUrl())
-                    .createDate(product.getCreateDate())
-                    .modifiedDate(product.getModifiedDate())
-                    .build();
 
-            productDtos.add(productProductsResponseDTO);
+
+            productJoinResponseDTOS.add(product.toProductJoinResponseDTO());
 
         }
-        return productDtos;
+        return productJoinResponseDTOS;
     }
 
     public List<ProductJoinResponseDTO> getEqUserAndActive(User user, String status){
@@ -167,23 +110,12 @@ public class ProductService {
         List<Product> findAllProduct = productRepository.getEqUserAndActive(user, status);
 
         // dto 등록
-        List<ProductJoinResponseDTO> response = new ArrayList<>();
+        List<ProductJoinResponseDTO> productJoinResponseDTOS = new ArrayList<>();
 
         for(Product product: findAllProduct){
-            ProductJoinResponseDTO productJoinResponseDTO = ProductJoinResponseDTO.builder()
-                    .productId(product.getId())
-                    .title(product.getTitle())
-                    .content(product.getContent())
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .total(product.getTotal())
-                    .imgUrl(product.getImgUrl())
-                    .createDate(product.getCreateDate())
-                    .modifiedDate(product.getModifiedDate())
-                    .build();
-            response.add(productJoinResponseDTO);
+            productJoinResponseDTOS.add(product.toProductJoinResponseDTO());
         }
 
-        return response;
+        return productJoinResponseDTOS;
     }
 }

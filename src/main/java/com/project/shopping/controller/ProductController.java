@@ -119,19 +119,7 @@ public class ProductController {
     public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody @Valid ProductUpdateRequestDTO productUpdateRequestDTO){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
-        Product product = productService.update(user, productUpdateRequestDTO, ProductId);
-
-        ProductUpdateResponseDTO productUpdateResponseDTO = ProductUpdateResponseDTO.builder()
-                .productId(product.getId())
-                .title(product.getTitle())
-                .content(product.getContent())
-                .name(product.getName())
-                .price(product.getPrice())
-                .total(product.getTotal())
-                .imgUrl(product.getImgUrl())
-                .createDate(product.getModifiedDate())
-                .modifiedDate(product.getModifiedDate())
-                .build();
+        ProductUpdateResponseDTO productUpdateResponseDTO = productService.update(user, productUpdateRequestDTO, ProductId);
 
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품 수정에 성공했습니다.");
