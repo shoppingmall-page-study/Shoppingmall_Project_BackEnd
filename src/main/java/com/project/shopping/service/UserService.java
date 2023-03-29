@@ -17,7 +17,6 @@ import com.project.shopping.repository.UserRepository;
 import com.project.shopping.security.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,7 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailAuthenticationService emailAuthenticationService;
 
-    private  final ModelMapper modelMapper;
+
 
     public UserJoinResponseDTO create(UserJoinRequestDTO userJoinRequestDTO){
 
@@ -55,7 +54,7 @@ public class UserService {
         userRepository.save(user);
 
         // entity -> dto 변환 후 return
-        return modelMapper.map(user, UserJoinResponseDTO.class);
+        return user.toUserJoinResponseDTO();
     }
 
     public  User oAuthLoginCreateUser(String email, String name){
@@ -78,12 +77,11 @@ public class UserService {
             throw  new CustomException(ErrorCode.DuplicatedNickNameException);
         }
 
-
-        user.oauthInfoAdd(modelMapper.map(userOAuthAddInfoRequestDTO,User.class));
+        user.oauthInfoAdd(userOAuthAddInfoRequestDTO.toEntity());
         userRepository.save(user);
         log.info(user.getRoles()+", user 권한");
 
-        return modelMapper.map(user, UserOAuthAddInfoResponseDTO.class);
+        return user.toUserOAuthAddInfoResponseDTO();
     }
 
     public UserInfoResponseDTO findUserByEmail(String email){
@@ -91,7 +89,7 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
 
-        return modelMapper.map(user, UserInfoResponseDTO.class);
+        return user.toUserInfoResponseDTO();
     }
 
 
@@ -107,7 +105,7 @@ public class UserService {
         }else{
             throw  new CustomException(ErrorCode.BadPasswordException);
         }
-        return  modelMapper.map(user, UserDeleteResponseDTO.class);
+        return  user.toUserDeleteResponseDTO();
 
     }
 
@@ -131,11 +129,12 @@ public class UserService {
             throw  new CustomException(ErrorCode.DuplicatedNickNameException);
         }
 
-
         // user 업데이트
-        user.update(modelMapper.map(userUpdateRequestDTO,User.class));
+        user.update(userUpdateRequestDTO.toEntity());
         userRepository.save(user);
-        return modelMapper.map( user , UserUpdateResponseDTO.class);
+
+
+        return user.toUserUpdateResponseDTO();
     }
 
     public User findByEmail(String email){

@@ -30,15 +30,15 @@ public class UserUpdateRequestDTO {
     @NotBlank
     private String postCode;
 
-
-    @Builder
-    public UserUpdateRequestDTO(String username, String address, int age, String nickname, String phoneNumber, String postCode) {
-        this.username = username;
-        this.address = address;
-        this.age = age;
-        this.nickname = nickname;
-        this.phoneNumber = phoneNumber;
-        this.postCode = postCode;
+    public User toEntity(){
+        return User.builder()
+                .username(this.username)
+                .address(this.address)
+                .postCode(this.postCode)
+                .age(this.age)
+                .nickname(this.nickname)
+                .phoneNumber(this.phoneNumber)
+                .build();
     }
 
 }

@@ -30,5 +30,15 @@ public class UserOAuthAddInfoRequestDTO {
     private  String phoneNumber;
 
 
+    public User toEntity(){
+        return User.builder()
+                .address(this.address)
+                .postCode(this.postCode)
+                .age(this.age)
+                .nickname(this.nickname)
+                .phoneNumber(this.phoneNumber)
+                .build();
+    }
+
 
 }

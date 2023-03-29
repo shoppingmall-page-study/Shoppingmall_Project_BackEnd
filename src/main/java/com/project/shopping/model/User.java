@@ -1,5 +1,6 @@
 package com.project.shopping.model;
 
+import com.project.shopping.dto.responseDTO.UserResponseDTO.*;
 import com.project.shopping.security.Role;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -139,5 +140,72 @@ public class User extends BaseTimeEntity {
 
     private void updateUserName(String username) {
         this.username = username;
+    }
+
+
+
+    // dto 변환
+
+    public UserJoinResponseDTO toUserJoinResponseDTO(){
+        return UserJoinResponseDTO.builder()
+                .email(this.email)
+                .username(this.username)
+                .address(this.address)
+                .postCode(this.postCode)
+                .age(this.age)
+                .nickname(this.nickname)
+                .phoneNumber(this.phoneNumber)
+                .createDate(this.getCreateDate())
+                .modifiedDate(this.getModifiedDate())
+                .build();
+    }
+
+    public UserOAuthAddInfoResponseDTO toUserOAuthAddInfoResponseDTO(){
+        return UserOAuthAddInfoResponseDTO.builder()
+                .email(this.email)
+                .username(this.username)
+                .address(this.address)
+                .postCode(this.postCode)
+                .age(this.age)
+                .nickname(this.nickname)
+                .phoneNumber(this.phoneNumber)
+                .createDate(this.getCreateDate())
+                .modifiedDate(this.getModifiedDate())
+                .build();
+    }
+
+    public UserInfoResponseDTO toUserInfoResponseDTO(){
+        return UserInfoResponseDTO.builder()
+                .email(this.email)
+                .username(this.username)
+                .address(this.address)
+                .postCode(this.postCode)
+                .age(this.age)
+                .nickname(this.nickname)
+                .phoneNumber(this.phoneNumber)
+                .createDate(this.getCreateDate())
+                .modifiedDate(this.getModifiedDate())
+                .build();
+    }
+
+    public UserDeleteResponseDTO toUserDeleteResponseDTO(){
+        return UserDeleteResponseDTO.builder()
+                .email(this.email)
+                .username(this.username)
+                .nickname(this.nickname)
+                .build();
+    }
+
+    public UserUpdateResponseDTO toUserUpdateResponseDTO(){
+        return UserUpdateResponseDTO.builder().email(this.email)
+                .username(this.username)
+                .address(this.address)
+                .postCode(this.postCode)
+                .age(this.age)
+                .nickname(this.nickname)
+                .phoneNumber(this.phoneNumber)
+                .createDate(this.getCreateDate())
+                .modifiedDate(this.getModifiedDate())
+                .build();
     }
 }

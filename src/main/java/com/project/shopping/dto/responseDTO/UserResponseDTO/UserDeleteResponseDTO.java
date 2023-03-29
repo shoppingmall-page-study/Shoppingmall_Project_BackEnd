@@ -12,4 +12,11 @@ public class UserDeleteResponseDTO {
     private  String nickname;
 
 
+    @Builder
+
+    private UserDeleteResponseDTO(String email, String username, String nickname) {
+        this.email = email;
+        this.username = username;
+        this.nickname = nickname;
+    }
 }
