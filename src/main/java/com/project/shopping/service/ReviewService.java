@@ -30,112 +30,61 @@ public class ReviewService {
     // 생성
     public ReviewCreateResponseDTO create(User user, int ProductId, ReviewCreateRequestDTO reviewCreateRequestDTO){
 
-        String email = user.getEmail();
-
-        // 로그인 정보로 user 찾기
-        userRepository.findByEmail(email)
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
 
         // 파라미터로 받은 값으로 상품 찾기
         Product product = productRepository.findById(ProductId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
 
 
-        // 리뷰 생성
-        Review review = Review.builder()
-                .userId(user)
-                .productId(product)
-                .title(reviewCreateRequestDTO.getTitle())
-                .content(reviewCreateRequestDTO.getContent())
-                .imageUrl(reviewCreateRequestDTO.getImgUrl())
-                .status("active")
-                .build();
-
+        // 리뷰 생성 dto-> entity
+        Review review = reviewCreateRequestDTO.toEntity(user, product,"active");
         reviewrepository.save(review);
-        ReviewCreateResponseDTO reviewCreateResponseDTO = ReviewCreateResponseDTO.builder()
-                .reviewId(review.getId())
-                .title(review.getTitle())
-                .content(review.getContent())
-                .build();
 
-
-        return reviewCreateResponseDTO;
+        // entity -> dto
+        return review.toReviewCreateResponseDTO();
     }
 
 
     public ReviewUpdateResponseDTO update(User user, int reviewId, ReviewUpdateRequestDTO reviewUpdateRequestDTO){
 
-        userRepository.findByEmail(user.getEmail())
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));// 유저 찾기
 
-        Review findReview = reviewrepository.findByUserIdAndId(user,reviewId)
+        Review review = reviewrepository.findByUserIdAndId(user,reviewId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundReviewException));// 유저와 해당 리뷰 아이디로 리뷰 찾기
 
-        findReview.setContent(reviewUpdateRequestDTO.getContent());
-        findReview.setTitle(reviewUpdateRequestDTO.getTitle());
-        findReview.setImageUrl(reviewUpdateRequestDTO.getImgUrl());
+        review.update(reviewUpdateRequestDTO.toEntity());
 
         // 수정하기
-        if(findReview.getProductId().getStatus().equals("Disabled")){
+        if(review.getProductId().getStatus().equals("Disabled")){
             throw new CustomException(ErrorCode.NotFoundProductException);
         }
-
-        reviewrepository.save(findReview);
-        ReviewUpdateResponseDTO reviewUpdateResponseDTO = ReviewUpdateResponseDTO.builder()
-                .reviewId(findReview.getId())
-                .title(findReview.getTitle())
-                .content(findReview.getContent())
-                .imgUrl(findReview.getImageUrl())
-                .build();
-
-
-        return reviewUpdateResponseDTO;}
+        reviewrepository.save(review);
+        return review.toReviewUpdateResponseDTO();
+    }
 
 
 
     // 삭제
     public ReviewDeleteResponseDTO deleteReview(User user,int ReviewId){
 
-        userRepository.findByEmail(user.getEmail())
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
-
-        Review findreview = reviewrepository.findByUserIdAndId(user, ReviewId)
+        Review review = reviewrepository.findByUserIdAndId(user, ReviewId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundReviewException));
-        findreview.setStatus("Disabled");
+        review.delete();
+        reviewrepository.save(review);
 
-        reviewrepository.save(findreview);
-
-
-        ReviewDeleteResponseDTO reviewDeleteResponseDTO = ReviewDeleteResponseDTO.builder()
-                .reviewId(findreview.getId())
-                .content(findreview.getContent())
-                .title(findreview.getTitle())
-                .build();
-
-        return reviewDeleteResponseDTO;
+        return review.toReviewDeleteResponseDTO();
     }
-
 
 
     public List<ReviewUserJoinResponseDTO>  getEqUserAndActive(User user, String status){
 
-        userRepository.findByEmail(user.getEmail())
-                .orElseThrow(()-> new CustomException(ErrorCode.NotFoundUserException));
+
         List<Review> userReviewlist = reviewrepository.getEqUserAndActive(user, status);
         //dto 만들기
-        List<ReviewUserJoinResponseDTO> userReviewListDto = new ArrayList<>();
+        List<ReviewUserJoinResponseDTO> reviewUserJoinResponseDTOS = new ArrayList<>();
         for (Review review : userReviewlist){
-            ReviewUserJoinResponseDTO reviewUserJoinResponseDTO = ReviewUserJoinResponseDTO.builder()
-                    .reviewId(review.getId())
-                    .content(review.getContent())
-                    .title(review.getTitle())
-                    .createDate(review.getCreateDate())
-                    .modifiedDate(review.getModifiedDate())
-                    .imgUrl(review.getImageUrl())
-                    .build();
-            userReviewListDto.add(reviewUserJoinResponseDTO);
+            reviewUserJoinResponseDTOS.add(review.toReviewUserJoinResponseDTO());
         }
-        return userReviewListDto;
+        return reviewUserJoinResponseDTOS;
     }
 
     public List<ReviewProductJoinResponseDTO> getEqProductAndActive(int ProductId, String status){
@@ -143,21 +92,12 @@ public class ReviewService {
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
         List<Review> ProductReviewList = reviewrepository.getEqProductAndActive(product,status);
 
-        List<ReviewProductJoinResponseDTO> ProductReviewDto = new ArrayList<>();
+        List<ReviewProductJoinResponseDTO> reviewProductJoinResponseDTOS = new ArrayList<>();
 
         for(Review review : ProductReviewList){
-            ReviewProductJoinResponseDTO reviewProductJoinResponseDTO = ReviewProductJoinResponseDTO.builder()
-                    .reviewId(review.getId())
-                    .userNickname(review.getUserId().getNickname())
-                    .imgURL(review.getImageUrl())
-                    .title(review.getTitle())
-                    .content(review.getContent())
-                    .createDate(review.getCreateDate())
-                    .modifiedDate(review.getModifiedDate())
-                    .build();
-            ProductReviewDto.add(reviewProductJoinResponseDTO);
+            reviewProductJoinResponseDTOS.add( review.toReviewProductJoinResponseDTO());
         }
 
-        return  ProductReviewDto;
+        return  reviewProductJoinResponseDTOS;
     }
 }

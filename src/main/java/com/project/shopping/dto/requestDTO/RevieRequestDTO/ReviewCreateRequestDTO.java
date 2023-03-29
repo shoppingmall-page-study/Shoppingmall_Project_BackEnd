@@ -1,11 +1,12 @@
 package com.project.shopping.dto.requestDTO.RevieRequestDTO;
 
-import lombok.Builder;
+import com.project.shopping.model.Product;
+import com.project.shopping.model.Review;
+import com.project.shopping.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
@@ -19,11 +20,16 @@ public class ReviewCreateRequestDTO {
     @NotBlank
     private  String content;
 
-    @Builder
 
-    public ReviewCreateRequestDTO(String imgUrl, String title, String content) {
-        this.imgUrl = imgUrl;
-        this.title = title;
-        this.content = content;
+    public Review toEntity(User user, Product product, String active){
+        return Review.builder()
+                .userId(user)
+                .productId(product)
+                .imageUrl(this.imgUrl)
+                .title(this.title)
+                .content(this.content)
+                .status(active)
+                .build();
+
     }
 }

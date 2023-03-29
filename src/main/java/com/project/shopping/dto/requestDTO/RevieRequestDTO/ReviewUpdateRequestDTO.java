@@ -1,5 +1,7 @@
 package com.project.shopping.dto.requestDTO.RevieRequestDTO;
 
+import com.project.shopping.model.Product;
+import com.project.shopping.model.Review;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,11 +18,12 @@ public class ReviewUpdateRequestDTO {
     @NotBlank
     private  String content;
 
-    @Builder
 
-    public ReviewUpdateRequestDTO(String imgUrl, String title, String content) {
-        this.imgUrl = imgUrl;
-        this.title = title;
-        this.content = content;
+    public Review toEntity(){
+        return Review.builder()
+                .imageUrl(this.imgUrl)
+                .title(this.title)
+                .content(this.content)
+                .build();
     }
 }
