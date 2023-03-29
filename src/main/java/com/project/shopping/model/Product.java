@@ -80,7 +80,7 @@ public class Product extends BaseTimeEntity {
         updateProductImgUrl(product.getImgUrl());
 
     }
-    public void disabledState(){
+    public void delete(){
         this.status = "Disabled";
     }
     public void activeState() {this.status = "active";}

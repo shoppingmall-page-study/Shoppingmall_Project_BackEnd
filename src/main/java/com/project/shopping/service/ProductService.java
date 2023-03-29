@@ -46,7 +46,7 @@ public class ProductService {
     public ProductJoinResponseDTO findById(int id){
         Product findProduct = productRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
-        // entityToDTO
+        // entitytoDTO
         ProductJoinResponseDTO productJoinResponseDTO = ProductJoinResponseDTO.builder()
                 .productId(findProduct.getId())
                 .title(findProduct.getTitle())
@@ -68,7 +68,7 @@ public class ProductService {
 
         Product product = productRepository.findByIdAndUserId(ProductId,user)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));// 유저와 상품명으로 상품 찾기
-        product.setStatus("Disabled");
+        product.delete();
         productRepository.save(product);
 
 
