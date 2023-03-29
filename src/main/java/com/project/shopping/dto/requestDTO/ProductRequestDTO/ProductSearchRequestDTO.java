@@ -14,7 +14,6 @@ public class ProductSearchRequestDTO {
     private  String keyword;
 
     @Builder
-
     public ProductSearchRequestDTO(String keyword) {
         this.keyword = keyword;
     }

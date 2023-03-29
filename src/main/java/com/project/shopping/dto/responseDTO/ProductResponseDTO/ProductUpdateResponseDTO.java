@@ -20,7 +20,7 @@ public class ProductUpdateResponseDTO {
     private LocalDateTime modifiedDate;
 
     @Builder
-    public ProductUpdateResponseDTO(int productId, String title, String content, String name, long price, int total, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    private ProductUpdateResponseDTO(int productId, String title, String content, String name, long price, int total, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.productId = productId;
         this.title = title;
         this.content = content;

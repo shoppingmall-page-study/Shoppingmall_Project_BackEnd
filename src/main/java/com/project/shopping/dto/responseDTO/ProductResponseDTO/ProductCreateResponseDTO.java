@@ -22,7 +22,7 @@ public class ProductCreateResponseDTO {
 
     @Builder
 
-    public ProductCreateResponseDTO( String title, String content, String name, long price, int total, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    private ProductCreateResponseDTO( String title, String content, String name, long price, int total, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
 
         this.title = title;
         this.content = content;

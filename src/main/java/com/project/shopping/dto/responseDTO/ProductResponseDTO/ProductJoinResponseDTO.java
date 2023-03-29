@@ -21,7 +21,7 @@ public class ProductJoinResponseDTO {
     private LocalDateTime modifiedDate;
 
     @Builder
-    public ProductJoinResponseDTO(int productId, String title, String content, String name, long price, int total, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    private ProductJoinResponseDTO(int productId, String title, String content, String name, long price, int total, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.productId = productId;
         this.title = title;
         this.content = content;
