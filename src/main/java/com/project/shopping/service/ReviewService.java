@@ -24,7 +24,6 @@ public class ReviewService {
 
 
     private final  ReviewRepository reviewrepository;
-    private  final UserRepository userRepository;
     private  final ProductRepository productRepository;
 
     // 생성
@@ -41,7 +40,7 @@ public class ReviewService {
         reviewrepository.save(review);
 
         // entity -> dto
-        return review.toReviewCreateResponseDTO();
+        return ReviewCreateResponseDTO.toReviewCreateResponseDTO(review);
     }
 
 
@@ -58,7 +57,7 @@ public class ReviewService {
             throw new CustomException(ErrorCode.NotFoundProductException);
         }
         reviewrepository.save(review);
-        return review.toReviewUpdateResponseDTO();
+        return ReviewUpdateResponseDTO.toReviewUpdateResponseDTO(review);
     }
 
 
@@ -71,7 +70,7 @@ public class ReviewService {
         review.delete();
         reviewrepository.save(review);
 
-        return review.toReviewDeleteResponseDTO();
+        return ReviewDeleteResponseDTO.toReviewDeleteResponseDTO(review);
     }
 
 
@@ -82,7 +81,7 @@ public class ReviewService {
         //dto 만들기
         List<ReviewUserJoinResponseDTO> reviewUserJoinResponseDTOS = new ArrayList<>();
         for (Review review : userReviewlist){
-            reviewUserJoinResponseDTOS.add(review.toReviewUserJoinResponseDTO());
+            reviewUserJoinResponseDTOS.add(ReviewUserJoinResponseDTO.toReviewUserJoinResponseDTO(review));
         }
         return reviewUserJoinResponseDTOS;
     }
@@ -95,7 +94,7 @@ public class ReviewService {
         List<ReviewProductJoinResponseDTO> reviewProductJoinResponseDTOS = new ArrayList<>();
 
         for(Review review : ProductReviewList){
-            reviewProductJoinResponseDTOS.add( review.toReviewProductJoinResponseDTO());
+            reviewProductJoinResponseDTOS.add( ReviewProductJoinResponseDTO.toReviewProductJoinResponseDTO(review));
         }
 
         return  reviewProductJoinResponseDTOS;

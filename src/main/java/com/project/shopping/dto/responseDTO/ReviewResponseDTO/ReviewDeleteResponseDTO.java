@@ -1,5 +1,6 @@
 package com.project.shopping.dto.responseDTO.ReviewResponseDTO;
 
+import com.project.shopping.model.Review;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +19,12 @@ public class ReviewDeleteResponseDTO {
         this.title = title;
         this.content = content;
     }
+    public static ReviewDeleteResponseDTO toReviewDeleteResponseDTO(Review review){
+        return ReviewDeleteResponseDTO.builder()
+                .reviewId(review.getId())
+                .title(review.getTitle())
+                .content(review.getContent())
+                .build();
+    }
+
 }
