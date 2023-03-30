@@ -28,7 +28,7 @@ public class ProductService {
 
         productRepository.save(product);
 
-        return product.toProductCreateResponseDTO();
+        return ProductCreateResponseDTO.toProductCreateResponseDTO(product);
     }
 
 
@@ -40,7 +40,7 @@ public class ProductService {
         product.update(productUpdateRequestDTO.toEntity());
         productRepository.save(product);
 
-        return product.toProductUpdateResponseDTO();
+        return ProductUpdateResponseDTO.toProductUpdateResponseDTO(product);
 
     }
     public ProductJoinResponseDTO findById(int id){
@@ -73,7 +73,7 @@ public class ProductService {
 
 
 
-        return product.toProductDeleteResponseDTO();
+        return ProductDeleteResponseDTO.toProductDeleteResponseDTO(product);
     }
 
     public List<ProductSearchResponseDTO> getProductList(String title, String status){
@@ -82,7 +82,7 @@ public class ProductService {
         List<ProductSearchResponseDTO> response  = new ArrayList<>();
 
         for(Product product : productList){
-            response.add(product.toProductSearchResponseDTO());
+            response.add(ProductSearchResponseDTO.toProductSearchResponseDTO(product));
         }
         return response ;
     }
@@ -99,7 +99,7 @@ public class ProductService {
         for (Product product:products) {
 
 
-            productJoinResponseDTOS.add(product.toProductJoinResponseDTO());
+            productJoinResponseDTOS.add(ProductJoinResponseDTO.toProductJoinResponseDTO(product));
 
         }
         return productJoinResponseDTOS;
@@ -113,7 +113,7 @@ public class ProductService {
         List<ProductJoinResponseDTO> productJoinResponseDTOS = new ArrayList<>();
 
         for(Product product: findAllProduct){
-            productJoinResponseDTOS.add(product.toProductJoinResponseDTO());
+            productJoinResponseDTOS.add(ProductJoinResponseDTO.toProductJoinResponseDTO(product));
         }
 
         return productJoinResponseDTOS;

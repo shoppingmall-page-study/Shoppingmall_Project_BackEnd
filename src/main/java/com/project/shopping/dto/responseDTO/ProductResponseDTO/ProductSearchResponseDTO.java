@@ -1,5 +1,6 @@
 package com.project.shopping.dto.responseDTO.ProductResponseDTO;
 
+import com.project.shopping.model.Product;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,5 +32,20 @@ public class ProductSearchResponseDTO {
         this.imgUrl = imgUrl;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
+    }
+
+
+    public static  ProductSearchResponseDTO toProductSearchResponseDTO(Product product){
+        return ProductSearchResponseDTO.builder()
+                .productId(product.getId())
+                .title(product.getTitle())
+                .content(product.getContent())
+                .name(product.getName())
+                .price(product.getPrice())
+                .total(product.getTotal())
+                .imgUrl(product.getImgUrl())
+                .createDate(product.getCreateDate())
+                .modifiedDate(product.getModifiedDate())
+                .build();
     }
 }
