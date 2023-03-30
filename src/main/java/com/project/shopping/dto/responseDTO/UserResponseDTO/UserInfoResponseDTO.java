@@ -1,5 +1,7 @@
 package com.project.shopping.dto.responseDTO.UserResponseDTO;
 
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
+import com.project.shopping.model.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,5 +34,20 @@ public class UserInfoResponseDTO {
         this.phoneNumber = phoneNumber;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
+    }
+
+    public static UserInfoResponseDTO toUserInfoResponseDTO(User user){
+        return UserInfoResponseDTO.builder()
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .address(user.getAddress())
+                .postCode(user.getPostCode())
+                .age(user.getAge())
+                .nickname(user.getNickname())
+                .phoneNumber(user.getPhoneNumber())
+                .createDate(user.getCreateDate())
+                .modifiedDate(user.getModifiedDate())
+                .build();
+
     }
 }

@@ -74,7 +74,6 @@ public class User extends BaseTimeEntity {
     }
 
 
-
     @Builder
     private User(String email,String password, String username, String address, int age, String nickname, String phoneNumber,String postCode ,Role roles, String status) {
         this.email = email;
@@ -89,7 +88,6 @@ public class User extends BaseTimeEntity {
         this.status = status;
         this.passwordEnable = true;
     }
-
 
     public void update(final User user){
         updateUserName(user.getUsername());
@@ -106,10 +104,7 @@ public class User extends BaseTimeEntity {
         updateAge(user.getAge());
         updateNickName(user.getNickname());
         updatePhoneNumber(user.getPhoneNumber());
-        changeRole();
-    }
-    public void changeRole(){
-        this.roles = Role.ROLE_USER;
+        updateUserRole(user.getRoles());
     }
 
     public void delete(){
@@ -120,7 +115,6 @@ public class User extends BaseTimeEntity {
         this.postCode = postCode;
 
     }
-
 
     private void updatePhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
@@ -142,70 +136,7 @@ public class User extends BaseTimeEntity {
         this.username = username;
     }
 
-
-
-    // dto 변환
-
-    public UserJoinResponseDTO toUserJoinResponseDTO(){
-        return UserJoinResponseDTO.builder()
-                .email(this.email)
-                .username(this.username)
-                .address(this.address)
-                .postCode(this.postCode)
-                .age(this.age)
-                .nickname(this.nickname)
-                .phoneNumber(this.phoneNumber)
-                .createDate(this.getCreateDate())
-                .modifiedDate(this.getModifiedDate())
-                .build();
-    }
-
-    public UserOAuthAddInfoResponseDTO toUserOAuthAddInfoResponseDTO(){
-        return UserOAuthAddInfoResponseDTO.builder()
-                .email(this.email)
-                .username(this.username)
-                .address(this.address)
-                .postCode(this.postCode)
-                .age(this.age)
-                .nickname(this.nickname)
-                .phoneNumber(this.phoneNumber)
-                .createDate(this.getCreateDate())
-                .modifiedDate(this.getModifiedDate())
-                .build();
-    }
-
-    public UserInfoResponseDTO toUserInfoResponseDTO(){
-        return UserInfoResponseDTO.builder()
-                .email(this.email)
-                .username(this.username)
-                .address(this.address)
-                .postCode(this.postCode)
-                .age(this.age)
-                .nickname(this.nickname)
-                .phoneNumber(this.phoneNumber)
-                .createDate(this.getCreateDate())
-                .modifiedDate(this.getModifiedDate())
-                .build();
-    }
-
-    public UserDeleteResponseDTO toUserDeleteResponseDTO(){
-        return UserDeleteResponseDTO.builder()
-                .email(this.email)
-                .username(this.username)
-                .nickname(this.nickname)
-                .build();
-    }
-
-    public UserUpdateResponseDTO toUserUpdateResponseDTO(){
-        return UserUpdateResponseDTO.builder().email(this.email)
-                .username(this.username)
-                .address(this.address)
-                .postCode(this.postCode)
-                .age(this.age)
-                .nickname(this.nickname)
-                .phoneNumber(this.phoneNumber)
-                .createDate(this.getCreateDate())
-                .modifiedDate(this.getModifiedDate())
-                .build();
+    private  void updateUserRole(Role role){
+        this.roles = role;
     }
 }

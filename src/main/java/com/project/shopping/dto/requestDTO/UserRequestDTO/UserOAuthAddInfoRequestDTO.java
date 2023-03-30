@@ -30,11 +30,13 @@ public class UserOAuthAddInfoRequestDTO {
     private  String phoneNumber;
 
 
-    public User toEntity(){
+    public User toEntity(Role role){
+        System.out.println(role);
         return User.builder()
                 .address(this.address)
                 .postCode(this.postCode)
                 .age(this.age)
+                .roles(role)
                 .nickname(this.nickname)
                 .phoneNumber(this.phoneNumber)
                 .build();

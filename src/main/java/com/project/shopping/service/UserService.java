@@ -50,11 +50,12 @@ public class UserService {
 
         // dto -> entity
         User user = userJoinRequestDTO.toEntity(passwordEncoder.encode(userJoinRequestDTO.getPassword()),Role.ROLE_USER,"active");
+
         // user 저장 후
         userRepository.save(user);
 
         // entity -> dto 변환 후 return
-        return user.toUserJoinResponseDTO();
+        return UserJoinResponseDTO.toUserJoinResponseDTO(user);
     }
 
     public  User oAuthLoginCreateUser(String email, String name){
@@ -77,11 +78,11 @@ public class UserService {
             throw  new CustomException(ErrorCode.DuplicatedNickNameException);
         }
 
-        user.oauthInfoAdd(userOAuthAddInfoRequestDTO.toEntity());
+        user.oauthInfoAdd(userOAuthAddInfoRequestDTO.toEntity(Role.ROLE_USER));
         userRepository.save(user);
         log.info(user.getRoles()+", user 권한");
 
-        return user.toUserOAuthAddInfoResponseDTO();
+        return UserOAuthAddInfoResponseDTO.toUserOAuthAddInfoResponseDTO(user);
     }
 
     public UserInfoResponseDTO findUserByEmail(String email){
@@ -89,7 +90,7 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
 
-        return user.toUserInfoResponseDTO();
+        return UserInfoResponseDTO.toUserInfoResponseDTO(user);
     }
 
 
@@ -105,7 +106,7 @@ public class UserService {
         }else{
             throw  new CustomException(ErrorCode.BadPasswordException);
         }
-        return  user.toUserDeleteResponseDTO();
+        return  UserDeleteResponseDTO.toUserDeleteResponseDTO(user);
 
     }
 
@@ -134,7 +135,7 @@ public class UserService {
         userRepository.save(user);
 
 
-        return user.toUserUpdateResponseDTO();
+        return UserUpdateResponseDTO.toUserUpdateResponseDTO(user);
     }
 
     public User findByEmail(String email){

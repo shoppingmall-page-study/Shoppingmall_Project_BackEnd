@@ -41,6 +41,7 @@ public class UserJoinRequestDTO {
 
 
     public User toEntity(String passwordEncode, Role role, String status){
+
         return User.builder()
                 .email(this.email)
                 .password(passwordEncode)
