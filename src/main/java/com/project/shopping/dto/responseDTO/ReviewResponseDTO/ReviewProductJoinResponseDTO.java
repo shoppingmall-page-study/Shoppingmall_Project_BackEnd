@@ -1,5 +1,6 @@
 package com.project.shopping.dto.responseDTO.ReviewResponseDTO;
 
+import com.project.shopping.model.Review;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,4 +31,18 @@ public class ReviewProductJoinResponseDTO {
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
     }
+    public static ReviewProductJoinResponseDTO toReviewProductJoinResponseDTO(Review review){
+        return ReviewProductJoinResponseDTO.builder()
+                .reviewId(review.getId())
+                .userNickname(review.getUserId().getNickname())
+                .imgURL(review.getImageUrl())
+                .title(review.getTitle())
+                .content(review.getContent())
+                .createDate(review.getCreateDate())
+                .modifiedDate(review.getModifiedDate())
+                .build();
+    }
+
+
+
 }
