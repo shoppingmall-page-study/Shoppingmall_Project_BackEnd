@@ -1,5 +1,6 @@
 package com.project.shopping.model;
 
+import com.project.shopping.dto.responseDTO.ProductResponseDTO.*;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,27 +21,27 @@ public class Product extends BaseTimeEntity {
     private User userId;
 
 
-    @Setter
+
     @Column(nullable = false)
     private String title;
 
-    @Setter
+
     @Lob
     private String content;
 
-    @Setter
+
     @Column(nullable = false)
     private String name;
 
-    @Setter
+
     @Column(nullable = false)
     private long price;
 
-    @Setter
+
     @Column(nullable = false)
     private int total;
 
-    @Setter
+
     @Column(nullable = false)
     private String imgUrl;
 
@@ -53,13 +54,13 @@ public class Product extends BaseTimeEntity {
     private  List<Cart> carts = new ArrayList<>();
 
 
-    @Setter
+
     @Column(nullable = false)
     private  String status;
 
 
     @Builder
-    public Product(User userId, String title, String content, String name, long price, int total, String imgUrl, String status) {
+    private Product(User userId, String title, String content, String name, long price, int total, String imgUrl, String status) {
         this.userId = userId;
         this.title = title;
         this.content = content;
@@ -69,4 +70,49 @@ public class Product extends BaseTimeEntity {
         this.imgUrl = imgUrl;
         this.status = status;
     }
+
+    public void update(final  Product product){
+        updateProductTitle(product.getTitle());
+        updateProductContent(product.getContent());
+        updateProductName(product.getName());
+        updateProductPrice(product.getPrice());
+        updateProductTotal(product.getTotal());
+        updateProductImgUrl(product.getImgUrl());
+
+    }
+    public void delete(){
+        this.status = "Disabled";
+    }
+    public void activeState() {this.status = "active";}
+
+
+    private void updateProductImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    private void updateProductTotal(int total) {
+        this.total = total;
+
+
+    }
+
+    private void updateProductPrice(long price) {
+        this.price = price;
+
+    }
+
+    private void updateProductName(String name) {
+        this.name = name;
+
+    }
+
+    private void updateProductContent(String content) {
+        this.content = content;
+
+    }
+
+    private void updateProductTitle(String title) {
+        this.title = title;
+    }
+
 }

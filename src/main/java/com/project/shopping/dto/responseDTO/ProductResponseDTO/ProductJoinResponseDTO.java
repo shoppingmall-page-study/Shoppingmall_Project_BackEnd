@@ -1,5 +1,6 @@
 package com.project.shopping.dto.responseDTO.ProductResponseDTO;
 
+import com.project.shopping.model.Product;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ public class ProductJoinResponseDTO {
     private LocalDateTime modifiedDate;
 
     @Builder
-    public ProductJoinResponseDTO(int productId, String title, String content, String name, long price, int total, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    private ProductJoinResponseDTO(int productId, String title, String content, String name, long price, int total, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.productId = productId;
         this.title = title;
         this.content = content;
@@ -31,5 +32,19 @@ public class ProductJoinResponseDTO {
         this.imgUrl = imgUrl;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
+    }
+
+    public static ProductJoinResponseDTO toProductJoinResponseDTO(Product product){
+        return ProductJoinResponseDTO.builder()
+                .productId(product.getId())
+                .title(product.getTitle())
+                .content(product.getContent())
+                .name(product.getName())
+                .price(product.getPrice())
+                .total(product.getTotal())
+                .imgUrl(product.getImgUrl())
+                .createDate(product.getCreateDate())
+                .modifiedDate(product.getModifiedDate())
+                .build();
     }
 }

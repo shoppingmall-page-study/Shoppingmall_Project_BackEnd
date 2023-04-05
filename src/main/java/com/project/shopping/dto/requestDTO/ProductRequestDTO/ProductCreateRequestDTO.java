@@ -1,5 +1,7 @@
 package com.project.shopping.dto.requestDTO.ProductRequestDTO;
 
+import com.project.shopping.model.Product;
+import com.project.shopping.model.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,14 +25,16 @@ public class ProductCreateRequestDTO {
     @NotBlank
     private String imgUrl;
 
-    @Builder
-
-    public ProductCreateRequestDTO(String title, String content, String name, long price, int total, String imgUrl) {
-        this.title = title;
-        this.content = content;
-        this.name = name;
-        this.price = price;
-        this.total = total;
-        this.imgUrl = imgUrl;
+    public Product toEntity(User user){
+        return Product.builder()
+                .userId(user)
+                .title(this.title)
+                .content(this.content)
+                .name(this.name)
+                .price(this.price)
+                .total(this.total)
+                .imgUrl(this.imgUrl)
+                .build();
     }
+
 }
