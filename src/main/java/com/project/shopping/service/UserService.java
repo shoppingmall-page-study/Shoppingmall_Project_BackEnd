@@ -148,7 +148,7 @@ public class UserService {
         if(userRepository.existsByNickname(value)){
             new CustomException(ErrorCode.DuplicatedNickNameException);
         }
-        UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = UserCheckNicknameResponseDTO.builder().nickname(value).build();
+        UserCheckNicknameResponseDTO userCheckNicknameResponseDTO =  UserCheckNicknameResponseDTO.UserCheckNicknameResponseDTO(value);
 
         return  userCheckNicknameResponseDTO;
     }
