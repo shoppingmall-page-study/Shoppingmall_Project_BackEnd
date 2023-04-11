@@ -1,5 +1,6 @@
 package com.project.shopping.dto.requestDTO.UserRequestDTO;
 
+import com.project.shopping.model.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,20 +28,17 @@ public class UserUpdateRequestDTO {
     private  String phoneNumber;
 
     @NotBlank
-    @Email
-    private String email;
-    @NotBlank
     private String postCode;
 
-
-    @Builder
-    public UserUpdateRequestDTO(String username, String address, int age, String nickname, String phoneNumber, String email, String postCode) {
-        this.username = username;
-        this.address = address;
-        this.age = age;
-        this.nickname = nickname;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.postCode = postCode;
+    public User toEntity(){
+        return User.builder()
+                .username(this.username)
+                .address(this.address)
+                .postCode(this.postCode)
+                .age(this.age)
+                .nickname(this.nickname)
+                .phoneNumber(this.phoneNumber)
+                .build();
     }
+
 }

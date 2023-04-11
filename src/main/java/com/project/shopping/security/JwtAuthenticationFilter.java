@@ -1,10 +1,8 @@
 package com.project.shopping.security;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.shopping.auth.PrincipalDetails;
-import com.project.shopping.dto.UserDTO;
 import com.project.shopping.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -27,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadPoolExecutor;
 
 
 @RequiredArgsConstructor

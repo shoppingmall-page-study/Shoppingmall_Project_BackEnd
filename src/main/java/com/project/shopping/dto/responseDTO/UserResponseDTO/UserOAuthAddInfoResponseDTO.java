@@ -1,5 +1,6 @@
 package com.project.shopping.dto.responseDTO.UserResponseDTO;
 
+import com.project.shopping.model.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,20 @@ public class UserOAuthAddInfoResponseDTO {
         this.phoneNumber = phoneNumber;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
+    }
+
+    public static UserOAuthAddInfoResponseDTO toUserOAuthAddInfoResponseDTO(User user){
+        return UserOAuthAddInfoResponseDTO.builder()
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .address(user.getAddress())
+                .postCode(user.getPostCode())
+                .age(user.getAge())
+                .nickname(user.getNickname())
+                .phoneNumber(user.getPhoneNumber())
+                .createDate(user.getCreateDate())
+                .modifiedDate(user.getModifiedDate())
+                .build();
+
     }
 }

@@ -1,6 +1,8 @@
 package com.project.shopping.dto.requestDTO.UserRequestDTO;
 
 
+import com.project.shopping.model.User;
+import com.project.shopping.security.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,16 +40,19 @@ public class UserJoinRequestDTO {
     private  String phoneNumber;
 
 
-    @Builder
+    public User toEntity(String passwordEncode, Role role, String status){
 
-    public UserJoinRequestDTO(String email, String password, String username, String address, String postCode, int age, String nickname, String phoneNumber) {
-        this.email = email;
-        this.password = password;
-        this.username = username;
-        this.address = address;
-        this.postCode = postCode;
-        this.age = age;
-        this.nickname = nickname;
-        this.phoneNumber = phoneNumber;
+        return User.builder()
+                .email(this.email)
+                .password(passwordEncode)
+                .username(this.username)
+                .address(this.address)
+                .postCode(this.postCode)
+                .age(this.age)
+                .nickname(this.nickname)
+                .phoneNumber(this.phoneNumber)
+                .roles(role)
+                .status(status)
+                .build();
     }
 }
