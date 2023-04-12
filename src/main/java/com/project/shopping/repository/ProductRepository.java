@@ -26,11 +26,11 @@ public interface ProductRepository extends JpaRepository<Product,Integer>,Produc
     List<Product> getEqUserAndActive(User user, String status);
 
     Optional<Product> findById(int id);
-    Optional<Product> findByIdAndUserId(int id, User user);
-    boolean existsByIdAndUserId(int id , User user);
+    Optional<Product> findByIdAndUser(int id, User user);
+    boolean existsByIdAndUser(int id , User user);
 
     List<Product> findAll();
-    List<Product> findAllByUserId(User user);
+    List<Product> findAllByUser(User user);
 
 
 

@@ -47,7 +47,7 @@ public class ProductServiceTest {
 //                .build();
 //        userService.create(user);
 //        Product product = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -79,7 +79,7 @@ public class ProductServiceTest {
 //                .build();
 //        userService.create(user);
 //        Product product = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -101,7 +101,7 @@ public class ProductServiceTest {
 //    }
 //
 //    @Test
-//    public void findproductId(){
+//    public void findproduct(){
 //        String passwordd ="asdfasfdasdf";
 //        User user = User.builder()
 //                .email("user5@example.com")
@@ -117,7 +117,7 @@ public class ProductServiceTest {
 //                .build();
 //        userService.create(user);
 //        Product product = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -128,8 +128,8 @@ public class ProductServiceTest {
 //                .createDate(Timestamp.valueOf(LocalDateTime.now()))
 //                .build();
 //        Product createProduct = productService.create(product);
-//        Product findproductId = productService.findproductid(createProduct.getId());
-//        Assertions.assertThat(findproductId.getId()).isEqualTo(createProduct.getId());
+//        Product findproduct = productService.findproduct(createProduct.getId());
+//        Assertions.assertThat(findproduct.getId()).isEqualTo(createProduct.getId());
 //
 //    }
 //
@@ -162,7 +162,7 @@ public class ProductServiceTest {
 //        User finduser = userService.findEmailByUser(user.getEmail());
 //        Product findProduct = productService.findProductNameUser(createProduct.getId(),finduser);
 //        productService.deleteProduct(findProduct);
-//        Optional<Product> deleteProduct = Optional.ofNullable(productService.findproductid(createProduct.getId()));
+//        Optional<Product> deleteProduct = Optional.ofNullable(productService.findproduct(createProduct.getId()));
 //        org.junit.jupiter.api.Assertions.assertFalse(deleteProduct.isPresent());
 //
 //    }
@@ -184,7 +184,7 @@ public class ProductServiceTest {
 //                .build();
 //        userService.create(user);
 //        Product product = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")

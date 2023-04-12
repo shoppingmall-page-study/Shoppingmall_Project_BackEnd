@@ -31,11 +31,11 @@ public class ReviewController {
 
     // 리뷰 생성
     @PostMapping("/api/review/create/{id}")
-    public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody @Valid ReviewCreateRequestDTO reviewCreateRequestDTO){
+    public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "id") int product, @RequestBody @Valid ReviewCreateRequestDTO reviewCreateRequestDTO){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-        ReviewCreateResponseDTO reviewCreateResponseDTO = reviewService.create(user, ProductId, reviewCreateRequestDTO);
+        ReviewCreateResponseDTO reviewCreateResponseDTO = reviewService.create(user, product, reviewCreateRequestDTO);
 
         // Review Dto 로 응답 보내기
 
@@ -78,11 +78,11 @@ public class ReviewController {
 
     // 상품에 달린 리뷰 조회
     @GetMapping("/api/review/{id}")
-    public ResponseEntity<?> findProductReviewList(@PathVariable(value = "id") int ProductId){
+    public ResponseEntity<?> findProductReviewList(@PathVariable(value = "id") int product){
 
 
         // 상품에 등록된 리뷰 찾기
-        List<ReviewProductJoinResponseDTO> reviewProductJoinResponseDTOS = reviewService.getEqProductAndActive(ProductId, ActiveStatus);
+        List<ReviewProductJoinResponseDTO> reviewProductJoinResponseDTOS = reviewService.getEqProductAndActive(product, ActiveStatus);
 
 
         Map<String, Object> result = new HashMap<>();

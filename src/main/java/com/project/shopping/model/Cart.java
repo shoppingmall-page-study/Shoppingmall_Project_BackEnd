@@ -13,13 +13,13 @@ public class Cart extends BaseTimeEntity {
     @Column(name ="Cart_ID")
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "Product_ID")
-    private Product productId;
+    private Product product;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_ID")
-    private User userId;
+    private User user;
 
     // set builder 패턴으로 수정
     @Setter
@@ -30,9 +30,9 @@ public class Cart extends BaseTimeEntity {
     private  String status;
 
     @Builder
-    public Cart(Product productId, User userId, long productNum, String status) {
-        this.productId = productId;
-        this.userId = userId;
+    public Cart(Product product, User user, long productNum, String status) {
+        this.product = product;
+        this.user = user;
         this.productNum = productNum;
         this.status = status;
     }

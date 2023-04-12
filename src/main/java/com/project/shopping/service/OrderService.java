@@ -6,6 +6,7 @@ import com.project.shopping.dto.requestDTO.OrderRequestDTO.OrderRequestDTO;
 import com.project.shopping.dto.responseDTO.OrderResponseDTO.OrderResponseDTO;
 import com.project.shopping.dto.responseDTO.OrderResponseDTO.ProductInOrderResponseDTO;
 import com.project.shopping.model.*;
+import com.project.shopping.repository.OrderDetailRepository;
 import com.project.shopping.repository.OrderRepository;
 import com.project.shopping.repository.ProductRepository;
 import com.project.shopping.repository.UserRepository;
@@ -22,17 +23,16 @@ import java.util.*;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final OrderDetailRepository orderDetailRepository;
 
     public OrderResponseDTO create(User user, OrderRequestDTO orderRequestDTO)throws CustomException {
 
-        ArrayList<OrderDetail> products = new ArrayList<>();
         ArrayList<ProductInOrderResponseDTO>  responseProductsDTO = new ArrayList<>();
+
         long totalAmount = 0;
         Order order = Order.builder()
-                .products(products)
                 .user(user)
                 .orderComplete("ready")
                 .status("active")
@@ -48,15 +48,18 @@ public class OrderService {
                     .productNum(productNum)
                     .build();
 
+            orderDetailRepository.save(orderDetail);
+            order.getProducts().add(orderDetail);
+
             ProductInOrderResponseDTO productDTO = ProductInOrderResponseDTO.builder()
-                    .productId(product.getId())
+                    .product(product.getId())
                     .productName(product.getTitle())
                     .imgUrl(product.getImgUrl())
                     .productNum(productNum)
                     .build();
 
-            order.addProduct(orderDetail);
             responseProductsDTO.add(productDTO);
+
             totalAmount += product.getPrice() * productNum;
         }
 
@@ -71,11 +74,6 @@ public class OrderService {
                 .amount(savedOrder.getAmount())
                 .orderTime(savedOrder.getOrderTime())
                 .build();
-
-        if(order.getProducts() == null){
-            log.warn("product not found", order.getProducts());
-            throw new CustomException(ErrorCode.NotFoundProductException);
-        }
 
         return orderResponseDTO;
     }
@@ -101,7 +99,7 @@ public class OrderService {
                 int productNum = order.getProducts().get(i).getProductNum();
 
                 productDTO = ProductInOrderResponseDTO.builder()
-                        .productId(product.getId())
+                        .product(product.getId())
                         .productName(product.getName())
                         .productNum(productNum)
                         .imgUrl(product.getImgUrl())

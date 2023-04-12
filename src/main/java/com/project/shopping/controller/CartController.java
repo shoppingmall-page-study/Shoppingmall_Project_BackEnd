@@ -27,9 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CartController {
 
-    private  final CartService cartService;
-
-
+    private final CartService cartService;
 
     private  String ActiveStatus = "active";
 
@@ -37,11 +35,11 @@ public class CartController {
     // product id를 받아서 해당 상품을 찾고 인증객체를 통한 user 을 받아 장바구니 생성
     @PostMapping("/api/cart/create/{id}")
     // 여기서 ID는 상품 ID
-    public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "id") int ProductId ,@RequestBody @Valid CartCreateRequestDTO cartCreateRequestDTO){
+    public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "id") int product ,@RequestBody @Valid CartCreateRequestDTO cartCreateRequestDTO){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-        CartCreateResponseDTO cartCreateResponseDTO = cartService.create(user, ProductId, cartCreateRequestDTO); // 카트 생성
+        CartCreateResponseDTO cartCreateResponseDTO = cartService.create(user, product, cartCreateRequestDTO); // 카트 생성
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "장바구니 등록에 성공했습니다.");
         result.put("data", cartCreateResponseDTO);

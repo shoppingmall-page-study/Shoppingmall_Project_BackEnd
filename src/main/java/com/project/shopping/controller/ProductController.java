@@ -52,11 +52,11 @@ public class ProductController {
 
 
     @DeleteMapping("/api/product/delete/{id}")
-    public ResponseEntity<?>  productDelete(Authentication authentication, @PathVariable(value = "id") int ProductId){
+    public ResponseEntity<?>  productDelete(Authentication authentication, @PathVariable(value = "id") int product){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-        ProductDeleteResponseDTO productDeleteResponseDTO = productService.deleteProduct(user, ProductId);
+        ProductDeleteResponseDTO productDeleteResponseDTO = productService.deleteProduct(user, product);
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "상품삭제에 성공했습니다.");
@@ -104,9 +104,9 @@ public class ProductController {
     }
 
     @GetMapping("/api/product/{id}")
-    public ResponseEntity<?>  productFind(@PathVariable(value = "id") int ProductId){
+    public ResponseEntity<?>  productFind(@PathVariable(value = "id") int product){
         //service
-        ProductJoinResponseDTO productJoinResponseDTO = productService.findById(ProductId);
+        ProductJoinResponseDTO productJoinResponseDTO = productService.findById(product);
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg","상품검색에 성공했습니다.");
@@ -116,10 +116,10 @@ public class ProductController {
     }
 
     @PutMapping("/api/product/update/{id}")
-    public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int ProductId, @RequestBody @Valid ProductUpdateRequestDTO productUpdateRequestDTO){
+    public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int product, @RequestBody @Valid ProductUpdateRequestDTO productUpdateRequestDTO){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
-        ProductUpdateResponseDTO productUpdateResponseDTO = productService.update(user, productUpdateRequestDTO, ProductId);
+        ProductUpdateResponseDTO productUpdateResponseDTO = productService.update(user, productUpdateRequestDTO, product);
 
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품 수정에 성공했습니다.");

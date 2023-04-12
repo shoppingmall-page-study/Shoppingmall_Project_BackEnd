@@ -16,9 +16,9 @@ public class Product extends BaseTimeEntity {
     @Column(name ="Product_ID")
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "User_ID")
-    private User userId;
+    private User user;
 
 
 
@@ -46,22 +46,13 @@ public class Product extends BaseTimeEntity {
     private String imgUrl;
 
 
-    @OneToMany(mappedBy = "productId")
-    private List<Review> reviews = new ArrayList<>(); // 일대 다 review와 연관 관계 맺기
-
-
-    @OneToMany(mappedBy = "productId")
-    private  List<Cart> carts = new ArrayList<>();
-
-
-
     @Column(nullable = false)
     private  String status;
 
 
     @Builder
-    private Product(User userId, String title, String content, String name, long price, int total, String imgUrl, String status) {
-        this.userId = userId;
+    private Product(User user, String title, String content, String name, long price, int total, String imgUrl, String status) {
+        this.user = user;
         this.title = title;
         this.content = content;
         this.name = name;

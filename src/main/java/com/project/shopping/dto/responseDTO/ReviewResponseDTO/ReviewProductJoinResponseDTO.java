@@ -34,7 +34,7 @@ public class ReviewProductJoinResponseDTO {
     public static ReviewProductJoinResponseDTO toReviewProductJoinResponseDTO(Review review){
         return ReviewProductJoinResponseDTO.builder()
                 .reviewId(review.getId())
-                .userNickname(review.getUserId().getNickname())
+                .userNickname(review.getUser().getNickname())
                 .imgURL(review.getImageUrl())
                 .title(review.getTitle())
                 .content(review.getContent())

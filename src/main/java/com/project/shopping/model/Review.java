@@ -14,13 +14,13 @@ public class Review extends BaseTimeEntity {
     @Column(name ="Review_ID")
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "User_ID")
-    private User userId;
+    private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "Product_ID")
-    private Product productId;
+    private Product product;
 
 
     // set builder 패턴 이용해 바꾸기
@@ -43,9 +43,9 @@ public class Review extends BaseTimeEntity {
 
 
     @Builder
-    private Review(User userId, Product productId, String title, String content, String imageUrl, String status) {
-        this.userId = userId;
-        this.productId = productId;
+    private Review(User user, Product product, String title, String content, String imageUrl, String status) {
+        this.user = user;
+        this.product = product;
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
@@ -73,6 +73,5 @@ public class Review extends BaseTimeEntity {
     private void updateReviewContent(String content) {
         this.content = content;
     }
-
 
 }

@@ -24,7 +24,7 @@ public class Order extends BaseTimeEntity{
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderDetail> products = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "User_ID")
     private User user;
 
