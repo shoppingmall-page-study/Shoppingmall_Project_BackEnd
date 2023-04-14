@@ -16,7 +16,7 @@ public class Product extends BaseTimeEntity {
     @Column(name ="Product_ID")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "User_ID")
     private User user;
 

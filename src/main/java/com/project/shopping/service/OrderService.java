@@ -30,12 +30,14 @@ public class OrderService {
     public OrderResponseDTO create(User user, OrderRequestDTO orderRequestDTO)throws CustomException {
 
         ArrayList<ProductInOrderResponseDTO>  responseProductsDTO = new ArrayList<>();
+        ArrayList<OrderDetail> products = new ArrayList<>();
 
         long totalAmount = 0;
         Order order = Order.builder()
                 .user(user)
                 .orderComplete("ready")
                 .status("active")
+                .products(products)
                 .build();
 
         for(int i = 0; i < orderRequestDTO.getProductsId().size(); i++){
@@ -44,11 +46,11 @@ public class OrderService {
             int productNum = orderRequestDTO.getProductsNumber().get(i);
 
             OrderDetail orderDetail = OrderDetail.builder()
+                    .order(order)
                     .product(product)
                     .productNum(productNum)
                     .build();
 
-            orderDetailRepository.save(orderDetail);
             order.getProducts().add(orderDetail);
 
             ProductInOrderResponseDTO productDTO = ProductInOrderResponseDTO.builder()
