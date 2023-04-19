@@ -73,7 +73,7 @@ public class PaymentService {
             ProductInOrderResponseDTO productInOrderResponseDTO;
             for (int i = 0; i < order.getProducts().size(); i++) {
                 productInOrderResponseDTO = ProductInOrderResponseDTO.builder()
-                        .product(order.getProducts().get(i).getProduct().getId())
+                        .productId(order.getProducts().get(i).getProduct().getId())
                         .productName(order.getProducts().get(i).getProduct().getName())
                         .productNum(order.getProducts().get(i).getProductNum())
                         .build();

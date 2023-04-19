@@ -51,12 +51,12 @@ public class ProductController {
     }
 
 
-    @DeleteMapping("/api/product/delete/{id}")
-    public ResponseEntity<?>  productDelete(Authentication authentication, @PathVariable(value = "id") int product){
+    @DeleteMapping("/api/product/delete/{productId}")
+    public ResponseEntity<?>  productDelete(Authentication authentication, @PathVariable(value = "productId") int productId){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-        ProductDeleteResponseDTO productDeleteResponseDTO = productService.deleteProduct(user, product);
+        ProductDeleteResponseDTO productDeleteResponseDTO = productService.deleteProduct(user, productId);
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "상품삭제에 성공했습니다.");
@@ -103,10 +103,10 @@ public class ProductController {
 
     }
 
-    @GetMapping("/api/product/{id}")
-    public ResponseEntity<?>  productFind(@PathVariable(value = "id") int product){
+    @GetMapping("/api/product/{productId}")
+    public ResponseEntity<?>  productFind(@PathVariable(value = "productId") int productId){
         //service
-        ProductJoinResponseDTO productJoinResponseDTO = productService.findById(product);
+        ProductJoinResponseDTO productJoinResponseDTO = productService.findById(productId);
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg","상품검색에 성공했습니다.");
@@ -115,11 +115,11 @@ public class ProductController {
         return ResponseEntity.ok().body(result);
     }
 
-    @PutMapping("/api/product/update/{id}")
-    public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "id") int product, @RequestBody @Valid ProductUpdateRequestDTO productUpdateRequestDTO){
+    @PutMapping("/api/product/update/{productId}")
+    public ResponseEntity<?> updateProduct(Authentication authentication, @PathVariable(value = "productId") int productId, @RequestBody @Valid ProductUpdateRequestDTO productUpdateRequestDTO){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
-        ProductUpdateResponseDTO productUpdateResponseDTO = productService.update(user, productUpdateRequestDTO, product);
+        ProductUpdateResponseDTO productUpdateResponseDTO = productService.update(user, productUpdateRequestDTO, productId);
 
         Map<String , Object> result = new HashMap<>();
         result.put("msg","상품 수정에 성공했습니다.");

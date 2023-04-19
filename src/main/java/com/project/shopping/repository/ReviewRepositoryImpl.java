@@ -22,11 +22,11 @@ public class ReviewRepositoryImpl implements  ReviewRepositoryCustom{
         if(review.status.eq(status) == null){
             return null;
         }
-        if(review.user.user.eq(user.getUser()) == null){
+        if(review.user.id.eq(user.getId()) == null){
             return null;
         }
 
-        return review.status.eq(status).and(review.user.user.eq(user.getUser()));
+        return review.status.eq(status).and(review.user.id.eq(user.getId()));
     }
 
     private BooleanExpression eqProductAndActive(Product product, String status){

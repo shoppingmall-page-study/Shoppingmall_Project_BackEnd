@@ -16,7 +16,7 @@ public class OrderDetail extends BaseTimeEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
-    @JoinColumn(name = "orderID")
+    @JoinColumn(name = "Order_ID")
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)

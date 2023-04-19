@@ -30,12 +30,12 @@ public class ReviewController {
     private String ActiveStatus= "active";
 
     // 리뷰 생성
-    @PostMapping("/api/review/create/{id}")
-    public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "id") int product, @RequestBody @Valid ReviewCreateRequestDTO reviewCreateRequestDTO){
+    @PostMapping("/api/review/create/{productId}")
+    public ResponseEntity<?> createReview(Authentication authentication, @PathVariable(value = "productId") int productId, @RequestBody @Valid ReviewCreateRequestDTO reviewCreateRequestDTO){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-        ReviewCreateResponseDTO reviewCreateResponseDTO = reviewService.create(user, product, reviewCreateRequestDTO);
+        ReviewCreateResponseDTO reviewCreateResponseDTO = reviewService.create(user, productId, reviewCreateRequestDTO);
 
         // Review Dto 로 응답 보내기
 
@@ -47,12 +47,12 @@ public class ReviewController {
     }
 
     // 리뷰 삭제
-    @DeleteMapping ("/api/review/delete/{id}")
-    public ResponseEntity<?> reviewDelete(Authentication authentication, @PathVariable(value = "id") int ReviewId){ // reviewid
+    @DeleteMapping ("/api/review/delete/{reviewId}")
+    public ResponseEntity<?> reviewDelete(Authentication authentication, @PathVariable(value = "reviewId") int reviewId){ // reviewid
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-        ReviewDeleteResponseDTO reviewDeleteResponseDTO = reviewService.deleteReview(user, ReviewId);
+        ReviewDeleteResponseDTO reviewDeleteResponseDTO = reviewService.deleteReview(user, reviewId);
 
         Map<String , Object> result = new HashMap<>();
         result.put("msg","리뷰 삭제에 성공했습니다.");
@@ -77,12 +77,12 @@ public class ReviewController {
     }
 
     // 상품에 달린 리뷰 조회
-    @GetMapping("/api/review/{id}")
-    public ResponseEntity<?> findProductReviewList(@PathVariable(value = "id") int product){
+    @GetMapping("/api/review/{productId}")
+    public ResponseEntity<?> findProductReviewList(@PathVariable(value = "productId") int productId){
 
 
         // 상품에 등록된 리뷰 찾기
-        List<ReviewProductJoinResponseDTO> reviewProductJoinResponseDTOS = reviewService.getEqProductAndActive(product, ActiveStatus);
+        List<ReviewProductJoinResponseDTO> reviewProductJoinResponseDTOS = reviewService.getEqProductAndActive(productId, ActiveStatus);
 
 
         Map<String, Object> result = new HashMap<>();
@@ -92,8 +92,8 @@ public class ReviewController {
 
     }
 
-    @PutMapping("/api/review/update/{id}")
-    public ResponseEntity<?> productReviewUpdate(Authentication authentication, @PathVariable(value = "id") int reviewId, @RequestBody @Valid ReviewUpdateRequestDTO reviewUpdateRequestDTO){
+    @PutMapping("/api/review/update/{reviewId}")
+    public ResponseEntity<?> productReviewUpdate(Authentication authentication, @PathVariable(value = "reviewId") int reviewId, @RequestBody @Valid ReviewUpdateRequestDTO reviewUpdateRequestDTO){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 

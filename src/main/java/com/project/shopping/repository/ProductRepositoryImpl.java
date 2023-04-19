@@ -66,11 +66,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
         if(product.status.eq(status) == null){
             return null;
         }
-        if(product.user.user.eq(user.getUser()) == null){
+        if(product.user.id.eq(user.getId()) == null){
             return null;
         }
 
-        return product.status.eq(status).and(product.user.user.eq(user.getUser()));
+        return product.status.eq(status).and(product.user.id.eq(user.getId()));
     }
 
 

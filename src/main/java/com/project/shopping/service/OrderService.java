@@ -54,7 +54,7 @@ public class OrderService {
             order.getProducts().add(orderDetail);
 
             ProductInOrderResponseDTO productDTO = ProductInOrderResponseDTO.builder()
-                    .product(product.getId())
+                    .productId(product.getId())
                     .productName(product.getTitle())
                     .imgUrl(product.getImgUrl())
                     .productNum(productNum)
@@ -101,7 +101,7 @@ public class OrderService {
                 int productNum = order.getProducts().get(i).getProductNum();
 
                 productDTO = ProductInOrderResponseDTO.builder()
-                        .product(product.getId())
+                        .productId(product.getId())
                         .productName(product.getName())
                         .productNum(productNum)
                         .imgUrl(product.getImgUrl())

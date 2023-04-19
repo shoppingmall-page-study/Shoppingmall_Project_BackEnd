@@ -18,7 +18,7 @@ public class Cart extends BaseTimeEntity {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_ID")
+    @JoinColumn(name = "User_ID")
     private User user;
 
     // set builder 패턴으로 수정

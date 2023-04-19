@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ProductInOrderResponseDTO {
 
-    private int product;
+    private int productId;
     private String productName;
     private String imgUrl;
     private int productNum;
 
     @Builder
-    public ProductInOrderResponseDTO(int product, String productName, String imgUrl, int productNum) {
-        this.product = product;
+    public ProductInOrderResponseDTO(int productId, String productName, String imgUrl, int productNum) {
+        this.productId = productId;
         this.productName = productName;
         this.imgUrl = imgUrl;
         this.productNum = productNum;
