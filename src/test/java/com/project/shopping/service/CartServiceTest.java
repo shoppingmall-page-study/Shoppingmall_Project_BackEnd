@@ -49,7 +49,7 @@ public class CartServiceTest {
 //                .build();
 //        User createUser = userService.create(user);
 //        Product product = Product.builder()
-//                .userId(createUser)
+//                .user(createUser)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -60,7 +60,7 @@ public class CartServiceTest {
 //                .createDate(Timestamp.valueOf(LocalDateTime.now()))
 //                .build();
 //        Product createProduct = productService.create(product);
-//        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
+//        Cart cart = Cart.builder().user(createUser).product(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
 //        Cart  creatCart = cartService.create(cart);
 //
 //        Assertions.assertThat(cart.getId()).isEqualTo(creatCart.getId());
@@ -86,7 +86,7 @@ public class CartServiceTest {
 //                .build();
 //        User createUser = userService.create(user);
 //        Product product = Product.builder()
-//                .userId(createUser)
+//                .user(createUser)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -97,7 +97,7 @@ public class CartServiceTest {
 //                .createDate(Timestamp.valueOf(LocalDateTime.now()))
 //                .build();
 //        Product createProduct = productService.create(product);
-//        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
+//        Cart cart = Cart.builder().user(createUser).product(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
 //        Cart  creatCart = cartService.create(cart); //카트 생성
 //
 //        Cart findcart = cartService.findCartUserAndId(user, cart.getId());
@@ -106,7 +106,7 @@ public class CartServiceTest {
 //    }
 //
 //    @Test
-//    public void findallByUserId(){
+//    public void findallByuser(){
 //        String passworddd ="asdfasfdasdf";
 //        User user = User.builder()
 //                .email("cart3@example.com")
@@ -122,7 +122,7 @@ public class CartServiceTest {
 //                .build();
 //        User createUser = userService.create(user);
 //        Product product = Product.builder()
-//                .userId(createUser)
+//                .user(createUser)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -133,13 +133,13 @@ public class CartServiceTest {
 //                .createDate(Timestamp.valueOf(LocalDateTime.now()))
 //                .build();
 //        Product createProduct = productService.create(product);
-//        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
+//        Cart cart = Cart.builder().user(createUser).product(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
 //        Cart  creatCart = cartService.create(cart); //카트 생성
 //
-//        List<Cart> cartList = cartService.findallByUserId(createUser);
+//        List<Cart> cartList = cartService.findallByuser(createUser);
 //        for(Cart carts : cartList){
-//            if(carts.getUserId().getUserId() == user.getUserId()){
-//                Assertions.assertThat(cart.getUserId().getEmail()).isEqualTo(user.getEmail());
+//            if(carts.getuser().getuser() == user.getuser()){
+//                Assertions.assertThat(cart.getuser().getEmail()).isEqualTo(user.getEmail());
 //            }
 //        }
 //
@@ -162,7 +162,7 @@ public class CartServiceTest {
 //                .build();
 //        User createUser = userService.create(user);
 //        Product product = Product.builder()
-//                .userId(createUser)
+//                .user(createUser)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -173,7 +173,7 @@ public class CartServiceTest {
 //                .createDate(Timestamp.valueOf(LocalDateTime.now()))
 //                .build();
 //        Product createProduct = productService.create(product);
-//        Cart cart = Cart.builder().userId(createUser).productId(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
+//        Cart cart = Cart.builder().user(createUser).product(createProduct).createTime(Timestamp.valueOf(LocalDateTime.now())).status("active").build();
 //        Cart  creatCart = cartService.create(cart); //카트 생성
 //
 //        Cart findcart = cartService.findCartUserAndId(createUser,creatCart.getId());

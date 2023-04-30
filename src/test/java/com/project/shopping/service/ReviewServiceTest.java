@@ -51,7 +51,7 @@ public class ReviewServiceTest {
 //        userService.create(user); // user 생성
 //
 //        Product product = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -65,7 +65,7 @@ public class ReviewServiceTest {
 //        productService.create(product); // product 생성
 //
 //
-//        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
+//        Review review = Review.builder().user(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
 //
 //        Review createReview = reviewService.create(review);
 //
@@ -75,7 +75,7 @@ public class ReviewServiceTest {
 //    }
 //
 //    @Test
-//    public void findallByUserId(){
+//    public void findallByuser(){
 //        String passwordd ="asdfasfdasdf";
 //        User user = User.builder()
 //                .email("review2@example.com")
@@ -92,7 +92,7 @@ public class ReviewServiceTest {
 //        userService.create(user); // user 생성
 //
 //        Product product = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -106,12 +106,12 @@ public class ReviewServiceTest {
 //        productService.create(product); // product 생성
 //
 //
-//        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
+//        Review review = Review.builder().user(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
 //
 //        Review createReview = reviewService.create(review);
 //
-//        List<Review> findallReviewUserId = reviewService.findallByUserId(user); // 해당 유저 가 단 리뷰 조회
-//        for(Review reviews : findallReviewUserId){
+//        List<Review> findallReviewuser = reviewService.findallByuser(user); // 해당 유저 가 단 리뷰 조회
+//        for(Review reviews : findallReviewuser){
 //            Assertions.assertThat(reviews.getId()).isEqualTo(createReview.getId());
 //        }
 //    }
@@ -134,7 +134,7 @@ public class ReviewServiceTest {
 //        userService.create(user); // user 생성
 //
 //        Product product = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -148,7 +148,7 @@ public class ReviewServiceTest {
 //        productService.create(product); // product 생성
 //
 //
-//        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
+//        Review review = Review.builder().user(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
 //
 //        Review createReview = reviewService.create(review);
 //        List<Review> findReviewProductId = reviewService.findallByProductId(product);
@@ -176,7 +176,7 @@ public class ReviewServiceTest {
 //        userService.create(user); // user 생성
 //
 //        Product product = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -190,7 +190,7 @@ public class ReviewServiceTest {
 //        productService.create(product); // product 생성
 //
 //
-//        Review review = Review.builder().userId(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
+//        Review review = Review.builder().user(user).productId(product).title("가나다").content("가나다").imageUrl("asdf").status("active").build();
 //
 //        Review createReview = reviewService.create(review);
 //        Review findreview = reviewService.findReviewUserAndId(user, review.getId());

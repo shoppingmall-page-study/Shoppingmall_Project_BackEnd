@@ -23,10 +23,10 @@ public class CartRepositoryImpl implements  CartRepositoryCustom{
         if(cart.status.eq(status) == null){
             return null;
         }
-        if(cart.userId.userId.eq(user.getUserId()) == null){
+        if(cart.user.id.eq(user.getId()) == null){
             return null;
         }
-        return cart.userId.userId.eq(user.getUserId()).and(cart.status.eq(status));
+        return cart.user.id.eq(user.getId()).and(cart.status.eq(status));
     }
 
 

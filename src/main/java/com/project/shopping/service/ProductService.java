@@ -32,15 +32,15 @@ public class ProductService {
     }
 
 
-    public ProductUpdateResponseDTO update(User user, ProductUpdateRequestDTO productUpdateRequestDTO, int ProductId){
+    public ProductUpdateResponseDTO update(User user, ProductUpdateRequestDTO productUpdateRequestDTO, int product){
 
-        Product product = productRepository.findByIdAndUserId(ProductId, user)
+        Product findProduct = productRepository.findByIdAndUser(product, user)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));// 해당 상품 찾기
 
-        product.update(productUpdateRequestDTO.toEntity());
-        productRepository.save(product);
+        findProduct.update(productUpdateRequestDTO.toEntity());
+        productRepository.save(findProduct);
 
-        return ProductUpdateResponseDTO.toProductUpdateResponseDTO(product);
+        return ProductUpdateResponseDTO.toProductUpdateResponseDTO(findProduct);
 
     }
     public ProductJoinResponseDTO findById(int id){
@@ -64,16 +64,16 @@ public class ProductService {
 
 
 
-    public ProductDeleteResponseDTO deleteProduct(User user, int ProductId){
+    public ProductDeleteResponseDTO deleteProduct(User user, int product){
 
-        Product product = productRepository.findByIdAndUserId(ProductId,user)
+        Product findProduct = productRepository.findByIdAndUser(product,user)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));// 유저와 상품명으로 상품 찾기
-        product.delete();
-        productRepository.save(product);
+        findProduct.delete();
+        productRepository.save(findProduct);
 
 
 
-        return ProductDeleteResponseDTO.toProductDeleteResponseDTO(product);
+        return ProductDeleteResponseDTO.toProductDeleteResponseDTO(findProduct);
     }
 
     public List<ProductSearchResponseDTO> getProductList(String title, String status){

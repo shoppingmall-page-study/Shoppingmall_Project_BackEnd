@@ -27,21 +27,19 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CartController {
 
-    private  final CartService cartService;
-
-
+    private final CartService cartService;
 
     private  String ActiveStatus = "active";
 
     // 상품 생성
     // product id를 받아서 해당 상품을 찾고 인증객체를 통한 user 을 받아 장바구니 생성
-    @PostMapping("/api/cart/create/{id}")
+    @PostMapping("/api/cart/create/{productId}")
     // 여기서 ID는 상품 ID
-    public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "id") int ProductId ,@RequestBody @Valid CartCreateRequestDTO cartCreateRequestDTO){
+    public ResponseEntity<?> createCart(Authentication authentication, @PathVariable(value = "productId") int productId ,@RequestBody @Valid CartCreateRequestDTO cartCreateRequestDTO){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-        CartCreateResponseDTO cartCreateResponseDTO = cartService.create(user, ProductId, cartCreateRequestDTO); // 카트 생성
+        CartCreateResponseDTO cartCreateResponseDTO = cartService.create(user, productId, cartCreateRequestDTO); // 카트 생성
         Map<String, Object> result = new HashMap<>();
         result.put("msg", "장바구니 등록에 성공했습니다.");
         result.put("data", cartCreateResponseDTO);
@@ -71,12 +69,12 @@ public class CartController {
     }
 
     // 삭제 쿼리
-    @DeleteMapping("/api/cart/delete/{id}") // id는 cart_Id
-    public ResponseEntity<?> cartDelete(Authentication authentication, @PathVariable(value = "id")int id){
+    @DeleteMapping("/api/cart/delete/{cartId}") // id는 cart_Id
+    public ResponseEntity<?> cartDelete(Authentication authentication, @PathVariable(value = "cartId")int cartId){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-        CartDeleteResponseDTO cartDeleteResponseDTO = cartService.deleteCart(user, id);
+        CartDeleteResponseDTO cartDeleteResponseDTO = cartService.deleteCart(user, cartId);
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg","장바구니 삭제에 성공했습니다.");
@@ -84,8 +82,8 @@ public class CartController {
         return  ResponseEntity.ok().body(result);
     }
 
-    @PutMapping("/api/cart/update/{id}")
-    public ResponseEntity<?> cartUpdate(Authentication authentication, @PathVariable(value = "id") int cartId , @RequestBody @Valid CartUpdateRequestDTO cartUpdateRequestDTO){
+    @PutMapping("/api/cart/update/{cartId}")
+    public ResponseEntity<?> cartUpdate(Authentication authentication, @PathVariable(value = "cartId") int cartId , @RequestBody @Valid CartUpdateRequestDTO cartUpdateRequestDTO){
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 

@@ -14,12 +14,12 @@ public class OrderDetail extends BaseTimeEntity{
     @Column(name = "OrderDetail_ID")
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @Setter
-    @JoinColumn(name = "orderID")
+    @JoinColumn(name = "Order_ID")
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Product_ID")
     private Product product;
 
@@ -27,7 +27,8 @@ public class OrderDetail extends BaseTimeEntity{
     private int productNum;
 
     @Builder
-    public OrderDetail(Product product, int productNum) {
+    public OrderDetail(Product product, int productNum, Order order) {
+        this.order = order;
         this.product = product;
         this.productNum = productNum;
     }

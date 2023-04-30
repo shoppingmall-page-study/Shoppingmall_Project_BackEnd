@@ -16,13 +16,13 @@ import javax.transaction.Transactional;
 public interface ReviewRepository extends JpaRepository<Review,Integer>, ReviewRepositoryCustom {
     // 삭제 , 내 리뷰목록 조회 , 생성 , 상품 리뷰목록  조회
 
-    List<Review> findAllByUserId(User userId); // 내모든 리뷰 목록 조회
-    List<Review> findAllByProductId(Product product); // 상품 모든 리뷰 목록 조회
+    List<Review> findAllByUser(User user); // 내모든 리뷰 목록 조회
+    List<Review> findAllByProduct(Product product); // 상품 모든 리뷰 목록 조회
 
     // 삭제를 위한 user와 리뷰아이디로 리뷰 찾기
-    Optional<Review> findByUserIdAndId(User userId, int id);
+    Optional<Review> findByUserAndId(User user, int id);
 
-    Boolean existsByUserIdAndId(User userId, int id);
+    Boolean existsByUserAndId(User user, int id);
 
     @Override
     List<Review> getEqUserAndActive(User user, String status);

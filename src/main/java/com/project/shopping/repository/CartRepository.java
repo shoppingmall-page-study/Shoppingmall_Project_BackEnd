@@ -15,14 +15,14 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<Cart,Integer>,CartRepositoryCustom {
    // 유저가 등록한 상품 전체 조회 , 유저id와 카트 id로 해당 장바구니 상품 찾기 (삭제를 위해서)
 
-    List<Cart> findAllByuserId(User UserId);
+    List<Cart> findAllByUser(User user);
 
-    Optional<Cart> findCartByUserIdAndId(User userId, int id);
+    Optional<Cart> findCartByUserAndId(User user, int id);
 
-    boolean existsCartByUserIdAndProductIdAndStatus(User user, Product product, String status);
+    boolean existsCartByUserAndProductAndStatus(User user, Product product, String status);
 
-    Optional<Cart> findCartByUserIdAndProductId(User user, Product product);
-    Boolean existsByUserIdAndId(User user, int id);
+    Optional<Cart> findCartByUserAndProduct(User user, Product product);
+    Boolean existsByUserAndId(User user, int id);
 
     @Override
     List<Cart> getEqUserAndCart(User user, String status);

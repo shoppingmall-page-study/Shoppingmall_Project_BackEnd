@@ -32,6 +32,7 @@ public class UserOAuthAddInfoRequestDTO {
 
     public User toEntity(Role role){
         System.out.println(role);
+
         return User.builder()
                 .address(this.address)
                 .postCode(this.postCode)
@@ -41,6 +42,5 @@ public class UserOAuthAddInfoRequestDTO {
                 .phoneNumber(this.phoneNumber)
                 .build();
     }
-
 
 }

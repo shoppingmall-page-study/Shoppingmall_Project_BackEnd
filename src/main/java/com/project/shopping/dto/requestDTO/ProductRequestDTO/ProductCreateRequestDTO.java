@@ -27,7 +27,7 @@ public class ProductCreateRequestDTO {
 
     public Product toEntity(User user){
         return Product.builder()
-                .userId(user)
+                .user(user)
                 .title(this.title)
                 .content(this.content)
                 .name(this.name)

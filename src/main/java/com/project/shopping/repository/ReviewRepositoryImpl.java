@@ -22,22 +22,22 @@ public class ReviewRepositoryImpl implements  ReviewRepositoryCustom{
         if(review.status.eq(status) == null){
             return null;
         }
-        if(review.userId.userId.eq(user.getUserId()) == null){
+        if(review.user.id.eq(user.getId()) == null){
             return null;
         }
 
-        return review.status.eq(status).and(review.userId.userId.eq(user.getUserId()));
+        return review.status.eq(status).and(review.user.id.eq(user.getId()));
     }
 
     private BooleanExpression eqProductAndActive(Product product, String status){
         if(review.status.eq(status) == null){
             return null;
         }
-        if(review.productId.id.eq(product.getId()) == null){
+        if(review.product.id.eq(product.getId()) == null){
             return null;
         }
 
-        return review.status.eq(status).and(review.productId.id.eq(product.getId()));
+        return review.status.eq(status).and(review.product.id.eq(product.getId()));
     }
 
     @Override

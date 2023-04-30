@@ -27,16 +27,16 @@ public class ReviewService {
     private  final ProductRepository productRepository;
 
     // 생성
-    public ReviewCreateResponseDTO create(User user, int ProductId, ReviewCreateRequestDTO reviewCreateRequestDTO){
+    public ReviewCreateResponseDTO create(User user, int product, ReviewCreateRequestDTO reviewCreateRequestDTO){
 
 
         // 파라미터로 받은 값으로 상품 찾기
-        Product product = productRepository.findById(ProductId)
+        Product findProduct = productRepository.findById(product)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
 
 
         // 리뷰 생성 dto-> entity
-        Review review = reviewCreateRequestDTO.toEntity(user, product,"active");
+        Review review = reviewCreateRequestDTO.toEntity(user, findProduct,"active");
         reviewrepository.save(review);
 
         // entity -> dto
@@ -47,13 +47,13 @@ public class ReviewService {
     public ReviewUpdateResponseDTO update(User user, int reviewId, ReviewUpdateRequestDTO reviewUpdateRequestDTO){
 
 
-        Review review = reviewrepository.findByUserIdAndId(user,reviewId)
+        Review review = reviewrepository.findByUserAndId(user,reviewId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundReviewException));// 유저와 해당 리뷰 아이디로 리뷰 찾기
 
         review.update(reviewUpdateRequestDTO.toEntity());
 
         // 수정하기
-        if(review.getProductId().getStatus().equals("Disabled")){
+        if(review.getProduct().getStatus().equals("Disabled")){
             throw new CustomException(ErrorCode.NotFoundProductException);
         }
         reviewrepository.save(review);
@@ -65,7 +65,7 @@ public class ReviewService {
     // 삭제
     public ReviewDeleteResponseDTO deleteReview(User user,int ReviewId){
 
-        Review review = reviewrepository.findByUserIdAndId(user, ReviewId)
+        Review review = reviewrepository.findByUserAndId(user, ReviewId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundReviewException));
         review.delete();
         reviewrepository.save(review);
@@ -86,10 +86,10 @@ public class ReviewService {
         return reviewUserJoinResponseDTOS;
     }
 
-    public List<ReviewProductJoinResponseDTO> getEqProductAndActive(int ProductId, String status){
-        Product product = productRepository.findById(ProductId)
+    public List<ReviewProductJoinResponseDTO> getEqProductAndActive(int product, String status){
+        Product findProduct = productRepository.findById(product)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
-        List<Review> ProductReviewList = reviewrepository.getEqProductAndActive(product,status);
+        List<Review> ProductReviewList = reviewrepository.getEqProductAndActive(findProduct,status);
 
         List<ReviewProductJoinResponseDTO> reviewProductJoinResponseDTOS = new ArrayList<>();
 

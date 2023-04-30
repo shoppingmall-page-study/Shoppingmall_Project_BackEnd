@@ -41,7 +41,7 @@ public class ProductRepositoryTest {
 //                .build();
 //        userRepository.save(user);
 //        Product product = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -53,7 +53,7 @@ public class ProductRepositoryTest {
 //        Product testProduct = productRepository.save(product);
 //
 //
-//        Assertions.assertThat(product.getUserId()).isEqualTo(testProduct.getUserId());
+//        Assertions.assertThat(product.getuser()).isEqualTo(testProduct.getuser());
 //
 //    }
 //
@@ -75,7 +75,7 @@ public class ProductRepositoryTest {
 //                .build();
 //        userRepository.save(user);
 //        Product product1 = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -92,7 +92,7 @@ public class ProductRepositoryTest {
 //    }
 //
 //    @Test
-//    public void findByIdAndUserId(){
+//    public void findByIdAnduser(){
 //        String passwordd ="asdfasfdasdf";
 //        User user = User.builder()
 //                .email("productrepo3@example.com")
@@ -108,7 +108,7 @@ public class ProductRepositoryTest {
 //                .build();
 //        userRepository.save(user);
 //        Product product1 = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")
@@ -120,9 +120,9 @@ public class ProductRepositoryTest {
 //                .build();
 //        Product testProduct = productRepository.save(product1);
 //
-//        Product findIdAndUserId = productRepository.findByIdAndUserId(testProduct.getId(),testProduct.getUserId());
+//        Product findIdAnduser = productRepository.findByIdAnduser(testProduct.getId(),testProduct.getuser());
 //
-//        Assertions.assertThat(product1.getUserId().getEmail()).isEqualTo(findIdAndUserId.getUserId().getEmail());
+//        Assertions.assertThat(product1.getuser().getEmail()).isEqualTo(findIdAnduser.getuser().getEmail());
 //    }
 //
 //    @Test
@@ -142,7 +142,7 @@ public class ProductRepositoryTest {
 //                .build();
 //        userRepository.save(user);
 //        Product product1 = Product.builder()
-//                .userId(user)
+//                .user(user)
 //                .title("가나다")
 //                .name("치킨")
 //                .content("clzls")

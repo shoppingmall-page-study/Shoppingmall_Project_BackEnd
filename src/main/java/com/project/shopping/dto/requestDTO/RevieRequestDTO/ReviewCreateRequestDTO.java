@@ -23,8 +23,8 @@ public class ReviewCreateRequestDTO {
 
     public Review toEntity(User user, Product product, String active){
         return Review.builder()
-                .userId(user)
-                .productId(product)
+                .user(user)
+                .product(product)
                 .imageUrl(this.imgUrl)
                 .title(this.title)
                 .content(this.content)

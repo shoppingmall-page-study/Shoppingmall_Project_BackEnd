@@ -47,4 +47,5 @@ public class UserOAuthAddInfoResponseDTO {
                 .build();
 
     }
+
 }

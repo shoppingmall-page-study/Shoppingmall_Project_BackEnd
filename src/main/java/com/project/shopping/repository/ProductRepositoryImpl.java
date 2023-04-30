@@ -44,7 +44,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
         if(StringUtils.isEmpty(username)){
             return  null;
         }
-        return product.userId.username.contains(username).and(product.status.eq(status));
+        return product.user.username.contains(username).and(product.status.eq(status));
     }
     private BooleanExpression eqProductTiltle(String title, String status){
         if(StringUtils.isEmpty(title)){
@@ -66,11 +66,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
         if(product.status.eq(status) == null){
             return null;
         }
-        if(product.userId.userId.eq(user.getUserId()) == null){
+        if(product.user.id.eq(user.getId()) == null){
             return null;
         }
 
-        return product.status.eq(status).and(product.userId.userId.eq(user.getUserId()));
+        return product.status.eq(status).and(product.user.id.eq(user.getId()));
     }
 
 

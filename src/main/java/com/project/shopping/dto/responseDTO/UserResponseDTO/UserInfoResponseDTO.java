@@ -23,7 +23,6 @@ public class UserInfoResponseDTO {
     private  LocalDateTime modifiedDate;
 
     @Builder
-
     private UserInfoResponseDTO(String email, String username, String address, String postCode, int age, String nickname, String phoneNumber, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.email = email;
         this.username = username;
@@ -50,4 +49,5 @@ public class UserInfoResponseDTO {
                 .build();
 
     }
+
 }

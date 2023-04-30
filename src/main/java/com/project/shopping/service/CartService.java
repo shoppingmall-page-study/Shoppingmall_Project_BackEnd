@@ -26,19 +26,19 @@ public class CartService {
     private  final UserRepository userRepository;
 
     //생성
-    public  CartCreateResponseDTO create(User user, int ProductId, CartCreateRequestDTO cartCreateRequestDTO){
+    public  CartCreateResponseDTO create(User user, int product, CartCreateRequestDTO cartCreateRequestDTO){
 
-        Product product = productRepository.findById(ProductId)
+        Product findProduct = productRepository.findById(product)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));// 상품 찾기
 
 
-        if(cartRepository.existsCartByUserIdAndProductIdAndStatus(user, product,"active")){ // 해당 상품이 존재 할시
-            Cart findCart = cartRepository.findCartByUserIdAndProductId(user, product)
+        if(cartRepository.existsCartByUserAndProductAndStatus(user, findProduct,"active")){ // 해당 상품이 존재 할시
+            Cart findCart = cartRepository.findCartByUserAndProduct(user, findProduct)
                     .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));// 카트찾기
 
             long totalSum = findCart.getProductNum()+ cartCreateRequestDTO.getProductNum();
 
-            if(totalSum> product.getTotal()){
+            if(totalSum> findProduct.getTotal()){
                 throw  new CustomException(ErrorCode.NotFoundCartNumException);
 
             }
@@ -48,12 +48,12 @@ public class CartService {
             Cart createCart = cartRepository.save(findCart); // 카트 생성
 
             ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
-                    .productId(createCart.getProductId().getId())
-                    .title(createCart.getProductId().getTitle())
-                    .name(createCart.getProductId().getName())
-                    .content(createCart.getProductId().getContent())
-                    .imgUrl(createCart.getProductId().getImgUrl())
-                    .price(createCart.getProductId().getPrice())
+                    .productId(createCart.getProduct().getId())
+                    .title(createCart.getProduct().getTitle())
+                    .name(createCart.getProduct().getName())
+                    .content(createCart.getProduct().getContent())
+                    .imgUrl(createCart.getProduct().getImgUrl())
+                    .price(createCart.getProduct().getPrice())
                     .build();
 
             CartCreateResponseDTO cartCreateResponseDTO = CartCreateResponseDTO
@@ -68,19 +68,19 @@ public class CartService {
 
         }else{
             Cart cart = Cart.builder()
-                    .productId(product)
-                    .userId(user)
+                    .product(findProduct)
+                    .user(user)
                     .productNum(cartCreateRequestDTO.getProductNum())
                     .status("active")
                     .build();
             Cart createCart = cartRepository.save(cart); // 카트 생성
             ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
-                    .productId(createCart.getProductId().getId())
-                    .title(createCart.getProductId().getTitle())
-                    .name(createCart.getProductId().getName())
-                    .content(createCart.getProductId().getContent())
-                    .imgUrl(createCart.getProductId().getImgUrl())
-                    .price(createCart.getProductId().getPrice())
+                    .productId(createCart.getProduct().getId())
+                    .title(createCart.getProduct().getTitle())
+                    .name(createCart.getProduct().getName())
+                    .content(createCart.getProduct().getContent())
+                    .imgUrl(createCart.getProduct().getImgUrl())
+                    .price(createCart.getProduct().getPrice())
                     .build();
             CartCreateResponseDTO cartCreateResponseDTO = CartCreateResponseDTO
                     .builder()
@@ -98,11 +98,11 @@ public class CartService {
 
     public CartUpdateResosneDTO update(User user, int cartId, CartUpdateRequestDTO cartUpdateRequestDTO){
 
-        Cart cart = cartRepository.findCartByUserIdAndId(user,cartId)
+        Cart cart = cartRepository.findCartByUserAndId(user,cartId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));// 유저랑 카트 아이디를 이용한 카트 찾기
         long totalCount =  (cartUpdateRequestDTO.getProductNum());
 
-        if(totalCount > cart.getProductId().getTotal()){
+        if(totalCount > cart.getProduct().getTotal()){
             throw new CustomException(ErrorCode.NotFoundCartNumException);
         }
         if(totalCount <1){
@@ -115,12 +115,12 @@ public class CartService {
 
 
         ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
-                .productId(cart.getProductId().getId())
-                .title(cart.getProductId().getTitle())
-                .name(cart.getProductId().getName())
-                .content(cart.getProductId().getContent())
-                .imgUrl(cart.getProductId().getImgUrl())
-                .price(cart.getProductId().getPrice())
+                .productId(cart.getProduct().getId())
+                .title(cart.getProduct().getTitle())
+                .name(cart.getProduct().getName())
+                .content(cart.getProduct().getContent())
+                .imgUrl(cart.getProduct().getImgUrl())
+                .price(cart.getProduct().getPrice())
                 .build();
 
         CartUpdateResosneDTO cartUpdateResosneDTO  = CartUpdateResosneDTO.builder()
@@ -135,18 +135,18 @@ public class CartService {
     // 삭제
     public  CartDeleteResponseDTO deleteCart(User user, int id){
 
-        Cart findcart = cartRepository.findCartByUserIdAndId(user, id)
+        Cart findcart = cartRepository.findCartByUserAndId(user, id)
                         .orElseThrow(()-> new CustomException(ErrorCode.NotFoundCartException));
         findcart.setStatus("Disabled");
 
         cartRepository.save(findcart);
         ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
-                .productId(findcart.getProductId().getId())
-                .title(findcart.getProductId().getTitle())
-                .name(findcart.getProductId().getName())
-                .content(findcart.getProductId().getContent())
-                .imgUrl(findcart.getProductId().getImgUrl())
-                .price(findcart.getProductId().getPrice())
+                .productId(findcart.getProduct().getId())
+                .title(findcart.getProduct().getTitle())
+                .name(findcart.getProduct().getName())
+                .content(findcart.getProduct().getContent())
+                .imgUrl(findcart.getProduct().getImgUrl())
+                .price(findcart.getProduct().getPrice())
                 .build();
 
         CartDeleteResponseDTO cartDeleteResponseDTO = CartDeleteResponseDTO.builder()
@@ -171,12 +171,12 @@ public class CartService {
 
         for(Cart cart: cartList){
             ProductReponseDTO productReponseDTO = ProductReponseDTO.builder()
-                    .productId(cart.getProductId().getId())
-                    .title(cart.getProductId().getTitle())
-                    .name(cart.getProductId().getName())
-                    .content(cart.getProductId().getContent())
-                    .imgUrl(cart.getProductId().getImgUrl())
-                    .price(cart.getProductId().getPrice())
+                    .productId(cart.getProduct().getId())
+                    .title(cart.getProduct().getTitle())
+                    .name(cart.getProduct().getName())
+                    .content(cart.getProduct().getContent())
+                    .imgUrl(cart.getProduct().getImgUrl())
+                    .price(cart.getProduct().getPrice())
                     .build();
             CartUserListJoinResponseDTO cartUserListJoinResponseDTO = CartUserListJoinResponseDTO.builder()
                     .cartId(cart.getId())
