@@ -6,7 +6,7 @@ import com.project.shopping.model.User;
 import java.util.List;
 
 public interface ProductRepositoryCustom {
-    List<Product> getProductList(String tilte, String status);
+    List<Product> getProductList(String title, String status);
 
 
     List<Product> getActiveProdcutList(String status);

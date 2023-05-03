@@ -2,7 +2,6 @@ package com.project.shopping.dto.requestDTO.ProductRequestDTO;
 
 import com.project.shopping.model.Product;
 import com.project.shopping.model.User;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

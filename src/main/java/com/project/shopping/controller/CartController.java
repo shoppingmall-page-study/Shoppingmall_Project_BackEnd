@@ -1,18 +1,11 @@
 package com.project.shopping.controller;
 
-import com.project.shopping.Error.CustomException;
-import com.project.shopping.Error.ErrorCode;
 import com.project.shopping.auth.PrincipalDetails;
-import com.project.shopping.dto.*;
 import com.project.shopping.dto.requestDTO.CartRequestDTO.CartCreateRequestDTO;
 import com.project.shopping.dto.requestDTO.CartRequestDTO.CartUpdateRequestDTO;
 import com.project.shopping.dto.responseDTO.CartResponseDTO.*;
-import com.project.shopping.model.Cart;
-import com.project.shopping.model.Product;
 import com.project.shopping.model.User;
 import com.project.shopping.service.CartService;
-import com.project.shopping.service.ProductService;
-import com.project.shopping.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -87,11 +80,11 @@ public class CartController {
 
         User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
 
-        CartUpdateResosneDTO cartUpdateResosneDTO = cartService.update(user, cartId, cartUpdateRequestDTO);
+        CartUpdateResponseDTO cartUpdateResponseDTO = cartService.update(user, cartId, cartUpdateRequestDTO);
 
         Map<String, Object> result = new HashMap<>();
         result.put("msg","장바구니 수정에 성공했습니다.");
-        result.put("data", cartUpdateResosneDTO);
+        result.put("data", cartUpdateResponseDTO);
 
         return  ResponseEntity.ok().body(result);
 

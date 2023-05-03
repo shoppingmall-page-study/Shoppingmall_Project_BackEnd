@@ -17,7 +17,6 @@ import com.project.shopping.repository.UserRepository;
 import com.project.shopping.security.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,13 +31,13 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailAuthenticationService emailAuthenticationService;
 
-
+    private final Random random = new Random();
 
     public UserJoinResponseDTO create(UserJoinRequestDTO userJoinRequestDTO){
 
         //이메일 중복 체크
         if(userRepository.existsByEmail(userJoinRequestDTO.getEmail())){
-            throw new CustomException(ErrorCode.DuplicatedEmilException);
+            throw new CustomException(ErrorCode.DuplicatedEmailException);
         }
 
         if(!emailAuthenticationService.isEmailAuthenticated(userJoinRequestDTO.getEmail())){
@@ -98,8 +97,10 @@ public class UserService {
 
     public UserDeleteResponseDTO delete(UserDeleteRequestDTO userDeleteRequestDTO, User user){
 
-        userRepository.findByEmail(user.getEmail())
-                .orElseThrow(()->new CustomException(ErrorCode.NotFoundUserException));
+        if(!userRepository.existsByEmail(user.getEmail())){
+            throw new CustomException(ErrorCode.DuplicatedEmailException);
+        }
+
 
         if(passwordEncoder.matches(userDeleteRequestDTO.getPassword(), user.getPassword() )){
 
@@ -146,11 +147,9 @@ public class UserService {
     // 닉네임 체크 api
     public UserCheckNicknameResponseDTO checkNickname(String value){
         if(userRepository.existsByNickname(value)){
-            new CustomException(ErrorCode.DuplicatedNickNameException);
+           throw new CustomException(ErrorCode.DuplicatedNickNameException);
         }
-        UserCheckNicknameResponseDTO userCheckNicknameResponseDTO =  UserCheckNicknameResponseDTO.UserCheckNicknameResponseDTO(value);
-
-        return  userCheckNicknameResponseDTO;
+        return UserCheckNicknameResponseDTO.createUserCheckNicknameResponseDTO(value);
     }
 
     // 랜덤 문자열 password
@@ -159,7 +158,7 @@ public class UserService {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 10;
-        Random random = new Random();
+
         String generatedRandomString = random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(targetStringLength)

@@ -3,7 +3,6 @@ package com.project.shopping.dto.requestDTO.UserRequestDTO;
 
 import com.project.shopping.model.User;
 import com.project.shopping.security.Role;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

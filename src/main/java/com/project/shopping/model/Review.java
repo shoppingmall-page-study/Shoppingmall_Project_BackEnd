@@ -1,6 +1,5 @@
 package com.project.shopping.model;
 
-import com.project.shopping.dto.responseDTO.ReviewResponseDTO.*;
 import lombok.*;
 
 import javax.persistence.*;

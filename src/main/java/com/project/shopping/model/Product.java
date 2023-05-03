@@ -1,11 +1,7 @@
 package com.project.shopping.model;
 
-import com.project.shopping.dto.responseDTO.ProductResponseDTO.*;
 import lombok.*;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor

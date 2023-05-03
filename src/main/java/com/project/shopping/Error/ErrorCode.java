@@ -28,7 +28,7 @@ public enum ErrorCode {
     NotFoundCartNumDownException(404,"NotFoundException","상품이 1 미만 일 수 없습니다."),
     NotFoundOrderException(404,"NotFoundException","”해당 주문이 존재하지 않습니다.”"),
     NotFoundReviewException(404,"NotFoundException","”해당 리뷰가 존재하지 않습니다.”"),
-    DuplicatedEmilException(409,"DuplicatedParameterException","이미 존재하는 이메일입니다."),
+    DuplicatedEmailException(409,"DuplicatedParameterException","이미 존재하는 이메일입니다."),
     DuplicatedNickNameException(409,"DuplicatedParameterException","이미 존재하는 닉네임입니다."),
     INTER_SERVER_ERROR(500,"COMMON-ERR-500","INTER SERVER ERROR")
     ;

@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+
 @NoArgsConstructor
 @Getter
-public class CartCreateResponseDTO {
+public class CartUpdateResponseDTO {
     private  int cartId;
     private ProductResponseDTO product;
     private  long productNum;
@@ -17,19 +18,21 @@ public class CartCreateResponseDTO {
 
 
     @Builder
-    private CartCreateResponseDTO(int cartId, ProductResponseDTO product, long productNum, LocalDateTime createDate) {
+    private CartUpdateResponseDTO(int cartId, ProductResponseDTO product, long productNum, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.cartId = cartId;
         this.product = product;
         this.productNum = productNum;
         this.createDate = createDate;
+
     }
 
-    public static CartCreateResponseDTO toCartCreateResponseDTO(Cart cart, ProductResponseDTO productResponseDTO){
-        return CartCreateResponseDTO.builder()
+    public static CartUpdateResponseDTO toCartUpdateResponseDTO(Cart cart, ProductResponseDTO productResponseDTO){
+        return CartUpdateResponseDTO.builder()
                 .cartId(cart.getId())
                 .product(productResponseDTO)
                 .productNum(cart.getProductNum())
                 .createDate(cart.getCreateDate())
                 .build();
     }
+
 }

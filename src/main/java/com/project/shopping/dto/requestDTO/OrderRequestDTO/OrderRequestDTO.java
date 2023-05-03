@@ -1,10 +1,12 @@
 package com.project.shopping.dto.requestDTO.OrderRequestDTO;
 
+import com.project.shopping.model.Order;
+import com.project.shopping.model.OrderDetail;
 import com.project.shopping.model.Product;
+import com.project.shopping.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -21,11 +23,21 @@ public class OrderRequestDTO {
     @Size(min = 1)
     private ArrayList<Integer> productsNumber;
 
+    public Order toEntity(User user, ArrayList<OrderDetail> orderDetails, long amount){
 
-    public OrderRequestDTO(ArrayList<Integer> productsId, ArrayList<Integer> productsNumber) {
-        this.productsId = productsId;
-        this.productsNumber = productsNumber;
+        return Order.builder()
+                .user(user)
+                .products(orderDetails)
+                .orderComplete("ready")
+                .status("active")
+                .amount(amount)
+                .build();
     }
+
+    public OrderDetail toOrderDetailEntity(Product product, int productIndex, Order order){
+        return new OrderDetail(product, productsNumber.get(productIndex), order);
+    }
+
 }
 
 

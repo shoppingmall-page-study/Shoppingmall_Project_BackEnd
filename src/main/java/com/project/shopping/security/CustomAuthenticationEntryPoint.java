@@ -26,13 +26,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         if(exception.equals(ErrorCode.UnauthorizedException.getErrorCode())){
             errorCode = ErrorCode.UnauthorizedException;
             setResponse(response,errorCode);
-            ;
 
         }
         if(exception.equals(ErrorCode.ExpirationException.getErrorCode())){
             errorCode = ErrorCode.ExpirationException;
             setResponse(response,errorCode);
-            ;
         }
 
     }

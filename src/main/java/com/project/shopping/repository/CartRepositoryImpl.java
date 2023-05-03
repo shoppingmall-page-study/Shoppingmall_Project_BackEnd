@@ -1,12 +1,10 @@
 package com.project.shopping.repository;
 
 import com.project.shopping.model.Cart;
-import com.project.shopping.model.Product;
 import com.project.shopping.model.QCart;
 import com.project.shopping.model.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 

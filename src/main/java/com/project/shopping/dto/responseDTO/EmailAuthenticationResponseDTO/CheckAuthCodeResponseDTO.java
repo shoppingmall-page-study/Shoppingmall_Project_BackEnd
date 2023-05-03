@@ -1,6 +1,5 @@
 package com.project.shopping.dto.responseDTO.EmailAuthenticationResponseDTO;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,8 +8,11 @@ import lombok.NoArgsConstructor;
 public class CheckAuthCodeResponseDTO {
     private String email;
 
-    @Builder
-    public CheckAuthCodeResponseDTO(String email) {
+    private CheckAuthCodeResponseDTO(String email) {
         this.email = email;
+    }
+
+    public static CheckAuthCodeResponseDTO toCheckAuthCodeResponseDTO(String email) {
+        return new CheckAuthCodeResponseDTO(email);
     }
 }

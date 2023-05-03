@@ -52,9 +52,7 @@ class EmailAuthenticationServiceTest {
                 .email("test@gmail.com")
                 .build();
 
-        SendAuthCodeResponseDTO sendAuthCodeResponse = SendAuthCodeResponseDTO.builder()
-                .email("test@gmail.com")
-                .build();
+        SendAuthCodeResponseDTO sendAuthCodeResponse = SendAuthCodeResponseDTO.toSendAuthCodeResponseDTO("test@gmail.com");
 
         MimeMessage mimeMessage = new MimeMessage((Session) null);
 
@@ -81,9 +79,7 @@ class EmailAuthenticationServiceTest {
                 .authCode("test")
                 .build();
 
-        CheckAuthCodeResponseDTO checkAuthCodeResponse = CheckAuthCodeResponseDTO.builder()
-                .email("test@gmail.com")
-                .build();
+        CheckAuthCodeResponseDTO checkAuthCodeResponse = CheckAuthCodeResponseDTO.toCheckAuthCodeResponseDTO("test@gmail.com");
 
 
         //given

@@ -1,6 +1,5 @@
 package com.project.shopping.dto.requestDTO.EmailAuthenticationRequestDTO;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,9 +17,4 @@ public class CheckAuthCodeRequestDTO {
     @NotBlank
     private String authCode;
 
-    @Builder
-    public CheckAuthCodeRequestDTO(String email, String authCode) {
-        this.email = email;
-        this.authCode = authCode;
-    }
 }

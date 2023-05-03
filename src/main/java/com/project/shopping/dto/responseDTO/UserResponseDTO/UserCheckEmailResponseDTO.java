@@ -1,6 +1,5 @@
 package com.project.shopping.dto.responseDTO.UserResponseDTO;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,5 +8,12 @@ import lombok.NoArgsConstructor;
 public class UserCheckEmailResponseDTO {
     private  String email;
 
+    private UserCheckEmailResponseDTO(String email) {
+        this.email = email;
+    }
+
+    public static UserCheckEmailResponseDTO toUserCheckEmailResponseDTO(String email){
+        return new UserCheckEmailResponseDTO(email);
+    }
 
 }

@@ -2,12 +2,11 @@ package com.project.shopping.repository;
 
 import com.project.shopping.model.Product;
 import com.project.shopping.model.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +30,5 @@ public interface ProductRepository extends JpaRepository<Product,Integer>,Produc
 
     List<Product> findAll();
     List<Product> findAllByUser(User user);
-
-
 
 }

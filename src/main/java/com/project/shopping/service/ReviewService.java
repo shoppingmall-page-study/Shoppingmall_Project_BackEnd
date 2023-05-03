@@ -10,7 +10,6 @@ import com.project.shopping.model.Review;
 import com.project.shopping.model.User;
 import com.project.shopping.repository.ProductRepository;
 import com.project.shopping.repository.ReviewRepository;
-import com.project.shopping.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -63,9 +62,9 @@ public class ReviewService {
 
 
     // 삭제
-    public ReviewDeleteResponseDTO deleteReview(User user,int ReviewId){
+    public ReviewDeleteResponseDTO deleteReview(User user,int reviewId){
 
-        Review review = reviewrepository.findByUserAndId(user, ReviewId)
+        Review review = reviewrepository.findByUserAndId(user, reviewId)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundReviewException));
         review.delete();
         reviewrepository.save(review);
@@ -89,11 +88,11 @@ public class ReviewService {
     public List<ReviewProductJoinResponseDTO> getEqProductAndActive(int product, String status){
         Product findProduct = productRepository.findById(product)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
-        List<Review> ProductReviewList = reviewrepository.getEqProductAndActive(findProduct,status);
+        List<Review> productReviewList = reviewrepository.getEqProductAndActive(findProduct,status);
 
         List<ReviewProductJoinResponseDTO> reviewProductJoinResponseDTOS = new ArrayList<>();
 
-        for(Review review : ProductReviewList){
+        for(Review review : productReviewList){
             reviewProductJoinResponseDTOS.add( ReviewProductJoinResponseDTO.toReviewProductJoinResponseDTO(review));
         }
 

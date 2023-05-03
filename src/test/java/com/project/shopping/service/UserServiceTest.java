@@ -226,12 +226,7 @@ class UserServiceTest {
                 .phoneNumber("010-0000-0000")
                 .build();
 
-        UserDeleteResponseDTO userDeleteResponseDTO = UserDeleteResponseDTO.builder()
-                .email("test@gmail.com")
-                .username("test")
-                .nickname("test")
-                .build();
-
+        UserDeleteResponseDTO userDeleteResponseDTO = UserDeleteResponseDTO.toUserDeleteResponseDTO(user);
 
         Optional<User> optUser = Optional.of(user);
 

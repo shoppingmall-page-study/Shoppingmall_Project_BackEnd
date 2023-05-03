@@ -58,8 +58,7 @@ public class RefreshTokenService {
             //accessToken 재발급
             String reIssuanceAccessToken = tokenProvider.generateAccessToken(authentication);
             // header 생성
-            HttpHeaders headers = generateHeader(reIssuanceAccessToken);
-            return headers;
+            return generateHeader(reIssuanceAccessToken);
         }else{
            throw new CustomException(ErrorCode.NotFoundRefrshTokenException);
         }
