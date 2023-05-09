@@ -1,5 +1,6 @@
 package com.project.shopping.dto.responseDTO.OrderResponseDTO;
 
+import com.project.shopping.model.Order;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,11 +18,22 @@ public class OrderResponseDTO {
     private LocalDateTime orderTime;
 
     @Builder
-    public OrderResponseDTO(String orderId, ArrayList<ProductInOrderResponseDTO> products, String orderComplete, long amount, LocalDateTime orderTime) {
+    private OrderResponseDTO(String orderId, ArrayList<ProductInOrderResponseDTO> products, String orderComplete, long amount, LocalDateTime orderTime) {
         this.orderId = orderId;
         this.products = products;
         this.orderComplete = orderComplete;
         this.amount = amount;
         this.orderTime = orderTime;
     }
+
+    public static OrderResponseDTO toOrderResponseDTO(Order order,ArrayList<ProductInOrderResponseDTO> productsResponseDTO){
+        return OrderResponseDTO.builder()
+                .orderId(order.getId())
+                .products(productsResponseDTO)
+                .orderComplete(order.getOrderComplete())
+                .amount(order.getAmount())
+                .orderTime(order.getOrderTime())
+                .build();
+    }
+
 }

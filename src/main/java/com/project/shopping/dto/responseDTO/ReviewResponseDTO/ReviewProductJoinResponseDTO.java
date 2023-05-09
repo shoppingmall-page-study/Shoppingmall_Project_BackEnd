@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -18,16 +17,15 @@ public class ReviewProductJoinResponseDTO {
     private LocalDateTime createDate;
     private LocalDateTime modifiedDate;
     private  String userNickname;
-    private  String ImgURL;
+    private  String imgURL;
 
     @Builder
-
-    public ReviewProductJoinResponseDTO(int reviewId, String title, String content, LocalDateTime createDate,String userNickname,String imgURL, LocalDateTime modifiedDate) {
+    private ReviewProductJoinResponseDTO(int reviewId, String title, String content, LocalDateTime createDate,String userNickname,String imgURL, LocalDateTime modifiedDate) {
         this.reviewId = reviewId;
         this.title = title;
         this.content = content;
         this.userNickname = userNickname;
-        this.ImgURL = imgURL;
+        this.imgURL = imgURL;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
     }

@@ -47,18 +47,7 @@ public class ProductService {
         Product findProduct = productRepository.findById(id)
                 .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
         // entitytoDTO
-        ProductJoinResponseDTO productJoinResponseDTO = ProductJoinResponseDTO.builder()
-                .productId(findProduct.getId())
-                .title(findProduct.getTitle())
-                .content(findProduct.getContent())
-                .name(findProduct.getName())
-                .price(findProduct.getPrice())
-                .total(findProduct.getTotal())
-                .imgUrl(findProduct.getImgUrl())
-                .createDate(findProduct.getCreateDate())
-                .modifiedDate(findProduct.getModifiedDate())
-                .build();
-        return  productJoinResponseDTO;
+        return ProductJoinResponseDTO.toProductJoinResponseDTO(findProduct);
 
     }
 
@@ -90,9 +79,8 @@ public class ProductService {
 
 
     public  List<ProductJoinResponseDTO> getActiveProdcutList(String status){
-        System.out.println(status);
         List<Product> products = productRepository.getActiveProdcutList(status);
-        if(products.size() == 0){
+        if(products.isEmpty()){
             throw new CustomException(ErrorCode.NotFoundProductException);
         }
         List<ProductJoinResponseDTO> productJoinResponseDTOS = new ArrayList<>();

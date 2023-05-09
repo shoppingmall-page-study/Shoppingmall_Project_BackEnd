@@ -1,6 +1,8 @@
 package com.project.shopping.dto.requestDTO.CartRequestDTO;
 
-import lombok.Builder;
+import com.project.shopping.model.Cart;
+import com.project.shopping.model.Product;
+import com.project.shopping.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,9 +15,13 @@ public class CartCreateRequestDTO {
     @NotNull
     private  long productNum;
 
-    @Builder
-    public CartCreateRequestDTO(long productNum) {
-        this.productNum = productNum;
+    public Cart toEntity(Product product, User user){
+        return Cart.builder()
+                .product(product)
+                .user(user)
+                .productNum(this.productNum)
+                .status("active")
+                .build();
     }
 
 }

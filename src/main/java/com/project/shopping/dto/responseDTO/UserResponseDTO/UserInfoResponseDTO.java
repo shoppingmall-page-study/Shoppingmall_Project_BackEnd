@@ -1,6 +1,5 @@
 package com.project.shopping.dto.responseDTO.UserResponseDTO;
 
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.project.shopping.model.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,7 +46,6 @@ public class UserInfoResponseDTO {
                 .createDate(user.getCreateDate())
                 .modifiedDate(user.getModifiedDate())
                 .build();
-
     }
 
 }

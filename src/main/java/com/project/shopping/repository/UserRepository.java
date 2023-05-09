@@ -11,6 +11,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     //save(), findOne(), findAll(), count(), delete() 제공
     Optional<User> findByEmail(String email);
-    Boolean existsByEmail(String email);
-    Boolean existsByNickname(String nickname);
+    boolean existsByEmail(String email);
+    boolean existsByNickname(String nickname);
 }

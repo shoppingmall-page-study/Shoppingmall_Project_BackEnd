@@ -97,11 +97,8 @@ class UserControllerTest {
                 .password("password")
                 .build();
 
-        UserDeleteResponseDTO userDeleteResponseDTO = UserDeleteResponseDTO.builder()
-                .email("test@gmail.com")
-                .username("test")
-                .nickname("test")
-                .build();
+        UserDeleteResponseDTO userDeleteResponseDTO = UserDeleteResponseDTO.toUserDeleteResponseDTO("test@gmail.com", "test", "test");
+
 
         //given
         BDDMockito.given(userService.delete(any(), any())).willReturn(userDeleteResponseDTO);
@@ -235,9 +232,7 @@ class UserControllerTest {
     @DisplayName("## 이메일 체크 테스트 ##")
     public void checkEmail () throws Exception{
 
-        UserCheckEmailResponseDTO userCheckEmailResponseDTO = UserCheckEmailResponseDTO.builder()
-                .email("test@email.com")
-                .build();
+        UserCheckEmailResponseDTO userCheckEmailResponseDTO = UserCheckEmailResponseDTO.toUserCheckEmailResponseDTO("test@gmail.com");
 
         //given
         BDDMockito.given(userService.existsByEmail(any())).willReturn(true);
@@ -258,9 +253,7 @@ class UserControllerTest {
     @DisplayName("## 닉네임 체크 테스트 ##")
     public void checkNickname () throws Exception{
 
-        UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = UserCheckNicknameResponseDTO.builder()
-                .nickname("test")
-                .build();
+        UserCheckNicknameResponseDTO userCheckNicknameResponseDTO = UserCheckNicknameResponseDTO.createUserCheckNicknameResponseDTO("test");
 
         //given
         BDDMockito.given(userService.existsByEmail(any())).willReturn(true);
@@ -284,9 +277,7 @@ class UserControllerTest {
                 .email("test@email.com")
                 .build();
 
-        SendAuthCodeResponseDTO sendAuthCodeResponseDTO = SendAuthCodeResponseDTO.builder()
-                .email("test@email.com")
-                .build();
+        SendAuthCodeResponseDTO sendAuthCodeResponseDTO = SendAuthCodeResponseDTO.toSendAuthCodeResponseDTO("test@gmail.com");
 
         //given
         BDDMockito.given(emailAuthenticationService.sendAuthenticationCode(any())).willReturn(sendAuthCodeResponseDTO);
@@ -315,9 +306,7 @@ class UserControllerTest {
                 .authCode("test")
                 .build();
 
-        CheckAuthCodeResponseDTO checkAuthCodeResponseDTO = CheckAuthCodeResponseDTO.builder()
-                .email("test@email.com")
-                .build();
+        CheckAuthCodeResponseDTO checkAuthCodeResponseDTO = CheckAuthCodeResponseDTO.toCheckAuthCodeResponseDTO("test@email.com");
 
         //giveni
         BDDMockito.given(emailAuthenticationService.checkAuthCode(any())).willReturn(checkAuthCodeResponseDTO);

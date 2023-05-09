@@ -1,6 +1,5 @@
 package com.project.shopping.dto.requestDTO.ProductRequestDTO;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,8 +12,4 @@ public class ProductSearchRequestDTO {
     @NotBlank
     private  String keyword;
 
-    @Builder
-    public ProductSearchRequestDTO(String keyword) {
-        this.keyword = keyword;
-    }
 }

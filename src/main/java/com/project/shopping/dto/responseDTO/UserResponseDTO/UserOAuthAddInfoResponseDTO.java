@@ -21,7 +21,7 @@ public class UserOAuthAddInfoResponseDTO {
     private  LocalDateTime modifiedDate;
 
     @Builder
-    public UserOAuthAddInfoResponseDTO(String email, String username, String address, String postCode, int age, String nickname, String phoneNumber, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    private UserOAuthAddInfoResponseDTO(String email, String username, String address, String postCode, int age, String nickname, String phoneNumber, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.email = email;
         this.username = username;
         this.address = address;

@@ -1,8 +1,6 @@
 package com.project.shopping.dto.requestDTO.RevieRequestDTO;
 
-import com.project.shopping.model.Product;
 import com.project.shopping.model.Review;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

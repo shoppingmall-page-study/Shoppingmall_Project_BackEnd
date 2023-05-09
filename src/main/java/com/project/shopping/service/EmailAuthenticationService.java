@@ -30,11 +30,13 @@ public class EmailAuthenticationService {
     private final UserRepository userRepository;
 
     private final JavaMailSender javaMailSender;
+    private final Random random = new Random();
 
+    private static final  String AUTHCODE = "AuthCode";
     private  final RedisTemplate<String, Object> redisTemplate;
     private String createAuthCode(){
-        Random random = new Random();
-        StringBuffer key = new StringBuffer();
+
+        StringBuilder key = new StringBuilder();
 
         for(int i = 0; i < 8; i++){
             int index = random.nextInt(3);
@@ -48,6 +50,8 @@ public class EmailAuthenticationService {
                     break;
                 case 2:
                     key.append((char)(random.nextInt(26) + 48));
+                    break;
+                default:
                     break;
             }
         }
@@ -89,7 +93,7 @@ public class EmailAuthenticationService {
         String userEmail = sendAuthCodeRequestDTO.getEmail();
 
         if(userRepository.existsByEmail(userEmail))
-            throw new CustomException(ErrorCode.DuplicatedEmilException);
+            throw new CustomException(ErrorCode.DuplicatedEmailException);
 
         //코드 생성
         String authCode = createAuthCode();
@@ -101,24 +105,25 @@ public class EmailAuthenticationService {
         //메일전송
         javaMailSender.send(emailForm);
 
-        return new SendAuthCodeResponseDTO().builder().email(userEmail).build();
+        return SendAuthCodeResponseDTO.toSendAuthCodeResponseDTO(userEmail);
     }
 
 
     //인증 코드 저장 유효시간 5분 설정
     private void saveEmailAuthCode(String authCode, String email){
-        setValueWithExpire( email + "AuthCode", authCode,Duration.ofMinutes(5));
+        setValueWithExpire( email + AUTHCODE, authCode,Duration.ofMinutes(5));
     }
 
     //인증 되었는지 여부 저장 유효시간 1일 설정
     private void saveIsEmailAuthenticated(String email){
-        setValueWithExpire( email + "AuthCode", "Authenticated", Duration.ofDays(1));
+        setValueWithExpire( email + AUTHCODE, "Authenticated", Duration.ofDays(1));
     }
 
     public CheckAuthCodeResponseDTO checkAuthCode(CheckAuthCodeRequestDTO checkAuthCodeRequestDTO){
         String authCode = checkAuthCodeRequestDTO.getAuthCode();
         String userEmail = checkAuthCodeRequestDTO.getEmail();
-        String authCodeFromRedis = isValueExist(userEmail+"AuthCode") ? getStringValue(userEmail+"AuthCode") : null;
+        String authCodeFromRedis = isValueExist(userEmail+AUTHCODE) ? getStringValue(userEmail+AUTHCODE) : null;
+
 
         if(authCode.equals(authCodeFromRedis)) {
             log.info("인증 코드 값 일치");
@@ -126,36 +131,28 @@ public class EmailAuthenticationService {
         }else{
             throw new CustomException( ErrorCode.BadAuthenticationCodeException);
         }
-        return new CheckAuthCodeResponseDTO().builder().email(userEmail).build();
+        return CheckAuthCodeResponseDTO.toCheckAuthCodeResponseDTO(userEmail);
     }
 
 
     public boolean isEmailAuthenticated(String email){
 
-        String authCodeFromRedis = isValueExist(email+"AuthCode") ? getStringValue(email+"AuthCode") : "null";
+        String authCodeFromRedis = isValueExist(email+AUTHCODE) ? getStringValue(email+AUTHCODE) : "null";
 
-        if(authCodeFromRedis.equals("Authenticated")) {
-            return true;
-        }
-        return false;
+        return authCodeFromRedis.equals("Authenticated");
     }
 
 
-    private void setValueWithExpire(String key, Object value, Duration ExpiresIn){
+    private void setValueWithExpire(String key, Object value, Duration expiresIn){
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(key, value, ExpiresIn);
+        valueOperations.set(key, value, expiresIn);
     }
 
 
     private boolean isValueExist(Object key){
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
 
-        Object value = valueOperations.get(key);
-
-        if(value == null)
-            return false;
-
-        return true;
+        return valueOperations.get(key) != null;
     }
 
 

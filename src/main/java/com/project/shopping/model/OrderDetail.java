@@ -26,10 +26,11 @@ public class OrderDetail extends BaseTimeEntity{
     @Column(nullable = false)
     private int productNum;
 
-    @Builder
     public OrderDetail(Product product, int productNum, Order order) {
         this.order = order;
         this.product = product;
         this.productNum = productNum;
     }
+
+
 }

@@ -1,6 +1,5 @@
 package com.project.shopping.model;
 
-import com.project.shopping.dto.responseDTO.UserResponseDTO.*;
 import com.project.shopping.security.Role;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;

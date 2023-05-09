@@ -21,7 +21,6 @@ public class ProductSearchResponseDTO {
     private LocalDateTime modifiedDate;
 
     @Builder
-
     private ProductSearchResponseDTO(int productId, String title, String content, String name, long price, int total, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.productId = productId;
         this.title = title;

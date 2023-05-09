@@ -22,62 +22,38 @@ import java.util.*;
 @Slf4j
 @RequiredArgsConstructor
 public class OrderService {
+    private final OrderDetailRepository orderDetailRepository;
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-    private final OrderDetailRepository orderDetailRepository;
 
     public OrderResponseDTO create(User user, OrderRequestDTO orderRequestDTO)throws CustomException {
 
-        ArrayList<ProductInOrderResponseDTO>  responseProductsDTO = new ArrayList<>();
-        ArrayList<OrderDetail> products = new ArrayList<>();
+        ArrayList<OrderDetail> orderDetails = new ArrayList<>();
+        ArrayList<ProductInOrderResponseDTO> productsResponseDTO = new ArrayList<>();
+        List<Product> products = productRepository.findAllById(orderRequestDTO.getProductsId());
 
-        long totalAmount = 0;
-        Order order = Order.builder()
-                .user(user)
-                .orderComplete("ready")
-                .status("active")
-                .products(products)
-                .build();
+        long amount  = 0;
 
-        for(int i = 0; i < orderRequestDTO.getProductsId().size(); i++){
-            Product product = productRepository.findById((int)orderRequestDTO.getProductsId().get(i))
-                    .orElseThrow(()-> new CustomException(ErrorCode.NotFoundProductException));
-            int productNum = orderRequestDTO.getProductsNumber().get(i);
+        for(Product p : products)
+            amount += p.getPrice();
 
-            OrderDetail orderDetail = OrderDetail.builder()
-                    .order(order)
-                    .product(product)
-                    .productNum(productNum)
-                    .build();
+        Order order = orderRequestDTO.toEntity(user, orderDetails, amount);
 
-            order.getProducts().add(orderDetail);
+        if(products.size() != orderRequestDTO.getProductsId().size())
+            throw new CustomException(ErrorCode.NotFoundProductException);
 
-            ProductInOrderResponseDTO productDTO = ProductInOrderResponseDTO.builder()
-                    .productId(product.getId())
-                    .productName(product.getTitle())
-                    .imgUrl(product.getImgUrl())
-                    .productNum(productNum)
-                    .build();
+        for(int i = 0; i < products.size(); i++){
+            OrderDetail orderDetail = orderRequestDTO.toOrderDetailEntity(products.get(i), i, order);
+            orderDetails.add(orderDetail);
+            orderDetailRepository.save(orderDetail);
 
-            responseProductsDTO.add(productDTO);
-
-            totalAmount += product.getPrice() * productNum;
+            productsResponseDTO.add(ProductInOrderResponseDTO.toProductInOrderResponseDTO(products.get(i), orderRequestDTO.getProductsNumber().get(i)));
         }
-
-        order.setAmount(totalAmount);
 
         Order savedOrder = orderRepository.save(order);
 
-        OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
-                .orderId(savedOrder.getId())
-                .products(responseProductsDTO)
-                .orderComplete(savedOrder.getOrderComplete())
-                .amount(savedOrder.getAmount())
-                .orderTime(savedOrder.getOrderTime())
-                .build();
-
-        return orderResponseDTO;
+        return OrderResponseDTO.toOrderResponseDTO(savedOrder,productsResponseDTO);
     }
 
     public Order update(Order order){
@@ -100,24 +76,12 @@ public class OrderService {
                 Product product = order.getProducts().get(i).getProduct();
                 int productNum = order.getProducts().get(i).getProductNum();
 
-                productDTO = ProductInOrderResponseDTO.builder()
-                        .productId(product.getId())
-                        .productName(product.getName())
-                        .productNum(productNum)
-                        .imgUrl(product.getImgUrl())
-                        .build();
+                productDTO = ProductInOrderResponseDTO.toProductInOrderResponseDTO(product, productNum);
 
                 products.add(productDTO);
             }
 
-            OrderResponseDTO orderDTO = OrderResponseDTO.builder()
-                    .orderId(order.getId())
-                    .products(products)
-                    .orderComplete(order.getOrderComplete())
-                    .amount(order.getAmount())
-                    .orderTime(order.getOrderTime())
-                    .build();
-
+            OrderResponseDTO orderDTO = OrderResponseDTO.toOrderResponseDTO(order, products);
             orders.add(orderDTO);
         }
 
